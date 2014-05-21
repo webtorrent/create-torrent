@@ -1,6 +1,6 @@
 {
   "name": "create-torrent",
-  "description": "Create a .torrent file",
+  "description": "Create .torrent files",
   "version": "0.0.0",
   "author": "Feross Aboukhadijeh <feross@feross.org> (http://feross.org/)",
   "bugs": {
@@ -24,6 +24,9 @@
     "torrent",
     "create torrent",
     "make",
+    "torrent file",
+    "torrent files",
+    ".torrent",
     "create",
     "peer-to-peer",
     "bittorrent",
