@@ -2,7 +2,7 @@
 
 #### Create .torrent files
 
-![creation](https://raw.githubusercontent.com/feross/zelda/master/img.jpg)
+![creation](https://raw.githubusercontent.com/feross/create-torrent/master/img.jpg)
 
 This module is used by [WebTorrent](http://webtorrent.io).
 
