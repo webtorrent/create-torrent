@@ -15,7 +15,7 @@ test('create single file torrent', function (t) {
   t.plan(12)
 
   var startTime = Date.now()
-  createTorrent({ path: leavesPath }, function (err, torrent) {
+  createTorrent(leavesPath, function (err, torrent) {
     t.error(err)
 
     var parsedTorrent = parseTorrent(torrent)
@@ -75,8 +75,7 @@ test('create multi file torrent', function (t) {
   t.plan(16)
 
   var startTime = Date.now()
-  createTorrent({
-    path: numbersPath,
+  createTorrent(numbersPath, {
     pieceLength: 32768, // force piece length to 32KB so info-hash will
                         // match what transmission generataed, since we use
                         // a different algo for picking piece length
@@ -85,7 +84,6 @@ test('create multi file torrent', function (t) {
 
   }, function (err, torrent) {
     t.error(err)
-    fs.writeFileSync('test.torrent', torrent)
 
     var parsedTorrent = parseTorrent(torrent)
 

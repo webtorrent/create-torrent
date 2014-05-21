@@ -116,8 +116,8 @@ function getPieceList (files, pieceLength, cb) {
 
 /**
  * Create a torrent.
+ * @param  {string} path
  * @param  {Object} opts
- * @param  {Array.<string>} opts.path
  * @param  {string=} opts.comment
  * @param  {string=} opts.createdBy
  * @param  {boolean|number=} opts.private
@@ -125,10 +125,15 @@ function getPieceList (files, pieceLength, cb) {
  * @param  {function} cb
  * @return {Buffer} buffer of .torrent file data
  */
-module.exports = function (opts, cb) {
+module.exports = function (path, opts, cb) {
+  if (typeof opts === 'function') {
+    cb = opts
+    opts = {}
+  }
+
   var torrent = {
     info: {
-      name: corePath.basename(opts.path)
+      name: corePath.basename(path)
     },
     announce: DEFAULT_ANNOUNCE_LIST[0][0],
     'announce-list': DEFAULT_ANNOUNCE_LIST,
@@ -136,7 +141,7 @@ module.exports = function (opts, cb) {
     encoding: 'UTF-8'
   }
 
-  var dirName = corePath.normalize(opts.path) + corePath.sep
+  var dirName = corePath.normalize(path) + corePath.sep
 
   if (opts.comment !== undefined) {
     torrent.info.comment = comment
@@ -150,7 +155,7 @@ module.exports = function (opts, cb) {
     torrent.info.private = Number(opts.private)
   }
 
-  traversePath(getFileInfo, opts.path, function (err, files) {
+  traversePath(getFileInfo, path, function (err, files) {
     if (err) return cb(err)
 
     var singleFile = !Array.isArray(files)
