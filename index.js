@@ -1,18 +1,17 @@
 var BlockStream = require('block-stream')
 var bncode = require('bncode')
+var calcPieceLength = require('piece-length')
 var corePath = require('path')
 var crypto = require('crypto')
 var fs = require('fs')
 var inherits = require('inherits')
-var stream = require('stream')
 var once = require('once')
 var parallel = require('run-parallel')
-var calcPieceLength = require('piece-length')
-var waterfall = require('run-waterfall')
+var stream = require('stream')
 
-inherits(MultiFile, stream.Readable)
+inherits(MultiFileStream, stream.Readable)
 
-function MultiFile (paths, opts) {
+function MultiFileStream (paths, opts) {
   stream.Readable.call(this, opts)
 
   this._paths = paths
@@ -26,9 +25,9 @@ function MultiFile (paths, opts) {
   }
 }
 
-MultiFile.prototype._read = function () {}
+MultiFileStream.prototype._read = function () {}
 
-MultiFile.prototype._nextStream = function () {
+MultiFileStream.prototype._nextStream = function () {
   this._currentPath += 1
 
   if (this._currentPath === this._paths.length) {
@@ -101,7 +100,7 @@ function getPieceList (files, pieceLength, cb) {
 
   var paths = files.map(function (file) { return file.path })
 
-  ;(new MultiFile(paths))
+  ;(new MultiFileStream(paths))
     .pipe(new BlockStream(pieceLength, { nopad: true }))
     .on('data', function (chunk) {
       pieces.push(crypto.createHash('sha1').update(chunk).digest())
