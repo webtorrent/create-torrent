@@ -122,6 +122,7 @@ function getPieceList (files, pieceLength, cb) {
  * @param  {string=} opts.createdBy
  * @param  {boolean|number=} opts.private
  * @param  {number=} opts.pieceLength
+ * @param  {Array.<Array.<string>>=} opts.announceList
  * @param  {function} cb
  * @return {Buffer} buffer of .torrent file data
  */
@@ -131,12 +132,16 @@ module.exports = function (path, opts, cb) {
     opts = {}
   }
 
+  var announceList = (opts.announceList !== undefined)
+    ? opts.announceList
+    : DEFAULT_ANNOUNCE_LIST
+
   var torrent = {
     info: {
       name: corePath.basename(path)
     },
-    announce: DEFAULT_ANNOUNCE_LIST[0][0],
-    'announce-list': DEFAULT_ANNOUNCE_LIST,
+    announce: announceList[0][0],
+    'announce-list': announceList,
     'creation date': Date.now(),
     encoding: 'UTF-8'
   }
