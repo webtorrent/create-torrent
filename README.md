@@ -28,6 +28,9 @@ createTorrent('/path/to/folder', function (err, torrent) {
 })
 ```
 
+A reasonable piece length (~1024 pieces) will automatically be selected for the .torrent
+file, or you can override it if you want a different size (See API docs below).
+
 ### api
 
 #### `createTorrent(path, [opts], function callback (err, torrent) {})`
