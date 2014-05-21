@@ -1,7 +1,7 @@
 {
   "name": "create-torrent",
   "description": "Create .torrent files",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "author": "Feross Aboukhadijeh <feross@feross.org> (http://feross.org/)",
   "bugs": {
     "url": "https://github.com/feross/create-torrent/issues"
