@@ -8,7 +8,6 @@ function sha1 (buf) {
   return crypto.createHash('sha1').update(buf).digest('hex')
 }
 
-
 test('create single file torrent', function (t) {
   t.plan(12)
 
@@ -118,7 +117,6 @@ test('create multi file torrent', function (t) {
     ])
 
     t.equals(sha1(parsedTorrent.infoBuffer), '80562f38656b385ea78959010e51a2cc9db41ea0')
-
   })
 })
 
@@ -180,6 +178,5 @@ test('create multi file torrent with nested directories', function (t) {
     ])
 
     t.equals(sha1(parsedTorrent.infoBuffer), '427887e9c03e123f9c8458b1947090edf1c75baa')
-
   })
 })
