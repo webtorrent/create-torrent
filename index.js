@@ -3,6 +3,7 @@ var bncode = require('bncode')
 var calcPieceLength = require('piece-length')
 var corePath = require('path')
 var crypto = require('crypto')
+var flatten = require('lodash.flatten')
 var fs = require('fs')
 var inherits = require('inherits')
 var once = require('once')
@@ -60,7 +61,9 @@ var DEFAULT_ANNOUNCE_LIST = [
 
 function each (arr, fn, cb) {
   var tasks = arr.map(function (item) {
-    return fn.bind(undefined, item)
+    return function (cb) {
+      fn(item, cb)
+    }
   })
   parallel(tasks, cb)
 }
@@ -167,6 +170,8 @@ module.exports = function (path, opts, cb) {
     if (singleFile) {
       files = [ files ]
     }
+
+    files = flatten(files)
 
     var length = files.reduce(sumLength, 0)
 
