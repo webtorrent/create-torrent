@@ -7,8 +7,8 @@
     "url": "https://github.com/feross/create-torrent/issues"
   },
   "dependencies": {
+    "bencode": "^0.6.0",
     "block-stream": "^0.0.7",
-    "bncode": "^0.5.2",
     "inherits": "^2.0.1",
     "lodash.flatten": "^2.4.1",
     "once": "^1.3.0",

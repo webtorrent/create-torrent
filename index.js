@@ -1,5 +1,5 @@
 var BlockStream = require('block-stream')
-var bncode = require('bncode')
+var bencode = require('bencode')
 var calcPieceLength = require('piece-length')
 var corePath = require('path')
 var crypto = require('crypto')
@@ -193,7 +193,7 @@ module.exports = function (path, opts, cb) {
         torrent.info.files = files
       }
 
-      cb(null, bncode.encode(torrent))
+      cb(null, bencode.encode(torrent))
     })
   })
 }
