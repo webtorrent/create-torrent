@@ -1,58 +1,15 @@
-var BlockStream = require('block-stream')
 var bencode = require('bencode')
+var BlockStream = require('block-stream')
 var calcPieceLength = require('piece-length')
 var corePath = require('path')
 var crypto = require('crypto')
 var flatten = require('lodash.flatten')
 var fs = require('fs')
 var inherits = require('inherits')
+var MultiStream = require('multistream')
 var once = require('once')
 var parallel = require('run-parallel')
 var stream = require('stream')
-
-inherits(MultiFileStream, stream.Readable)
-
-function MultiFileStream (paths, opts) {
-  stream.Readable.call(this, opts)
-
-  this._paths = paths
-  this._currentPath = -1
-
-  if (paths.length === 0) {
-    this._stream = null
-    this.push(null)
-  } else {
-    this._nextStream()
-  }
-}
-
-MultiFileStream.prototype._read = function () {}
-
-MultiFileStream.prototype._nextStream = function () {
-  this._currentPath += 1
-
-  if (this._currentPath === this._paths.length) {
-    this._stream = null
-    this.push(null)
-    return
-  }
-
-  this._stream = fs.createReadStream(this._paths[this._currentPath])
-
-  var self = this
-  this._stream.on('readable', function () {
-    while (chunk = self._stream.read()) {
-      self.push(chunk)
-    }
-  })
-  this._stream.on('end', function () {
-    self._stream.removeAllListeners()
-    self._nextStream()
-  })
-  this._stream.on('error', function (err) {
-    self.emit('error', err)
-  })
-}
 
 var DEFAULT_ANNOUNCE_LIST = [
   ['udp://tracker.publicbt.com:80/announce'],
@@ -101,9 +58,11 @@ function getPieceList (files, pieceLength, cb) {
   cb = once(cb)
   var pieces = []
 
-  var paths = files.map(function (file) { return file.path })
+  var streams = files.map(function (file) {
+    return fs.createReadStream(file.path)
+  })
 
-  ;(new MultiFileStream(paths))
+  ;(new MultiStream(streams))
     .pipe(new BlockStream(pieceLength, { nopad: true }))
     .on('data', function (chunk) {
       pieces.push(crypto.createHash('sha1').update(chunk).digest())
@@ -128,7 +87,7 @@ function getPieceList (files, pieceLength, cb) {
  * @param  {function} cb
  * @return {Buffer} buffer of .torrent file data
  */
-module.exports = function (path, opts, cb) {
+module.exports = function createTorrent (path, opts, cb) {
   if (typeof opts === 'function') {
     cb = opts
     opts = {}
@@ -169,19 +128,17 @@ module.exports = function (path, opts, cb) {
 
     if (singleFile) {
       files = [ files ]
+    } else {
+      files = flatten(files)
     }
 
-    files = flatten(files)
-
     var length = files.reduce(sumLength, 0)
+    var pieceLength = opts.pieceLength || calcPieceLength(length)
+    torrent.info['piece length'] = pieceLength
 
     if (singleFile) {
       torrent.info.length = length
     }
-
-    var pieceLength = opts.pieceLength || calcPieceLength(length)
-
-    torrent.info['piece length'] = pieceLength
 
     getPieceList(files, pieceLength, function (err, pieces) {
       torrent.info.pieces = Buffer.concat(pieces)
