@@ -49,7 +49,7 @@ function createTorrent (input, opts, cb) {
       if (isFile(item)) {
         return {
           length: item.size,
-          path: item.name,
+          path: [ item.name ],
           stream: new FileReadStream(item)
         }
       } else {
