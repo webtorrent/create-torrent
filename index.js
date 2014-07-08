@@ -43,7 +43,8 @@ function createTorrent (input, opts, cb) {
     input = [ input ]
   }
 
-  if (Array.isArray(input)) {
+  if (Array.isArray(input) && input.length > 0) {
+    opts.name = opts.name || input[0].name
     files = input.map(function (item) {
       if (isFile(item)) {
         return {
@@ -78,7 +79,7 @@ function createTorrent (input, opts, cb) {
       onFiles(files, opts, cb)
     })
   } else {
-    throw new Error('unknown param type')
+    throw new Error('invalid input type')
   }
 }
 
@@ -149,7 +150,7 @@ function onFiles (files, opts, cb) {
 
   var torrent = {
     info: {
-      name: opts.name || 'missing torrent name'
+      name: opts.name
     },
     announce: announceList[0][0],
     'announce-list': announceList,
@@ -180,7 +181,6 @@ function onFiles (files, opts, cb) {
   }
 
   getPieceList(files, pieceLength, function (err, pieces) {
-    console.log('got piece list')
     if (err) return cb(err)
     torrent.info.pieces = pieces
 
