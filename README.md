@@ -2,6 +2,8 @@
 
 #### Create .torrent files
 
+[![browser support](https://ci.testling.com/feross/create-torrent.png)](https://ci.testling.com/feross/create-torrent)
+
 ![creation](https://raw.githubusercontent.com/feross/create-torrent/master/img.jpg)
 
 This module is used by [WebTorrent](http://webtorrent.io).
@@ -33,16 +35,22 @@ file, or you can override it if you want a different size (See API docs below).
 
 ### api
 
-#### `createTorrent(path, [opts], function callback (err, torrent) {})`
+#### `createTorrent(input, [opts], function callback (err, torrent) {})`
 
 Create a new `.torrent` file.
 
-`path` is the path to the file or folder to use.
+`input` can be any of the following:
 
-`opts` is optional and allows you to set special settings for the .torrent.
+- path to the file or folder on filesystem (string)
+- W3C [File](https://developer.mozilla.org/en-US/docs/Web/API/File) object (from an <input> or drag and drop)
+- W3C [FileList](https://developer.mozilla.org/en-US/docs/Web/API/FileList) object (basically an array of `File` objects)
+- Array of `File` objects
+
+`opts` is optional and allows you to set special settings on the produced .torrent file.
 
 ``` js
 {
+  name: '',           // name of the torrent (default = basename of `path`)
   comment: '',        // free-form textual comments of the author (string)
   createdBy: '',      // name and version of the program used to create the .torrent (string)
   private: false,     // is this a private .torrent? (boolean or integer)

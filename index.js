@@ -1,8 +1,11 @@
+module.exports = createTorrent
+
 var bencode = require('bencode')
 var BlockStream = require('block-stream')
 var calcPieceLength = require('piece-length')
 var corePath = require('path')
 var crypto = require('crypto')
+var FileReadStream = require('filestream/read')
 var flatten = require('lodash.flatten')
 var fs = require('fs')
 var inherits = require('inherits')
@@ -15,6 +18,69 @@ var DEFAULT_ANNOUNCE_LIST = [
   ['udp://tracker.publicbt.com:80/announce'],
   ['udp://tracker.openbittorrent.com:80/announce']
 ]
+
+/**
+ * Create a torrent.
+ * @param  {string|File|FileList|Array.<File>} input
+ * @param  {Object} opts
+ * @param  {string=} opts.name
+ * @param  {string=} opts.comment
+ * @param  {string=} opts.createdBy
+ * @param  {boolean|number=} opts.private
+ * @param  {number=} opts.pieceLength
+ * @param  {Array.<Array.<string>>=} opts.announceList
+ * @param  {function} cb
+ * @return {Buffer} buffer of .torrent file data
+ */
+function createTorrent (input, opts, cb) {
+  if (typeof opts === 'function') {
+    cb = opts
+    opts = {}
+  }
+  var files
+
+  if (isFile(input)) {
+    input = [ input ]
+  }
+
+  if (Array.isArray(input)) {
+    files = input.map(function (item) {
+      if (isFile(item)) {
+        return {
+          length: item.size,
+          path: item.name,
+          stream: new FileReadStream(item)
+        }
+      } else {
+        // TODO: support an array of paths
+        throw new Error('Array must contain only File objects')
+      }
+    })
+    onFiles(files, opts, cb)
+  } else if (typeof input === 'string') {
+    opts.name = opts.name || corePath.basename(input)
+
+    traversePath(getFileInfo, input, function (err, files) {
+      if (err) return cb(err)
+
+      if (Array.isArray(files)) {
+        files = flatten(files)
+      } else {
+        files = [ files ]
+      }
+
+      var dirName = corePath.normalize(input) + corePath.sep
+      files.forEach(function (file) {
+        file.stream = fs.createReadStream(file.path)
+        file.path = file.path.replace(dirName, '').split(corePath.sep)
+      })
+
+      onFiles(files, opts, cb)
+    })
+  } else {
+    throw new Error('unknown param type')
+  }
+}
 
 function each (arr, fn, cb) {
   var tasks = arr.map(function (item) {
@@ -59,47 +125,31 @@ function getPieceList (files, pieceLength, cb) {
   var pieces = []
 
   var streams = files.map(function (file) {
-    return fs.createReadStream(file.path)
+    return file.stream
   })
 
-  ;(new MultiStream(streams))
+  new MultiStream(streams)
     .pipe(new BlockStream(pieceLength, { nopad: true }))
     .on('data', function (chunk) {
-      pieces.push(crypto.createHash('sha1').update(chunk).digest())
+      pieces.push(sha1(chunk))
     })
     .on('end', function () {
-      cb(null, pieces)
+      cb(null, Buffer.concat(pieces))
     })
     .on('error', function (err) {
+      console.error(err)
       cb(err)
     })
 }
 
-/**
- * Create a torrent.
- * @param  {string} path
- * @param  {Object} opts
- * @param  {string=} opts.comment
- * @param  {string=} opts.createdBy
- * @param  {boolean|number=} opts.private
- * @param  {number=} opts.pieceLength
- * @param  {Array.<Array.<string>>=} opts.announceList
- * @param  {function} cb
- * @return {Buffer} buffer of .torrent file data
- */
-module.exports = function createTorrent (path, opts, cb) {
-  if (typeof opts === 'function') {
-    cb = opts
-    opts = {}
-  }
-
-  var announceList = (opts.announceList !== undefined)
+function onFiles (files, opts, cb) {
+  var announceList = opts.announceList !== undefined
     ? opts.announceList
     : DEFAULT_ANNOUNCE_LIST
 
   var torrent = {
     info: {
-      name: corePath.basename(path)
+      name: opts.name || 'missing torrent name'
     },
     announce: announceList[0][0],
     'announce-list': announceList,
@@ -107,10 +157,8 @@ module.exports = function createTorrent (path, opts, cb) {
     encoding: 'UTF-8'
   }
 
-  var dirName = corePath.normalize(path) + corePath.sep
-
   if (opts.comment !== undefined) {
-    torrent.info.comment = comment
+    torrent.info.comment = opts.comment
   }
 
   if (opts.createdBy !== undefined) {
@@ -121,40 +169,57 @@ module.exports = function createTorrent (path, opts, cb) {
     torrent.info.private = Number(opts.private)
   }
 
-  traversePath(getFileInfo, path, function (err, files) {
+  var singleFile = files.length === 1
+
+  var length = files.reduce(sumLength, 0)
+  var pieceLength = opts.pieceLength || calcPieceLength(length)
+  torrent.info['piece length'] = pieceLength
+
+  if (singleFile) {
+    torrent.info.length = length
+  }
+
+  getPieceList(files, pieceLength, function (err, pieces) {
+    console.log('got piece list')
     if (err) return cb(err)
+    torrent.info.pieces = pieces
 
-    var singleFile = !Array.isArray(files)
-
-    if (singleFile) {
-      files = [ files ]
-    } else {
-      files = flatten(files)
-    }
-
-    var length = files.reduce(sumLength, 0)
-    var pieceLength = opts.pieceLength || calcPieceLength(length)
-    torrent.info['piece length'] = pieceLength
-
-    if (singleFile) {
-      torrent.info.length = length
-    }
-
-    getPieceList(files, pieceLength, function (err, pieces) {
-      torrent.info.pieces = Buffer.concat(pieces)
-
-      if (!singleFile) {
-        files.forEach(function (file) {
-          file.path = file.path.replace(dirName, '').split(corePath.sep)
-        })
-        torrent.info.files = files
-      }
-
-      cb(null, bencode.encode(torrent))
+    files.forEach(function (file) {
+      delete file.stream
     })
+
+    if (!singleFile) {
+      torrent.info.files = files
+    }
+
+    cb(null, bencode.encode(torrent))
   })
 }
 
+/**
+ * Accumulator to sum file lengths
+ * @param  {number} sum
+ * @param  {Object} file
+ * @return {number}
+ */
 function sumLength (sum, file) {
   return sum + file.length
+}
+
+/**
+ * Check if `obj` is a W3C File object
+ * @param  {*} obj
+ * @return {boolean}
+ */
+function isFile (obj) {
+  return typeof File !== 'undefined' && obj instanceof File
+}
+
+/**
+ * Compute a SHA1 hash
+ * @param  {Buffer} buf
+ * @return {Buffer}
+ */
+function sha1 (buf) {
+  return crypto.createHash('sha1').update(buf).digest()
 }
