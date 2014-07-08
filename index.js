@@ -24,6 +24,7 @@ var DEFAULT_ANNOUNCE_LIST = [
  * @param  {string|File|FileList|Array.<File>} input
  * @param  {Object} opts
  * @param  {string=} opts.name
+ * @param  {Date=} opts.creationDate
  * @param  {string=} opts.comment
  * @param  {string=} opts.createdBy
  * @param  {boolean|number=} opts.private
