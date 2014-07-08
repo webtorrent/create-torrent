@@ -154,7 +154,7 @@ function onFiles (files, opts, cb) {
     },
     announce: announceList[0][0],
     'announce-list': announceList,
-    'creation date': Date.now(),
+    'creation date': Number(opts.creationDate) || Date.now(),
     encoding: 'UTF-8'
   }
 
