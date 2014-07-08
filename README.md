@@ -63,6 +63,17 @@ Create a new `.torrent` file.
 `callback` is called with an error and a Buffer of the torrent data. It is up to you to
 save it to a file if that's what you want to do.
 
+### command line
+
+```
+usage: create-torrent <directory OR file> {-o outfile.torrent}
+
+Create a torrent file from a directory or file.
+
+If an output file isn\'t specified with `-o`, the torrent file will be
+written to stdout.
+```
+
 ### license
 
 MIT. Copyright (c) [Feross Aboukhadijeh](http://feross.org).
