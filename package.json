@@ -50,5 +50,21 @@
   },
   "scripts": {
     "test": "tape test/*.js"
+  },
+  "testling": {
+    "files": "test/*.js",
+    "browsers": [
+      "ie/9..latest",
+      "chrome/25..latest",
+      "chrome/canary",
+      "firefox/20..latest",
+      "firefox/nightly",
+      "safari/6..latest",
+      "opera/15.0..latest",
+      "opera/next",
+      "ipad/6.0..latest",
+      "iphone/6.0..latest",
+      "android-browser/4.2..latest"
+    ]
   }
 }
