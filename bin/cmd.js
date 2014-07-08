@@ -24,7 +24,7 @@ if (!infile || argv.help) {
   process.exit(0)
 }
 
-createTorrent(infile, { creationDate: 1404794084081 }, function (err, torrent) {
+createTorrent(infile, function (err, torrent) {
   if (err) {
     console.error(err.stack)
     process.exit(1)
