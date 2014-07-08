@@ -1,19 +1,36 @@
-var createTorrent = require('../')
+var createTorrent = require('../../')
 var crypto = require('crypto')
+var fs = require('fs')
 var parseTorrent = require('parse-torrent')
 var test = require('tape')
+
+function makeFileShim (buf, name) {
+  var file = new Blob([ buf ])
+  file.__proto__ = File.prototype
+  file.name = name
+  file.size = file.length
+  return file
+}
 
 function sha1 (buf) {
   return crypto.createHash('sha1').update(buf).digest('hex')
 }
 
+var leaves = makeFileShim(fs.readFileSync(__dirname + '/../content/Leaves of Grass by Walt Whitman.epub'), 'Leaves of Grass by Walt Whitman.epub')
+
+// HACK: Using utf8 explicitly here workaround a node 0.10 bug with base64.
+// Apparrently if you call fs.createReadStream(file, { encoding: 'base64' }) on a
+// very short file (1 or 2 chars) in node 0.10 then no data is ever emitted.
+
+var numbers1 = makeFileShim(fs.readFileSync(__dirname + '/../content/numbers/1.txt', 'utf8'), '1.txt')
+var numbers2 = makeFileShim(fs.readFileSync(__dirname + '/../content/numbers/2.txt', 'utf8'), '2.txt')
+var numbers3 = makeFileShim(fs.readFileSync(__dirname + '/../content/numbers/3.txt', 'utf8'), '3.txt')
+
 test('create single file torrent', function (t) {
   t.plan(12)
 
-  var leavesPath = __dirname + '/content/Leaves of Grass by Walt Whitman.epub'
-
   var startTime = Date.now()
-  createTorrent(leavesPath, function (err, torrent) {
+  createTorrent(leaves, function (err, torrent) {
     t.error(err)
 
     var parsedTorrent = parseTorrent(torrent)
@@ -63,6 +80,7 @@ test('create single file torrent', function (t) {
       'c698de9b0dad92980906c026d8c1408fa08fe4ec'
     ])
 
+    window.parsedTorrent = parsedTorrent
     t.equals(sha1(parsedTorrent.infoBuffer), 'd2474e86c95b19b8bcfdb92bc12c9d44667cfa36')
   })
 })
@@ -70,15 +88,14 @@ test('create single file torrent', function (t) {
 test('create multi file torrent', function (t) {
   t.plan(16)
 
-  var numbersPath = __dirname + '/content/numbers'
-
   var startTime = Date.now()
-  createTorrent(numbersPath, {
+  createTorrent([ numbers1, numbers2, numbers3 ], {
     pieceLength: 32768, // force piece length to 32KB so info-hash will
                         // match what transmission generataed, since we use
                         // a different algo for picking piece length
 
-    private: false      // also force `private: false` to match transmission
+    private: false,      // also force `private: false` to match transmission
+    name: 'numbers'
 
   }, function (err, torrent) {
     t.error(err)
@@ -113,67 +130,7 @@ test('create multi file torrent', function (t) {
     t.deepEquals(parsedTorrent.pieces, [
       '1f74648e50a6a6708ec54ab327a163d5536b7ced'
     ])
+
     t.equals(sha1(parsedTorrent.infoBuffer), '80562f38656b385ea78959010e51a2cc9db41ea0')
-  })
-})
-
-test('create multi file torrent with nested directories', function (t) {
-  t.plan(22)
-
-  var numbersPath = __dirname + '/content/lots-of-numbers'
-
-  var startTime = Date.now()
-  createTorrent(numbersPath, {
-    pieceLength: 32768, // force piece length to 32KB so info-hash will
-                        // match what transmission generataed, since we use
-                        // a different algo for picking piece length
-
-    private: false      // also force `private: false` to match transmission
-
-  }, function (err, torrent) {
-    t.error(err)
-
-    var parsedTorrent = parseTorrent(torrent)
-
-    t.equals(parsedTorrent.name, 'lots-of-numbers')
-
-    t.notOk(parsedTorrent.private)
-
-    var createdTime = parsedTorrent.created / 1000
-    t.ok(createdTime >= startTime, 'created time is after start time')
-    t.ok(createdTime <= Date.now(), 'created time is before now')
-
-    t.deepEquals(parsedTorrent.announceList, [
-      ['udp://tracker.publicbt.com:80/announce'],
-      ['udp://tracker.openbittorrent.com:80/announce']
-    ])
-
-    t.deepEquals(parsedTorrent.files[0].path, 'lots-of-numbers/big numbers/10.txt')
-    t.deepEquals(parsedTorrent.files[0].length, 2)
-
-    t.deepEquals(parsedTorrent.files[1].path, 'lots-of-numbers/big numbers/11.txt')
-    t.deepEquals(parsedTorrent.files[1].length, 2)
-
-    t.deepEquals(parsedTorrent.files[2].path, 'lots-of-numbers/big numbers/12.txt')
-    t.deepEquals(parsedTorrent.files[2].length, 2)
-
-    t.deepEquals(parsedTorrent.files[3].path, 'lots-of-numbers/small numbers/1.txt')
-    t.deepEquals(parsedTorrent.files[3].length, 1)
-
-    t.deepEquals(parsedTorrent.files[4].path, 'lots-of-numbers/small numbers/2.txt')
-    t.deepEquals(parsedTorrent.files[4].length, 2)
-
-    t.deepEquals(parsedTorrent.files[5].path, 'lots-of-numbers/small numbers/3.txt')
-    t.deepEquals(parsedTorrent.files[5].length, 3)
-
-
-    t.equal(parsedTorrent.length, 12)
-    t.equal(parsedTorrent.pieceLength, 32768)
-
-    t.deepEquals(parsedTorrent.pieces, [
-      '47972f2befaee58b6f3860cd39bd56cb33a488f0'
-    ])
-
-    t.equals(sha1(parsedTorrent.infoBuffer), '427887e9c03e123f9c8458b1947090edf1c75baa')
   })
 })

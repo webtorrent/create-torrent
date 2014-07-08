@@ -25,6 +25,7 @@
     "run-parallel": "^1.0.0"
   },
   "devDependencies": {
+    "brfs": "^1.1.2",
     "parse-torrent": "^1.1.0",
     "tape": "^2.5.0"
   },
@@ -52,7 +53,7 @@
     "test": "tape test/*.js"
   },
   "testling": {
-    "files": "test/*.js",
+    "files": "test/browser/*.js",
     "browsers": [
       "ie/9..latest",
       "chrome/25..latest",
