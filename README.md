@@ -42,7 +42,7 @@ Create a new `.torrent` file.
 `input` can be any of the following:
 
 - path to the file or folder on filesystem (string)
-- W3C [File](https://developer.mozilla.org/en-US/docs/Web/API/File) object (from an <input> or drag and drop)
+- W3C [File](https://developer.mozilla.org/en-US/docs/Web/API/File) object (from an `<input>` or drag and drop)
 - W3C [FileList](https://developer.mozilla.org/en-US/docs/Web/API/FileList) object (basically an array of `File` objects)
 - Array of `File` objects
 
