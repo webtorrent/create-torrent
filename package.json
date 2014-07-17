@@ -62,7 +62,7 @@
       "firefox/nightly",
       "safari/6..latest",
       "opera/15.0..latest",
-      "opera/next",
+      "opera/next"
     ]
   }
 }
