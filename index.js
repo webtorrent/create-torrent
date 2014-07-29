@@ -8,11 +8,9 @@ var crypto = require('crypto')
 var FileReadStream = require('filestream/read')
 var flatten = require('lodash.flatten')
 var fs = require('fs')
-var inherits = require('inherits')
 var MultiStream = require('multistream')
 var once = require('once')
 var parallel = require('run-parallel')
-var stream = require('stream')
 
 var DEFAULT_ANNOUNCE_LIST = [
   ['udp://tracker.publicbt.com:80/announce'],
