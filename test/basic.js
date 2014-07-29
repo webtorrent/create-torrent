@@ -27,8 +27,9 @@ test('create single file torrent', function (t) {
     t.ok(createdTime <= Date.now(), 'created time is before now')
 
     t.deepEquals(parsedTorrent.announceList, [
-      ['udp://tracker.publicbt.com:80/announce'],
-      ['udp://tracker.openbittorrent.com:80/announce']
+      ['udp://tracker.publicbt.com:80'],
+      ['udp://tracker.openbittorrent.com:80'],
+      ['udp://tracker.webtorrent.io:80']
     ])
 
     t.equals(parsedTorrent.files[0].path, 'Leaves of Grass by Walt Whitman.epub')
@@ -94,8 +95,9 @@ test('create multi file torrent', function (t) {
     t.ok(createdTime <= Date.now(), 'created time is before now')
 
     t.deepEquals(parsedTorrent.announceList, [
-      ['udp://tracker.publicbt.com:80/announce'],
-      ['udp://tracker.openbittorrent.com:80/announce']
+      ['udp://tracker.publicbt.com:80'],
+      ['udp://tracker.openbittorrent.com:80'],
+      ['udp://tracker.webtorrent.io:80']
     ])
 
     t.deepEquals(parsedTorrent.files[0].path, 'numbers/1.txt')
@@ -144,8 +146,9 @@ test('create multi file torrent with nested directories', function (t) {
     t.ok(createdTime <= Date.now(), 'created time is before now')
 
     t.deepEquals(parsedTorrent.announceList, [
-      ['udp://tracker.publicbt.com:80/announce'],
-      ['udp://tracker.openbittorrent.com:80/announce']
+      ['udp://tracker.publicbt.com:80'],
+      ['udp://tracker.openbittorrent.com:80'],
+      ['udp://tracker.webtorrent.io:80']
     ])
 
     t.deepEquals(parsedTorrent.files[0].path, 'lots-of-numbers/big numbers/10.txt')

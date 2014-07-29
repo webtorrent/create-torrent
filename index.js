@@ -13,8 +13,9 @@ var once = require('once')
 var parallel = require('run-parallel')
 
 var DEFAULT_ANNOUNCE_LIST = [
-  ['udp://tracker.publicbt.com:80/announce'],
-  ['udp://tracker.openbittorrent.com:80/announce']
+  ['udp://tracker.publicbt.com:80'],
+  ['udp://tracker.openbittorrent.com:80'],
+  ['udp://tracker.webtorrent.io:80']
 ]
 
 /**

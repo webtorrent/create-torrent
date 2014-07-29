@@ -61,6 +61,12 @@ Create a new `.torrent` file.
 }
 ```
 
+If `announceList` is omitted, the following trackers will be included automatically:
+
+- udp://tracker.publicbt.com:80
+- udp://tracker.openbittorrent.com:80
+- udp://tracker.webtorrent.io:80
+
 `callback` is called with an error and a Buffer of the torrent data. It is up to you to
 save it to a file if that's what you want to do.
 
