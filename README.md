@@ -57,6 +57,7 @@ Create a new `.torrent` file.
   private: Boolean,        // is this a private .torrent? (default = false)
   pieceLength: Number      // force a custom piece length (number of bytes)
   announceList: [[String]] // custom trackers (array of arrays of strings) (see [bep12](http://www.bittorrent.org/beps/bep_0012.html))
+  urlList: [String]        // web seed urls (see [bep19](http://www.bittorrent.org/beps/bep_0019.html))
 }
 ```
 
