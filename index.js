@@ -30,6 +30,7 @@ var DEFAULT_ANNOUNCE_LIST = [
  * @param  {boolean|number=} opts.private
  * @param  {number=} opts.pieceLength
  * @param  {Array.<Array.<string>>=} opts.announceList
+ * @param  {Array<string>=} opts.urlList
  * @param  {function} cb
  * @return {Buffer} buffer of .torrent file data
  */
@@ -169,6 +170,10 @@ function onFiles (files, opts, cb) {
 
   if (opts.private !== undefined) {
     torrent.info.private = Number(opts.private)
+  }
+
+  if (opts.urlList !== undefined) {
+    torrent['url-list'] = opts.urlList
   }
 
   var singleFile = files.length === 1
