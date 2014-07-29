@@ -8,11 +8,9 @@ var crypto = require('crypto')
 var FileReadStream = require('filestream/read')
 var flatten = require('lodash.flatten')
 var fs = require('fs')
-var inherits = require('inherits')
 var MultiStream = require('multistream')
 var once = require('once')
 var parallel = require('run-parallel')
-var stream = require('stream')
 
 var DEFAULT_ANNOUNCE_LIST = [
   ['udp://tracker.publicbt.com:80/announce'],
@@ -30,6 +28,7 @@ var DEFAULT_ANNOUNCE_LIST = [
  * @param  {boolean|number=} opts.private
  * @param  {number=} opts.pieceLength
  * @param  {Array.<Array.<string>>=} opts.announceList
+ * @param  {Array<string>=} opts.urlList
  * @param  {function} cb
  * @return {Buffer} buffer of .torrent file data
  */
@@ -169,6 +168,10 @@ function onFiles (files, opts, cb) {
 
   if (opts.private !== undefined) {
     torrent.info.private = Number(opts.private)
+  }
+
+  if (opts.urlList !== undefined) {
+    torrent['url-list'] = opts.urlList
   }
 
   var singleFile = files.length === 1
