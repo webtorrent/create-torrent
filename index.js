@@ -28,7 +28,7 @@ var DEFAULT_ANNOUNCE_LIST = [
  * @param  {boolean|number=} opts.private
  * @param  {number=} opts.pieceLength
  * @param  {Array.<Array.<string>>=} opts.announceList
- * @param  {Array<string>=} opts.urlList
+ * @param  {Array.<string>=} opts.urlList
  * @param  {function} cb
  * @return {Buffer} buffer of .torrent file data
  */
