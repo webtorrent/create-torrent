@@ -12,12 +12,6 @@ var MultiStream = require('multistream')
 var once = require('once')
 var parallel = require('run-parallel')
 
-var DEFAULT_ANNOUNCE_LIST = [
-  ['udp://tracker.publicbt.com:80'],
-  ['udp://tracker.openbittorrent.com:80'],
-  ['udp://tracker.webtorrent.io:80']
-]
-
 /**
  * Create a torrent.
  * @param  {string|File|FileList|Array.<File>} input
@@ -84,6 +78,12 @@ function createTorrent (input, opts, cb) {
   }
 }
 
+createTorrent.announceList = [
+  ['udp://tracker.publicbt.com:80'],
+  ['udp://tracker.openbittorrent.com:80'],
+  ['udp://tracker.webtorrent.io:80']
+]
+
 function each (arr, fn, cb) {
   var tasks = arr.map(function (item) {
     return function (cb) {
@@ -147,7 +147,7 @@ function getPieceList (files, pieceLength, cb) {
 function onFiles (files, opts, cb) {
   var announceList = opts.announceList !== undefined
     ? opts.announceList
-    : DEFAULT_ANNOUNCE_LIST
+    : createTorrent.announceList // default
 
   var torrent = {
     info: {
