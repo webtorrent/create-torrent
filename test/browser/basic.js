@@ -6,9 +6,7 @@ var test = require('tape')
 
 function makeFileShim (buf, name) {
   var file = new Blob([ buf ])
-  file.__proto__ = File.prototype
   file.name = name
-  file.size = file.length
   return file
 }
 
@@ -18,9 +16,9 @@ function sha1 (buf) {
 
 var leaves = makeFileShim(fs.readFileSync(__dirname + '/../content/Leaves of Grass by Walt Whitman.epub'), 'Leaves of Grass by Walt Whitman.epub')
 
-// HACK: Using utf8 explicitly here workaround a node 0.10 bug with base64.
+// HACK: Using utf8 explicitly here workaround a node 0.10.29 bug with base64.
 // Apparrently if you call fs.createReadStream(file, { encoding: 'base64' }) on a
-// very short file (1 or 2 chars) in node 0.10 then no data is ever emitted.
+// very short file (1 or 2 chars), then no data is ever emitted.
 
 var numbers1 = makeFileShim(fs.readFileSync(__dirname + '/../content/numbers/1.txt', 'utf8'), '1.txt')
 var numbers2 = makeFileShim(fs.readFileSync(__dirname + '/../content/numbers/2.txt', 'utf8'), '2.txt')

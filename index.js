@@ -14,7 +14,7 @@ var parallel = require('run-parallel')
 
 /**
  * Create a torrent.
- * @param  {string|File|FileList|Array.<File>} input
+ * @param  {string|File|FileList|Array.<File>|Blob|Array.<Blob>} input
  * @param  {Object} opts
  * @param  {string=} opts.name
  * @param  {Date=} opts.creationDate
@@ -34,14 +34,14 @@ function createTorrent (input, opts, cb) {
   }
   var files
 
-  if (isFile(input)) {
+  if (isBlob(input)) {
     input = [ input ]
   }
 
   if (Array.isArray(input) && input.length > 0) {
     opts.name = opts.name || input[0].name
     files = input.map(function (item) {
-      if (isFile(item)) {
+      if (isBlob(item)) {
         return {
           length: item.size,
           path: [ item.name ],
@@ -212,12 +212,12 @@ function sumLength (sum, file) {
 }
 
 /**
- * Check if `obj` is a W3C File object
+ * Check if `obj` is a W3C Blob object (which is the superclass of W3C File)
  * @param  {*} obj
  * @return {boolean}
  */
-function isFile (obj) {
-  return typeof File !== 'undefined' && obj instanceof File
+function isBlob (obj) {
+  return typeof Blob !== 'undefined' && obj instanceof Blob
 }
 
 /**
