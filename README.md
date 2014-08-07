@@ -6,7 +6,7 @@
 
 ![creation](https://raw.githubusercontent.com/feross/create-torrent/master/img.jpg)
 
-This module is used by [WebTorrent](http://webtorrent.io). Works in the browser with [browserify](http://browserify.org/)!
+This module is used by [WebTorrent](http://webtorrent.io)! This module works in node.js and the browser (with [browserify](http://browserify.org/)).
 
 ### install
 
