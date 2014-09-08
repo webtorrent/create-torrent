@@ -15,7 +15,7 @@
   "dependencies": {
     "bencode": "^0.6.0",
     "block-stream": "^0.0.7",
-    "filestream": "1.0.1",
+    "filestream": "^1.0.1",
     "lodash.flatten": "^2.4.1",
     "minimist": "^0.2.0",
     "multistream": "^1.0.0",
