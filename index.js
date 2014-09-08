@@ -84,9 +84,10 @@ function createTorrent (input, opts, cb) {
 }
 
 createTorrent.announceList = [
-  ['udp://tracker.publicbt.com:80'],
-  ['udp://tracker.openbittorrent.com:80'],
-  ['udp://tracker.webtorrent.io:80']
+  [ 'udp://tracker.publicbt.com:80' ],
+  [ 'udp://tracker.openbittorrent.com:80' ],
+  [ 'udp://tracker.webtorrent.io:80' ],
+  [ 'wss://tracker.webtorrent.io' ] // For WebRTC peers (see: WebTorrent.io)
 ]
 
 function each (arr, fn, cb) {
