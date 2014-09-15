@@ -4,13 +4,13 @@ var bencode = require('bencode')
 var BlockStream = require('block-stream')
 var calcPieceLength = require('piece-length')
 var corePath = require('path')
-var crypto = require('crypto')
 var FileReadStream = require('filestream/read')
 var flatten = require('lodash.flatten')
 var fs = require('fs')
 var MultiStream = require('multistream')
 var once = require('once')
 var parallel = require('run-parallel')
+var sha1 = require('git-sha1')
 var stream = require('stream')
 
 /**
@@ -130,7 +130,7 @@ function traversePath (fn, path, cb) {
 
 function getPieceList (files, pieceLength, cb) {
   cb = once(cb)
-  var pieces = []
+  var pieces = '' // hex string
 
   var streams = files.map(function (file) {
     return file.stream
@@ -139,10 +139,10 @@ function getPieceList (files, pieceLength, cb) {
   new MultiStream(streams)
     .pipe(new BlockStream(pieceLength, { nopad: true }))
     .on('data', function (chunk) {
-      pieces.push(sha1(chunk))
+      pieces += sha1(chunk)
     })
     .on('end', function () {
-      cb(null, Buffer.concat(pieces))
+      cb(null, new Buffer(pieces, 'hex'))
     })
     .on('error', function (err) {
       console.error(err)
@@ -224,13 +224,4 @@ function sumLength (sum, file) {
  */
 function isBlob (obj) {
   return typeof Blob !== 'undefined' && obj instanceof Blob
-}
-
-/**
- * Compute a SHA1 hash
- * @param  {Buffer} buf
- * @return {Buffer}
- */
-function sha1 (buf) {
-  return crypto.createHash('sha1').update(buf).digest()
 }
