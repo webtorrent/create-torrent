@@ -39,6 +39,10 @@ function createTorrent (input, opts, cb) {
     input = [ input ]
   }
 
+  if (typeof FileList === 'function' && input instanceof FileList) {
+    input = Array.prototype.slice.call(input)
+  }
+
   // TODO: support an array of paths
   if (Array.isArray(input) && input.length > 0) {
     opts.name = opts.name || input[0].name
