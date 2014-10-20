@@ -53,10 +53,9 @@ function createTorrent (input, opts, cb) {
         path: [ item.name ]
       }
       if (isBlob(item)) file.stream = new FileReadStream(item)
-      else if (Buffer.isBuffer(item.buffer)) {
-        // support "files" from drag-drop that have a `buffer` prop
+      else if (Buffer.isBuffer(item)) {
         file.stream = new stream.PassThrough()
-        file.stream.end(item.buffer)
+        file.stream.end(item)
       }
       else throw new Error('Array must contain only File objects')
       return file
