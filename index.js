@@ -15,7 +15,7 @@ var stream = require('stream')
 
 /**
  * Create a torrent.
- * @param  {string|File|FileList|Array.<File>|Blob|Array.<Blob>} input
+ * @param  {string|File|FileList|Blob|Buffer|Array.<File|Blob|Buffer>} input
  * @param  {Object} opts
  * @param  {string=} opts.name
  * @param  {Date=} opts.creationDate
@@ -35,15 +35,16 @@ function createTorrent (input, opts, cb) {
   }
   var files
 
-  if (isBlob(input)) {
-    input = [ input ]
-  }
+  // TODO: support an array of paths
 
   if (typeof FileList === 'function' && input instanceof FileList) {
     input = Array.prototype.slice.call(input)
   }
 
-  // TODO: support an array of paths
+  if (isBlob(input) || Buffer.isBuffer(input)) {
+    input = [ input ]
+  }
+
   if (Array.isArray(input) && input.length > 0) {
     opts.name = opts.name || input[0].name
     files = input.map(function (item) {
