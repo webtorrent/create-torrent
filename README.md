@@ -1,4 +1,4 @@
-# create-torrent [![travis](https://img.shields.io/travis/feross/create-torrent.svg)](https://travis-ci.org/feross/create-torrent) [![npm](https://img.shields.io/npm/v/create-torrent.svg)](https://npmjs.org/package/create-torrent) [![gittip](https://img.shields.io/gittip/feross.svg)](https://www.gittip.com/feross/)
+# create-torrent [![travis](https://img.shields.io/travis/feross/create-torrent.svg?style=flat)](https://travis-ci.org/feross/create-torrent) [![npm](https://img.shields.io/npm/v/create-torrent.svg?style=flat)](https://npmjs.org/package/create-torrent) [![gittip](https://img.shields.io/gittip/feross.svg?style=flat)](https://www.gittip.com/feross/)
 
 #### Create .torrent files
 
