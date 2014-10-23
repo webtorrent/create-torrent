@@ -2,7 +2,7 @@
 
 #### Create .torrent files
 
-[![browser support](https://ci.testling.com/feross/create-torrent.png)](https://ci.testling.com/feross/create-torrent)
+[![Sauce Test Status](https://saucelabs.com/browser-matrix/create-torrent.svg)](https://saucelabs.com/u/create-torrent)
 
 ![creation](https://raw.githubusercontent.com/feross/create-torrent/master/img.jpg)
 
