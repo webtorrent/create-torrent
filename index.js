@@ -53,15 +53,8 @@ function createTorrent (input, opts, cb) {
         length: item.size,
         path: [ item.name ]
       }
-      if (isBlob(item)) {
-        file.getStream = getBlobStream(item)
-        //file.stream = new FileReadStream(item)
-      }
-      else if (Buffer.isBuffer(item)) {
-        file.getStream = getBufferStream(item)
-        //file.stream = new stream.PassThrough()
-        //file.stream.end(item)
-      }
+      if (isBlob(item)) file.getStream = getBlobStream(item)
+      else if (Buffer.isBuffer(item)) file.getStream = getBufferStream(item)
       else throw new Error('Array must contain only File objects')
       return file
     })
@@ -81,7 +74,6 @@ function createTorrent (input, opts, cb) {
       var dirName = corePath.normalize(input) + corePath.sep
       files.forEach(function (file) {
         file.getStream = getFSStream(file.path)
-        //file.stream = fs.createReadStream(file.path)
         file.path = file.path.replace(dirName, '').split(corePath.sep)
       })
 
@@ -101,9 +93,9 @@ function getBlobStream(data) {
 function getBufferStream(data) {
   return function() {
     var stream = new stream.PassThrough()
-    
+
     stream.end(data)
-    
+
     return stream
   }
 }
@@ -166,7 +158,7 @@ function getPieceList (files, pieceLength, cb) {
   var streams = files.map(function (file) {
     return file.getStream
   })
-  
+
   new MultiStream(streams)
     .pipe(new BlockStream(pieceLength, { nopad: true }))
     .on('data', function (chunk) {
@@ -175,10 +167,7 @@ function getPieceList (files, pieceLength, cb) {
     .on('end', function () {
       cb(null, new Buffer(pieces, 'hex'))
     })
-    .on('error', function (err) {
-      console.error(err)
-      cb(err)
-    })
+    .on('error', cb)
 }
 
 function onFiles (files, opts, cb) {
