@@ -1,3 +1,4 @@
+var path = require('path')
 var createTorrent = require('../')
 var crypto = require('crypto')
 var parseTorrent = require('parse-torrent')
@@ -33,7 +34,7 @@ test('create single file torrent', function (t) {
       ['wss://tracker.webtorrent.io']
     ])
 
-    t.equals(parsedTorrent.files[0].path, 'Leaves of Grass by Walt Whitman.epub')
+    t.equals(path.normalize(parsedTorrent.files[0].path), path.normalize('Leaves of Grass by Walt Whitman.epub'))
     t.equals(parsedTorrent.files[0].length, 362017)
 
     t.equal(parsedTorrent.length, 362017)
@@ -102,13 +103,13 @@ test('create multi file torrent', function (t) {
       ['wss://tracker.webtorrent.io']
     ])
 
-    t.deepEquals(parsedTorrent.files[0].path, 'numbers/1.txt')
+    t.deepEquals(path.normalize(parsedTorrent.files[0].path), path.normalize('numbers/1.txt'))
     t.deepEquals(parsedTorrent.files[0].length, 1)
 
-    t.deepEquals(parsedTorrent.files[1].path, 'numbers/2.txt')
+    t.deepEquals(path.normalize(parsedTorrent.files[1].path), path.normalize('numbers/2.txt'))
     t.deepEquals(parsedTorrent.files[1].length, 2)
 
-    t.deepEquals(parsedTorrent.files[2].path, 'numbers/3.txt')
+    t.deepEquals(path.normalize(parsedTorrent.files[2].path), path.normalize('numbers/3.txt'))
     t.deepEquals(parsedTorrent.files[2].length, 3)
 
     t.equal(parsedTorrent.length, 6)
@@ -154,22 +155,22 @@ test('create multi file torrent with nested directories', function (t) {
       ['wss://tracker.webtorrent.io']
     ])
 
-    t.deepEquals(parsedTorrent.files[0].path, 'lots-of-numbers/big numbers/10.txt')
+    t.deepEquals(path.normalize(parsedTorrent.files[0].path), path.normalize('lots-of-numbers/big numbers/10.txt'))
     t.deepEquals(parsedTorrent.files[0].length, 2)
 
-    t.deepEquals(parsedTorrent.files[1].path, 'lots-of-numbers/big numbers/11.txt')
+    t.deepEquals(path.normalize(parsedTorrent.files[1].path), path.normalize('lots-of-numbers/big numbers/11.txt'))
     t.deepEquals(parsedTorrent.files[1].length, 2)
 
-    t.deepEquals(parsedTorrent.files[2].path, 'lots-of-numbers/big numbers/12.txt')
+    t.deepEquals(path.normalize(parsedTorrent.files[2].path), path.normalize('lots-of-numbers/big numbers/12.txt'))
     t.deepEquals(parsedTorrent.files[2].length, 2)
 
-    t.deepEquals(parsedTorrent.files[3].path, 'lots-of-numbers/small numbers/1.txt')
+    t.deepEquals(path.normalize(parsedTorrent.files[3].path), path.normalize('lots-of-numbers/small numbers/1.txt'))
     t.deepEquals(parsedTorrent.files[3].length, 1)
 
-    t.deepEquals(parsedTorrent.files[4].path, 'lots-of-numbers/small numbers/2.txt')
+    t.deepEquals(path.normalize(parsedTorrent.files[4].path), path.normalize('lots-of-numbers/small numbers/2.txt'))
     t.deepEquals(parsedTorrent.files[4].length, 2)
 
-    t.deepEquals(parsedTorrent.files[5].path, 'lots-of-numbers/small numbers/3.txt')
+    t.deepEquals(path.normalize(parsedTorrent.files[5].path), path.normalize('lots-of-numbers/small numbers/3.txt'))
     t.deepEquals(parsedTorrent.files[5].length, 3)
 
 
