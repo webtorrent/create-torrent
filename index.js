@@ -53,10 +53,14 @@ function createTorrent (input, opts, cb) {
         length: item.size,
         path: [ item.name ]
       }
-      if (isBlob(item)) file.stream = new FileReadStream(item)
+      if (isBlob(item)) {
+        file.getStream = getBlobStream(item)
+        //file.stream = new FileReadStream(item)
+      }
       else if (Buffer.isBuffer(item)) {
-        file.stream = new stream.PassThrough()
-        file.stream.end(item)
+        file.getStream = getBufferStream(item)
+        //file.stream = new stream.PassThrough()
+        //file.stream.end(item)
       }
       else throw new Error('Array must contain only File objects')
       return file
@@ -76,7 +80,8 @@ function createTorrent (input, opts, cb) {
 
       var dirName = corePath.normalize(input) + corePath.sep
       files.forEach(function (file) {
-        file.stream = fs.createReadStream(file.path)
+        file.getStream = getFSStream(file.path)
+        //file.stream = fs.createReadStream(file.path)
         file.path = file.path.replace(dirName, '').split(corePath.sep)
       })
 
@@ -84,6 +89,28 @@ function createTorrent (input, opts, cb) {
     })
   } else {
     throw new Error('invalid input type')
+  }
+}
+
+function getBlobStream(data) {
+  return function() {
+    return new FileReadStream(data)
+  }
+}
+
+function getBufferStream(data) {
+  return function() {
+    var stream = new stream.PassThrough()
+    
+    stream.end(data)
+    
+    return stream
+  }
+}
+
+function getFSStream(data) {
+  return function() {
+    return fs.createReadStream(data)
   }
 }
 
@@ -137,9 +164,9 @@ function getPieceList (files, pieceLength, cb) {
   var pieces = '' // hex string
 
   var streams = files.map(function (file) {
-    return file.stream
+    return file.getStream
   })
-
+  
   new MultiStream(streams)
     .pipe(new BlockStream(pieceLength, { nopad: true }))
     .on('data', function (chunk) {
@@ -200,7 +227,7 @@ function onFiles (files, opts, cb) {
     torrent.info.pieces = pieces
 
     files.forEach(function (file) {
-      delete file.stream
+      delete file.getStream
     })
 
     if (!singleFile) {
