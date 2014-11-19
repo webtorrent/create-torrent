@@ -92,11 +92,9 @@ function getBlobStream(data) {
 
 function getBufferStream(data) {
   return function() {
-    var stream = new stream.PassThrough()
-
-    stream.end(data)
-
-    return stream
+    var s = new stream.PassThrough()
+    s.end(data)
+    return s
   }
 }
 
