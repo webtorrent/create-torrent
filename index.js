@@ -12,6 +12,7 @@ var once = require('once')
 var parallel = require('run-parallel')
 var sha1 = require('git-sha1')
 var stream = require('stream')
+var Transform = stream.Transform
 
 /**
  * Create a torrent.
@@ -40,20 +41,31 @@ function createTorrent (input, opts, cb) {
   if (typeof FileList === 'function' && input instanceof FileList)
     input = Array.prototype.slice.call(input)
 
-  if (isBlob(input) || Buffer.isBuffer(input))
+  if (isBlob(input) || Buffer.isBuffer(input) || isReadable(input))
     input = [ input ]
 
   if (Array.isArray(input) && input.length > 0) {
     opts.name = opts.name || input[0].name
     files = input.map(function (item) {
       if (!item) return
+      if (!item.name)
+        throw new Error('there is no name property on the input')
+
       var file = {
-        length: item.size,
+        length: item.size || 0,
         path: [ item.name ]
       }
+
       if (isBlob(item)) file.getStream = getBlobStream(item)
       else if (Buffer.isBuffer(item)) file.getStream = getBufferStream(item)
-      else throw new Error('Array must contain only File objects')
+      else if (isReadable(item)) {
+        if (!opts.pieceLength)
+          throw new Error('no pieceLength property and using streams')
+
+        file.getStream = getStreamStream(item, file)
+      } else
+        throw new Error('Array must contain only File objects')
+
       return file
     })
     onFiles(files, opts, cb)
@@ -150,6 +162,7 @@ function traversePath (fn, path, cb) {
 function getPieceList (files, pieceLength, cb) {
   cb = once(cb)
   var pieces = '' // hex string
+  var length = 0
 
   var streams = files.map(function (file) {
     return file.getStream
@@ -158,10 +171,11 @@ function getPieceList (files, pieceLength, cb) {
   new MultiStream(streams)
     .pipe(new BlockStream(pieceLength, { nopad: true }))
     .on('data', function (chunk) {
+      length += chunk.length
       pieces += sha1(chunk)
     })
     .on('end', function () {
-      cb(null, new Buffer(pieces, 'hex'))
+      cb(null, new Buffer(pieces, 'hex'), length)
     })
     .on('error', cb)
 }
@@ -203,11 +217,7 @@ function onFiles (files, opts, cb) {
   var pieceLength = opts.pieceLength || calcPieceLength(length)
   torrent.info['piece length'] = pieceLength
 
-  if (singleFile) {
-    torrent.info.length = length
-  }
-
-  getPieceList(files, pieceLength, function (err, pieces) {
+  getPieceList(files, pieceLength, function (err, pieces, calcLength) {
     if (err) return cb(err)
     torrent.info.pieces = pieces
 
@@ -217,6 +227,8 @@ function onFiles (files, opts, cb) {
 
     if (!singleFile) {
       torrent.info.files = files
+    } else {
+      torrent.info.length = length || calcLength
     }
 
     cb(null, bencode.encode(torrent))
@@ -240,4 +252,25 @@ function sumLength (sum, file) {
  */
 function isBlob (obj) {
   return typeof Blob !== 'undefined' && obj instanceof Blob
+}
+
+
+/**
+ * Check if `obj` is a node Readable stream
+ * @param  {*} obj
+ * @return {boolean}
+ */
+function isReadable(obj) {
+  return typeof obj === 'object' && typeof obj.pipe === 'function'
+}
+
+function getStreamStream(stream, file) {
+  var counter = new Transform()
+  counter._transform = function(buf, enc, done) {
+    file.length += buf.length
+    this.push(buf)
+    done()
+  }
+  stream.pipe(counter)
+  return counter
 }
