@@ -48,8 +48,8 @@ function createTorrent (input, opts, cb) {
     files = input.map(function (item) {
       if (!item) return
       var file = {
-        length: item.size,
-        path: [ item.name ]
+        length: item.size || item.length,
+        path: [ item.name || 'no-name' ]
       }
       if (isBlob(item)) file.getStream = getBlobStream(item)
       else if (Buffer.isBuffer(item)) file.getStream = getBufferStream(item)
