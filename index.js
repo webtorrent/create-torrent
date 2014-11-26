@@ -223,11 +223,10 @@ function onFiles (files, opts, cb) {
 
   var singleFile = files.length === 1
 
-  var length = files.reduce(sumLength, 0)
-  var pieceLength = opts.pieceLength || calcPieceLength(length)
+  var pieceLength = opts.pieceLength || calcPieceLength(files.reduce(sumLength, 0))
   torrent.info['piece length'] = pieceLength
 
-  getPieceList(files, pieceLength, function (err, pieces, calcLength) {
+  getPieceList(files, pieceLength, function (err, pieces, length) {
     if (err) return cb(err)
     torrent.info.pieces = pieces
 
@@ -238,7 +237,7 @@ function onFiles (files, opts, cb) {
     if (!singleFile) {
       torrent.info.files = files
     } else {
-      torrent.info.length = length || calcLength
+      torrent.info.length = length
     }
 
     cb(null, bencode.encode(torrent))
