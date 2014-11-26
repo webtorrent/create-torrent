@@ -49,6 +49,11 @@ function createTorrent (input, opts, cb) {
     if (opts.name === undefined)
       throw new Error('Option \'name\' is required when input is not a file')
 
+    // If there's just one file, allow the name to be set by `opts.name`
+    if (input.length === 1 && !input[0].name) {
+      input[0].name = opts.name
+    }
+
     files = input.map(function (item) {
       if (!item) return
       if (!item.name)
