@@ -86,12 +86,12 @@ test('create single file torrent', function (t) {
 })
 
 test('create multi file torrent', function (t) {
-  t.plan(16)
+  t.plan(17)
 
   var startTime = Date.now()
   createTorrent([ numbers1, numbers2, numbers3 ], {
     pieceLength: 32768, // force piece length to 32KB so info-hash will
-                        // match what transmission generataed, since we use
+                        // match what transmission generated, since we use
                         // a different algo for picking piece length
 
     private: false,      // also force `private: false` to match transmission
@@ -127,6 +127,7 @@ test('create multi file torrent', function (t) {
     t.deepEquals(parsedTorrent.files[2].length, 3)
 
     t.equal(parsedTorrent.length, 6)
+    t.equal(parsedTorrent.info.pieces.length, 20)
     t.equal(parsedTorrent.pieceLength, 32768)
 
     t.deepEquals(parsedTorrent.pieces, [

@@ -92,7 +92,7 @@ test('create multi file torrent', function (t) {
   var startTime = Date.now()
   createTorrent(numbersPath, {
     pieceLength: 32768, // force piece length to 32KB so info-hash will
-                        // match what transmission generataed, since we use
+                        // match what transmission generated, since we use
                         // a different algo for picking piece length
 
     private: false      // also force `private: false` to match transmission
@@ -145,7 +145,7 @@ test('create multi file torrent with nested directories', function (t) {
   var startTime = Date.now()
   createTorrent(numbersPath, {
     pieceLength: 32768, // force piece length to 32KB so info-hash will
-                        // match what transmission generataed, since we use
+                        // match what transmission generated, since we use
                         // a different algo for picking piece length
 
     private: false      // also force `private: false` to match transmission
@@ -272,15 +272,14 @@ test('create multi file torrent with streams', function (t) {
 
   var files = fs.readdirSync(numbersPath).map(function(file) {
     var stream = fs.createReadStream(numbersPath + '/' + file)
-    //stream.path = ['numbers', file]
     stream.name = file
     return stream
-  });
+  })
 
   var startTime = Date.now()
   createTorrent(files, {
     pieceLength: 32768, // force piece length to 32KB so info-hash will
-                        // match what transmission generataed, since we use
+                        // match what transmission generated, since we use
                         // a different algo for picking piece length
 
     private: false,     // also force `private: false` to match transmission
