@@ -70,6 +70,19 @@ test('create single file torrent', function (t) {
   })
 })
 
+test('create single file torrent from buffer', function (t) {
+  t.plan(1)
+
+  createTorrent(new Buffer('blah'), { name: 'blah.txt' }, function(err, torrent) {
+    t.error(err)
+    try {
+      parseTorrent(torrent)
+    } catch (err) {
+      t.fail('failed to parse created torrent: ' + err.message)
+    }
+  })
+})
+
 test('create multi file torrent', function (t) {
   t.plan(16)
 
