@@ -45,15 +45,24 @@ function createTorrent (input, opts, cb) {
 
   if (Array.isArray(input) && input.length > 0) {
     opts.name = opts.name || input[0].name
+    if (opts.name === undefined)
+      throw new Error('Option \'name\' is required when input is not a file')
+
     files = input.map(function (item) {
       if (!item) return
       var file = {
         length: item.size,
         path: [ item.name ]
       }
-      if (isBlob(item)) file.getStream = getBlobStream(item)
-      else if (Buffer.isBuffer(item)) file.getStream = getBufferStream(item)
-      else throw new Error('Array must contain only File objects')
+      if (isBlob(item)) {
+        file.getStream = getBlobStream(item)
+        file.length = item.size
+      }
+      else if (Buffer.isBuffer(item)) {
+        file.getStream = getBufferStream(item)
+        file.length = item.length
+      }
+      else throw new Error('Array must contain only File|Blob|Buffer objects')
       return file
     })
     onFiles(files, opts, cb)
