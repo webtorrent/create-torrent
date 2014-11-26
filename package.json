@@ -26,8 +26,8 @@
   },
   "devDependencies": {
     "brfs": "^1.1.2",
-    "parse-torrent": "^1.1.0",
-    "tape": "^2.5.0",
+    "parse-torrent": "^2.1.2",
+    "tape": "^3.0.3",
     "zuul": "^1.11.2"
   },
   "homepage": "https://github.com/feross/create-torrent",
