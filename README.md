@@ -46,11 +46,9 @@ Create a new `.torrent` file.
 - W3C [FileList](https://developer.mozilla.org/en-US/docs/Web/API/FileList) object (basically an array of `File` objects)
 - W3C [Blob](https://developer.mozilla.org/en-US/docs/Web/API/Blob) object
 - Node [Buffer](http://nodejs.org/api/buffer.html) object (works in [the browser](https://www.npmjs.org/package/buffer))
-- Node [Readable Stream](http://nodejs.org/api/stream.html) object, with
-  attached a `name` property on it.
+- Node [stream.Readable](http://nodejs.org/api/stream.html) object (must attach a `name` property on it (or set `opt.name`), and set `opt.pieceLength`)
 
-
-Or, an **array of `File`, `Blob`, or `Buffer` objects**.
+Or, an **array of `File`, `Blob`, `Buffer`, or `Stream` objects**.
 
 `opts` is optional and allows you to set special settings on the produced .torrent file.
 
