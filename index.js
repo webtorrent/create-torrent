@@ -51,18 +51,17 @@ function createTorrent (input, opts, cb) {
     files = input.map(function (item) {
       if (!item) return
       var file = {
-        length: item.size || item.length,
         path: [ item.name || 'no-name' ]
       }
       if (isBlob(item)) {
         file.getStream = getBlobStream(item)
         file.length = item.size
-      }
-      else if (Buffer.isBuffer(item)) {
+      } else if (Buffer.isBuffer(item)) {
         file.getStream = getBufferStream(item)
         file.length = item.length
+      } else {
+        throw new Error('Array must contain only File|Blob|Buffer objects')
       }
-      else throw new Error('Array must contain only File|Blob|Buffer objects')
       return file
     })
     onFiles(files, opts, cb)
