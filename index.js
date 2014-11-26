@@ -104,26 +104,6 @@ function createTorrent (input, opts, cb) {
   }
 }
 
-function getBlobStream(data) {
-  return function() {
-    return new FileReadStream(data)
-  }
-}
-
-function getBufferStream(data) {
-  return function() {
-    var s = new stream.PassThrough()
-    s.end(data)
-    return s
-  }
-}
-
-function getFSStream(data) {
-  return function() {
-    return fs.createReadStream(data)
-  }
-}
-
 createTorrent.announceList = [
   [ 'udp://tracker.publicbt.com:80' ],
   [ 'udp://tracker.openbittorrent.com:80' ],
@@ -269,13 +249,33 @@ function isBlob (obj) {
  * @param  {*} obj
  * @return {boolean}
  */
-function isReadable(obj) {
+function isReadable (obj) {
   return typeof obj === 'object' && typeof obj.pipe === 'function'
 }
 
-function getStreamStream(stream, file) {
+function getBlobStream (data) {
+  return function () {
+    return new FileReadStream(data)
+  }
+}
+
+function getBufferStream (data) {
+  return function () {
+    var s = new stream.PassThrough()
+    s.end(data)
+    return s
+  }
+}
+
+function getFSStream (data) {
+  return function () {
+    return fs.createReadStream(data)
+  }
+}
+
+function getStreamStream (stream, file) {
   var counter = new Transform()
-  counter._transform = function(buf, enc, done) {
+  counter._transform = function (buf, enc, done) {
     file.length += buf.length
     this.push(buf)
     done()
