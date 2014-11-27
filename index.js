@@ -34,6 +34,7 @@ function createTorrent (input, opts, cb) {
     cb = opts
     opts = {}
   }
+  if (!opts) opts = {}
   var files
 
   // TODO: support an array of paths
