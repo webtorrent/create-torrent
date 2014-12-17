@@ -274,13 +274,23 @@ function getFSStream (data) {
   }
 }
 
+/**
+ * Convert a readable stream to a lazy readable stream. Adds instrumentation to track
+ * the number of bytes in the stream and set `file.length`.
+ *
+ * @param  {Stream} stream
+ * @param  {Object} file
+ * @return {function}
+ */
 function getStreamStream (stream, file) {
-  var counter = new Transform()
-  counter._transform = function (buf, enc, done) {
-    file.length += buf.length
-    this.push(buf)
-    done()
+  return function () {
+    var counter = new Transform()
+    counter._transform = function (buf, enc, done) {
+      file.length += buf.length
+      this.push(buf)
+      done()
+    }
+    stream.pipe(counter)
+    return counter
   }
-  stream.pipe(counter)
-  return counter
 }
