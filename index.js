@@ -61,7 +61,7 @@ function createTorrent (input, opts, cb) {
         throw new Error('Missing requied `name` property on input')
 
       var file = {
-        path: [ item.name || 'no-name' ]
+        path: [ item.name ]
       }
       if (isBlob(item)) {
         file.getStream = getBlobStream(item)
