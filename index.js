@@ -107,7 +107,9 @@ function parseInput (input, opts, cb) {
       if (Array.isArray(files)) files = flatten(files)
       else files = [ files ]
 
-      var dirName = corePath.normalize(input) + corePath.sep
+      var dirName = corePath.normalize(input)
+      if (dirName[dirName.length - 1] !== corePath.sep) dirName += corePath.sep
+
       files.forEach(function (file) {
         file.getStream = getFilePathStream(file.path)
         file.path = file.path.replace(dirName, '').split(corePath.sep)
