@@ -1,5 +1,11 @@
 module.exports = createTorrent
 
+module.exports.announceList = [
+  [ 'udp://tracker.publicbt.com:80' ],
+  [ 'udp://tracker.openbittorrent.com:80' ],
+  [ 'udp://tracker.webtorrent.io:80' ],
+  [ 'wss://tracker.webtorrent.io' ] // For WebRTC peers (see: WebTorrent.io)
+]
 var bencode = require('bencode')
 var BlockStream = require('block-stream')
 var calcPieceLength = require('piece-length')
@@ -16,7 +22,7 @@ var Transform = stream.Transform
 
 /**
  * Create a torrent.
- * @param  {string|File|FileList|Blob|Buffer|Stream|Array.<File|Blob|Buffer|Steam>} input
+ * @param  {string|File|FileList|Buffer|Stream|Array.<File|Buffer|Stream>} input
  * @param  {Object} opts
  * @param  {string=} opts.name
  * @param  {Date=} opts.creationDate
@@ -105,22 +111,6 @@ function createTorrent (input, opts, cb) {
   }
 }
 
-createTorrent.announceList = [
-  [ 'udp://tracker.publicbt.com:80' ],
-  [ 'udp://tracker.openbittorrent.com:80' ],
-  [ 'udp://tracker.webtorrent.io:80' ],
-  [ 'wss://tracker.webtorrent.io' ] // For WebRTC peers (see: WebTorrent.io)
-]
-
-function each (arr, fn, cb) {
-  var tasks = arr.map(function (item) {
-    return function (cb) {
-      fn(item, cb)
-    }
-  })
-  parallel(tasks, cb)
-}
-
 function getFileInfo (path, cb) {
   cb = once(cb)
   fs.stat(path, function (err, stat) {
@@ -139,13 +129,15 @@ function traversePath (fn, path, cb) {
       // this is a file
       fn(path, cb)
     } else if (err) {
-      // there was an error
+      // real error
       cb(err)
     } else {
       // this is a folder
-      each(entries, function (entry, cb) {
-        traversePath(fn, corePath.join(path, entry), cb)
-      }, cb)
+      parallel(entries.map(function (entry) {
+        return function (cb) {
+          traversePath(fn, corePath.join(path, entry), cb)
+        }
+      }), cb)
     }
   })
 }
@@ -174,7 +166,7 @@ function getPieceList (files, pieceLength, cb) {
 function onFiles (files, opts, cb) {
   var announceList = opts.announceList !== undefined
     ? opts.announceList
-    : createTorrent.announceList // default
+    : module.exports.announceList // default
 
   var torrent = {
     info: {
@@ -186,21 +178,17 @@ function onFiles (files, opts, cb) {
     encoding: 'UTF-8'
   }
 
-  if (opts.comment !== undefined) {
+  if (opts.comment !== undefined)
     torrent.info.comment = opts.comment
-  }
 
-  if (opts.createdBy !== undefined) {
+  if (opts.createdBy !== undefined)
     torrent.info['created by'] = opts.createdBy
-  }
 
-  if (opts.private !== undefined) {
+  if (opts.private !== undefined)
     torrent.info.private = Number(opts.private)
-  }
 
-  if (opts.urlList !== undefined) {
+  if (opts.urlList !== undefined)
     torrent['url-list'] = opts.urlList
-  }
 
   var singleFile = files.length === 1
 
@@ -236,7 +224,7 @@ function sumLength (sum, file) {
 }
 
 /**
- * Check if `obj` is a W3C Blob object (which is the superclass of W3C File)
+ * Check if `obj` is a W3C `Blob` object (which `File` inherits from)
  * @param  {*} obj
  * @return {boolean}
  */
@@ -254,23 +242,38 @@ function isReadable (obj) {
   return typeof obj === 'object' && typeof obj.pipe === 'function'
 }
 
-function getBlobStream (data) {
+/**
+ * Convert a `File` to a lazy readable stream.
+ * @param  {File|Blob} file
+ * @return {function}
+ */
+function getBlobStream (file) {
   return function () {
-    return new FileReadStream(data)
+    return new FileReadStream(file)
   }
 }
 
-function getBufferStream (data) {
+/**
+ * Convert a `Buffer` to a lazy readable stream.
+ * @param  {Buffer} buffer
+ * @return {function}
+ */
+function getBufferStream (buffer) {
   return function () {
     var s = new stream.PassThrough()
-    s.end(data)
+    s.end(buffer)
     return s
   }
 }
 
-function getFSStream (data) {
+/**
+ * Convert a file path to a lazy readable stream.
+ * @param  {string} path
+ * @return {function}
+ */
+function getFilePathStream (path) {
   return function () {
-    return fs.createReadStream(data)
+    return fs.createReadStream(path)
   }
 }
 
