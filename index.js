@@ -6,6 +6,9 @@ module.exports.announceList = [
   [ 'udp://tracker.webtorrent.io:80' ],
   [ 'wss://tracker.webtorrent.io' ] // For WebRTC peers (see: WebTorrent.io)
 ]
+
+module.exports.parseInput = parseInput
+
 var bencode = require('bencode')
 var BlockStream = require('block-stream')
 var calcPieceLength = require('piece-length')
@@ -41,34 +44,38 @@ function createTorrent (input, opts, cb) {
     opts = {}
   }
   if (!opts) opts = {}
-  var files
+  parseInput(input, opts, function (err, files) {
+    if (err) return cb(err)
+    onFiles(files, opts, cb)
+  })
+}
 
-  // TODO: support an array of paths
+// TODO: support an array of paths
+function parseInput (input, opts, cb) {
+  if (typeof opts === 'function') {
+    cb = opts
+    opts = {}
+  }
+  if (!opts) opts = {}
 
-  if (typeof FileList === 'function' && input instanceof FileList)
+  if (isFileList(input))
     input = Array.prototype.slice.call(input)
 
   if (isBlob(input) || Buffer.isBuffer(input) || isReadable(input))
     input = [ input ]
 
+  var files
   if (Array.isArray(input) && input.length > 0) {
     opts.name = opts.name || input[0].name
     if (opts.name === undefined)
-      throw new Error('Option \'name\' is required when input is not a file')
+      throw new Error('missing option \'name\' and unable to infer it from input[0].name')
 
     // If there's just one file, allow the name to be set by `opts.name`
-    if (input.length === 1 && !input[0].name) {
-      input[0].name = opts.name
-    }
+    if (input.length === 1 && !input[0].name) input[0].name = opts.name
 
     files = input.map(function (item) {
-      if (!item) return
-      if (!item.name)
-        throw new Error('Missing requied `name` property on input')
+      var file = {}
 
-      var file = {
-        path: [ item.name ]
-      }
       if (isBlob(item)) {
         file.getStream = getBlobStream(item)
         file.length = item.size
@@ -77,34 +84,36 @@ function createTorrent (input, opts, cb) {
         file.length = item.length
       } else if (isReadable(item)) {
         if (!opts.pieceLength)
-          throw new Error('Must specify `pieceLength` option if input is Stream')
+          throw new Error('must specify `pieceLength` option if input is Stream')
         file.getStream = getStreamStream(item, file)
         file.length = 0
       } else {
-        throw new Error('Array must contain only File|Blob|Buffer|Stream objects')
+        throw new Error('input must contain only File|Blob|Buffer|Stream objects')
       }
+
+      if (!item.name) throw new Error('missing requied `name` property on input')
+      file.path = [ item.name ]
       return file
     })
-    onFiles(files, opts, cb)
+    process.nextTick(function () {
+      cb(null, files)
+    })
   } else if (typeof input === 'string') {
     opts.name = opts.name || corePath.basename(input)
 
     traversePath(getFileInfo, input, function (err, files) {
       if (err) return cb(err)
 
-      if (Array.isArray(files)) {
-        files = flatten(files)
-      } else {
-        files = [ files ]
-      }
+      if (Array.isArray(files)) files = flatten(files)
+      else files = [ files ]
 
       var dirName = corePath.normalize(input) + corePath.sep
       files.forEach(function (file) {
-        file.getStream = getFSStream(file.path)
+        file.getStream = getFilePathStream(file.path)
         file.path = file.path.replace(dirName, '').split(corePath.sep)
       })
 
-      onFiles(files, opts, cb)
+      cb(null, files)
     })
   } else {
     throw new Error('invalid input type')
@@ -230,6 +239,15 @@ function sumLength (sum, file) {
  */
 function isBlob (obj) {
   return typeof Blob !== 'undefined' && obj instanceof Blob
+}
+
+/**
+ * Check if `obj` is a W3C `FileList` object
+ * @param  {*} obj
+ * @return {boolean}
+ */
+function isFileList (obj) {
+  return typeof FileList === 'function' && obj instanceof FileList
 }
 
 
