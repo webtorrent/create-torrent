@@ -177,7 +177,9 @@ function getPieceList (files, pieceLength, cb) {
 function onFiles (files, opts, cb) {
   var announceList = opts.announceList !== undefined
     ? opts.announceList
-    : module.exports.announceList // default
+    : opts.announce !== undefined
+      ? opts.announce.map(function (u) { return [ u ] })
+      : module.exports.announceList // default
 
   var torrent = {
     info: {
