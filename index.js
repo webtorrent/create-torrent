@@ -19,7 +19,7 @@ var fs = require('fs')
 var MultiStream = require('multistream')
 var once = require('once')
 var parallel = require('run-parallel')
-var sha1 = require('git-sha1')
+var sha1 = require('simple-sha1')
 var stream = require('stream')
 var Transform = stream.Transform
 
@@ -155,23 +155,41 @@ function traversePath (fn, path, cb) {
 
 function getPieceList (files, pieceLength, cb) {
   cb = once(cb)
-  var pieces = '' // hex string
+  var pieces = []
   var length = 0
 
   var streams = files.map(function (file) {
     return file.getStream
   })
 
+  var remainingHashes = 0
+  var pieceNum = 0
+  var ended = false
+
   new MultiStream(streams)
     .pipe(new BlockStream(pieceLength, { nopad: true }))
     .on('data', function (chunk) {
       length += chunk.length
-      pieces += sha1(chunk)
+
+      var i = pieceNum
+      sha1(chunk, function (hash) {
+        pieces[i] = hash
+        remainingHashes -= 1
+        maybeDone()
+      })
+      remainingHashes += 1
+      pieceNum += 1
     })
     .on('end', function () {
-      cb(null, new Buffer(pieces, 'hex'), length)
+      ended = true
+      maybeDone()
     })
     .on('error', cb)
+
+  function maybeDone () {
+    if (ended && remainingHashes === 0)
+      cb(null, new Buffer(pieces.join(''), 'hex'), length)
+  }
 }
 
 function onFiles (files, opts, cb) {
