@@ -1,17 +1,13 @@
 var createTorrent = require('../../')
-var crypto = require('crypto')
 var fs = require('fs')
 var parseTorrent = require('parse-torrent')
+var sha1 = require('simple-sha1')
 var test = require('tape')
 
 function makeFileShim (buf, name) {
   var file = new Blob([ buf ])
   file.name = name
   return file
-}
-
-function sha1 (buf) {
-  return crypto.createHash('sha1').update(buf).digest('hex')
 }
 
 var leaves = makeFileShim(fs.readFileSync(__dirname + '/../content/Leaves of Grass by Walt Whitman.epub'), 'Leaves of Grass by Walt Whitman.epub')
@@ -81,7 +77,7 @@ test('create single file torrent', function (t) {
     ])
 
     window.parsedTorrent = parsedTorrent
-    t.equals(sha1(parsedTorrent.infoBuffer), 'd2474e86c95b19b8bcfdb92bc12c9d44667cfa36')
+    t.equals(sha1.sync(parsedTorrent.infoBuffer), 'd2474e86c95b19b8bcfdb92bc12c9d44667cfa36')
   })
 })
 
@@ -134,6 +130,6 @@ test('create multi file torrent', function (t) {
       '1f74648e50a6a6708ec54ab327a163d5536b7ced'
     ])
 
-    t.equals(sha1(parsedTorrent.infoBuffer), '80562f38656b385ea78959010e51a2cc9db41ea0')
+    t.equals(sha1.sync(parsedTorrent.infoBuffer), '80562f38656b385ea78959010e51a2cc9db41ea0')
   })
 })

@@ -1,13 +1,9 @@
 var path = require('path')
 var fs = require('fs')
 var createTorrent = require('../')
-var crypto = require('crypto')
 var parseTorrent = require('parse-torrent')
+var sha1 = require('simple-sha1')
 var test = require('tape')
-
-function sha1 (buf) {
-  return crypto.createHash('sha1').update(buf).digest('hex')
-}
 
 test('create single file torrent', function (t) {
   t.plan(12)
@@ -67,7 +63,7 @@ test('create single file torrent', function (t) {
       'c698de9b0dad92980906c026d8c1408fa08fe4ec'
     ])
 
-    t.equals(sha1(parsedTorrent.infoBuffer), 'd2474e86c95b19b8bcfdb92bc12c9d44667cfa36')
+    t.equals(sha1.sync(parsedTorrent.infoBuffer), 'd2474e86c95b19b8bcfdb92bc12c9d44667cfa36')
   })
 })
 
@@ -133,7 +129,7 @@ test('create multi file torrent', function (t) {
     t.deepEquals(parsedTorrent.pieces, [
       '1f74648e50a6a6708ec54ab327a163d5536b7ced'
     ])
-    t.equals(sha1(parsedTorrent.infoBuffer), '80562f38656b385ea78959010e51a2cc9db41ea0')
+    t.equals(sha1.sync(parsedTorrent.infoBuffer), '80562f38656b385ea78959010e51a2cc9db41ea0')
   })
 })
 
@@ -196,7 +192,7 @@ test('create multi file torrent with nested directories', function (t) {
       '47972f2befaee58b6f3860cd39bd56cb33a488f0'
     ])
 
-    t.equals(sha1(parsedTorrent.infoBuffer), '427887e9c03e123f9c8458b1947090edf1c75baa')
+    t.equals(sha1.sync(parsedTorrent.infoBuffer), '427887e9c03e123f9c8458b1947090edf1c75baa')
   })
 })
 
@@ -261,7 +257,7 @@ test('create single file torrent from a stream', function (t) {
       'c698de9b0dad92980906c026d8c1408fa08fe4ec'
     ])
 
-    t.equals(sha1(parsedTorrent.infoBuffer), 'd2474e86c95b19b8bcfdb92bc12c9d44667cfa36')
+    t.equals(sha1.sync(parsedTorrent.infoBuffer), 'd2474e86c95b19b8bcfdb92bc12c9d44667cfa36')
   })
 })
 
@@ -270,7 +266,7 @@ test('create multi file torrent with streams', function (t) {
 
   var numbersPath = __dirname + '/content/numbers'
 
-  var files = fs.readdirSync(numbersPath).map(function(file) {
+  var files = fs.readdirSync(numbersPath).map(function (file) {
     var stream = fs.createReadStream(numbersPath + '/' + file)
     stream.name = file
     return stream
@@ -322,6 +318,6 @@ test('create multi file torrent with streams', function (t) {
     t.deepEquals(parsedTorrent.pieces, [
       '1f74648e50a6a6708ec54ab327a163d5536b7ced'
     ])
-    t.equals(sha1(parsedTorrent.infoBuffer), '80562f38656b385ea78959010e51a2cc9db41ea0')
+    t.equals(sha1.sync(parsedTorrent.infoBuffer), '80562f38656b385ea78959010e51a2cc9db41ea0')
   })
 })
