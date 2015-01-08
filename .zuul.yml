@@ -8,3 +8,9 @@ browsers:
     version: 8..latest
   - name: ie
     version: 11..latest
+  - name: iphone
+    version: 7.1..latest
+  - name: ipad
+    version: 7.1..latest
+  - name: android
+    version: 4.4..latest
