@@ -50,7 +50,7 @@ Create a new `.torrent` file.
 - Node [Buffer](http://nodejs.org/api/buffer.html) object (works in [the browser](https://www.npmjs.org/package/buffer))
 - Node [stream.Readable](http://nodejs.org/api/stream.html) object (must attach a `name` property on it (or set `opt.name`), and set `opt.pieceLength`)
 
-Or, an **array of `File`, `Buffer`, or `Stream` objects**.
+Or, an **array of `string`, `File`, `Buffer`, or `stream.Readable` objects**.
 
 `opts` is optional and allows you to set special settings on the produced .torrent file.
 

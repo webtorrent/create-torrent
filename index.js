@@ -25,7 +25,7 @@ var Transform = stream.Transform
 
 /**
  * Create a torrent.
- * @param  {string|File|FileList|Buffer|Stream|Array.<File|Buffer|Stream>} input
+ * @param  {string|File|FileList|Buffer|Stream|Array.<string|File|Buffer|Stream>} input
  * @param  {Object} opts
  * @param  {string=} opts.name
  * @param  {Date=} opts.creationDate
