@@ -321,3 +321,138 @@ test('create multi file torrent with streams', function (t) {
     t.equals(sha1.sync(parsedTorrent.infoBuffer), '80562f38656b385ea78959010e51a2cc9db41ea0')
   })
 })
+
+test('create multi file torrent with array of paths', function (t) {
+  t.plan(21)
+
+  var number10Path = __dirname + '/content/lots-of-numbers/big numbers/10.txt'
+  var number11Path = __dirname + '/content/lots-of-numbers/big numbers/11.txt'
+  var numbersPath = __dirname + '/content/numbers'
+
+  var paths = [number10Path, number11Path, numbersPath]
+
+  var startTime = Date.now()
+  createTorrent(paths, {
+    name: 'multi',
+    pieceLength: 32768, // force piece length to 32KB so info-hash will
+                        // match what transmission generated, since we use
+                        // a different algo for picking piece length
+
+    private: false      // also force `private: false` to match transmission
+
+  }, function (err, torrent) {
+    t.error(err)
+
+    var parsedTorrent = parseTorrent(torrent)
+
+    t.equals(parsedTorrent.name, 'multi')
+
+    t.notOk(parsedTorrent.private)
+
+    var createdTime = parsedTorrent.created / 1000
+    t.ok(createdTime >= startTime, 'created time is after start time')
+    t.ok(createdTime <= Date.now(), 'created time is before now')
+
+    t.deepEquals(parsedTorrent.announceList, [
+      ['udp://tracker.publicbt.com:80'],
+      ['udp://tracker.openbittorrent.com:80'],
+      ['udp://tracker.webtorrent.io:80'],
+      ['wss://tracker.webtorrent.io']
+    ])
+
+    t.deepEquals(path.normalize(parsedTorrent.files[0].path), path.normalize('multi/10.txt'))
+    t.deepEquals(parsedTorrent.files[0].length, 2)
+
+    t.deepEquals(path.normalize(parsedTorrent.files[1].path), path.normalize('multi/11.txt'))
+    t.deepEquals(parsedTorrent.files[1].length, 2)
+
+    t.deepEquals(path.normalize(parsedTorrent.files[2].path), path.normalize('multi/numbers/1.txt'))
+    t.deepEquals(parsedTorrent.files[2].length, 1)
+
+    t.deepEquals(path.normalize(parsedTorrent.files[3].path), path.normalize('multi/numbers/2.txt'))
+    t.deepEquals(parsedTorrent.files[3].length, 2)
+
+    t.deepEquals(path.normalize(parsedTorrent.files[4].path), path.normalize('multi/numbers/3.txt'))
+    t.deepEquals(parsedTorrent.files[4].length, 3)
+
+    t.equal(parsedTorrent.length, 10)
+    t.equal(parsedTorrent.info.pieces.length, 20)
+    t.equal(parsedTorrent.pieceLength, 32768)
+
+    // TODO: i did not know how to check the pieces hash in transmission so hope it is correct.
+    t.deepEquals(parsedTorrent.pieces, [
+      '1c4e1ba6da4d771ff82025d7cf76e8c368c6c3dd'
+    ])
+    t.equals(sha1.sync(parsedTorrent.infoBuffer), 'df25a2959378892f6ddaf4a2d7e75174e09878bb')
+  })
+})
+
+test('create multi file torrent with array of mixed types', function (t) {
+  t.plan(21)
+
+  var number10Path = __dirname + '/content/lots-of-numbers/big numbers/10.txt'
+  var number11Path = __dirname + '/content/lots-of-numbers/big numbers/11.txt'
+  var numbersPath = __dirname + '/content/numbers'
+
+  var stream = fs.createReadStream(number10Path)
+  stream.name = '10.txt'
+
+  // TODO: string paths will always be appear after other file types, this might not be the intention
+  //       (in this case 'stream' and 'number11Path' will switch places when the torrent is created)
+  var paths = [number11Path, stream, numbersPath]
+
+  var startTime = Date.now()
+  createTorrent(paths, {
+    name: 'multi',
+    pieceLength: 32768, // force piece length to 32KB so info-hash will
+                        // match what transmission generated, since we use
+                        // a different algo for picking piece length
+
+    private: false      // also force `private: false` to match transmission
+
+  }, function (err, torrent) {
+    t.error(err)
+
+    var parsedTorrent = parseTorrent(torrent)
+
+    t.equals(parsedTorrent.name, 'multi')
+
+    t.notOk(parsedTorrent.private)
+
+    var createdTime = parsedTorrent.created / 1000
+    t.ok(createdTime >= startTime, 'created time is after start time')
+    t.ok(createdTime <= Date.now(), 'created time is before now')
+
+    t.deepEquals(parsedTorrent.announceList, [
+      ['udp://tracker.publicbt.com:80'],
+      ['udp://tracker.openbittorrent.com:80'],
+      ['udp://tracker.webtorrent.io:80'],
+      ['wss://tracker.webtorrent.io']
+    ])
+
+    t.deepEquals(path.normalize(parsedTorrent.files[0].path), path.normalize('multi/10.txt'))
+    t.deepEquals(parsedTorrent.files[0].length, 2)
+
+    t.deepEquals(path.normalize(parsedTorrent.files[1].path), path.normalize('multi/11.txt'))
+    t.deepEquals(parsedTorrent.files[1].length, 2)
+
+    t.deepEquals(path.normalize(parsedTorrent.files[2].path), path.normalize('multi/numbers/1.txt'))
+    t.deepEquals(parsedTorrent.files[2].length, 1)
+
+    t.deepEquals(path.normalize(parsedTorrent.files[3].path), path.normalize('multi/numbers/2.txt'))
+    t.deepEquals(parsedTorrent.files[3].length, 2)
+
+    t.deepEquals(path.normalize(parsedTorrent.files[4].path), path.normalize('multi/numbers/3.txt'))
+    t.deepEquals(parsedTorrent.files[4].length, 3)
+
+    t.equal(parsedTorrent.length, 10)
+    t.equal(parsedTorrent.info.pieces.length, 20)
+    t.equal(parsedTorrent.pieceLength, 32768)
+
+    // TODO: i did not know how to check the pieces hash in transmission so hope it is correct.
+    t.deepEquals(parsedTorrent.pieces, [
+      '1c4e1ba6da4d771ff82025d7cf76e8c368c6c3dd'
+    ])
+    t.equals(sha1.sync(parsedTorrent.infoBuffer), 'df25a2959378892f6ddaf4a2d7e75174e09878bb')
+  })
+})
