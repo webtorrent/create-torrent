@@ -50,7 +50,6 @@ function createTorrent (input, opts, cb) {
   })
 }
 
-// TODO: support an array of paths
 function parseInput (input, opts, cb) {
   if (typeof opts === 'function') {
     cb = opts
@@ -73,7 +72,9 @@ function parseInput (input, opts, cb) {
     // If there's just one file, allow the name to be set by `opts.name`
     if (input.length === 1 && !input[0].name) input[0].name = opts.name
 
-    files = input.map(function (item) {
+    files = []
+    var paths = []
+    input.forEach(function (item) {
       var file = {}
 
       if (isBlob(item)) {
@@ -87,28 +88,58 @@ function parseInput (input, opts, cb) {
           throw new Error('must specify `pieceLength` option if input is Stream')
         file.getStream = getStreamStream(item, file)
         file.length = 0
+      } else if (typeof item === 'string') {
+        return paths.push(item);
       } else {
-        throw new Error('input must contain only File|Blob|Buffer|Stream objects')
+        throw new Error('input must contain only File|Blob|Buffer|Stream|string objects')
       }
 
       if (!item.name) throw new Error('missing requied `name` property on input')
       file.path = [ item.name ]
-      return file
+      files.push(file)
     })
-    process.nextTick(function () {
-      cb(null, files)
-    })
+
+    // Path strings are resolved asynchronously
+    if(paths.length > 0) {
+      parallel(paths.map(function (item) {
+        return function (cb) {
+          // TODO: this is really an assertion, since the user has no control of this.
+          if (typeof item !== 'string') throw new Error('paths must only contain string elements!')
+
+          getFiles(item, true, cb)
+        }
+      }), function(err, asyncFiles) {
+        if (err) return cb(err)
+        asyncFiles = flatten(asyncFiles)
+        files = files.concat(asyncFiles);
+        cb(null, files)
+      })
+    } else {
+      process.nextTick(function () {
+        cb(null, files)
+      })
+    }
   } else if (typeof input === 'string') {
     opts.name = opts.name || corePath.basename(input)
+    getFiles(input, false, cb)
+  } else {
+    throw new Error('invalid input type')
+  }
+}
 
-    traversePath(getFileInfo, input, function (err, files) {
+function getFiles(path, keepRoot, cb) {
+  traversePath(getFileInfo, path, function (err, files) {
       if (err) return cb(err)
 
       if (Array.isArray(files)) files = flatten(files)
       else files = [ files ]
 
-      var dirName = corePath.normalize(input)
-      if (dirName[dirName.length - 1] !== corePath.sep) dirName += corePath.sep
+      var dirName = corePath.normalize(path)
+      if(keepRoot || files.length === 1) {
+        dirName = dirName.slice(0, dirName.lastIndexOf(corePath.sep) + 1)
+      } else {
+        if (dirName[dirName.length - 1] !== corePath.sep) dirName += corePath.sep
+      }
 
       files.forEach(function (file) {
         file.getStream = getFilePathStream(file.path)
@@ -117,9 +148,6 @@ function parseInput (input, opts, cb) {
 
       cb(null, files)
     })
-  } else {
-    throw new Error('invalid input type')
-  }
 }
 
 function getFileInfo (path, cb) {
