@@ -329,10 +329,10 @@ test('create multi file torrent with array of paths', function (t) {
   var number11Path = __dirname + '/content/lots-of-numbers/big numbers/11.txt'
   var numbersPath = __dirname + '/content/numbers'
 
-  var paths = [number10Path, number11Path, numbersPath]
+  var input = [ number10Path, number11Path, numbersPath ]
 
   var startTime = Date.now()
-  createTorrent(paths, {
+  createTorrent(input, {
     name: 'multi',
     pieceLength: 32768, // force piece length to 32KB so info-hash will
                         // match what transmission generated, since we use
@@ -379,7 +379,6 @@ test('create multi file torrent with array of paths', function (t) {
     t.equal(parsedTorrent.info.pieces.length, 20)
     t.equal(parsedTorrent.pieceLength, 32768)
 
-    // TODO: i did not know how to check the pieces hash in transmission so hope it is correct.
     t.deepEquals(parsedTorrent.pieces, [
       '1c4e1ba6da4d771ff82025d7cf76e8c368c6c3dd'
     ])
@@ -390,19 +389,18 @@ test('create multi file torrent with array of paths', function (t) {
 test('create multi file torrent with array of mixed types', function (t) {
   t.plan(21)
 
-  var number10Path = __dirname + '/content/lots-of-numbers/big numbers/10.txt'
   var number11Path = __dirname + '/content/lots-of-numbers/big numbers/11.txt'
+  var number10Path = __dirname + '/content/lots-of-numbers/big numbers/10.txt'
   var numbersPath = __dirname + '/content/numbers'
 
   var stream = fs.createReadStream(number10Path)
   stream.name = '10.txt'
 
-  // TODO: string paths will always be appear after other file types, this might not be the intention
-  //       (in this case 'stream' and 'number11Path' will switch places when the torrent is created)
-  var paths = [number11Path, stream, numbersPath]
+  // Note: Order should be preserved
+  var input = [ number11Path, stream, numbersPath ]
 
   var startTime = Date.now()
-  createTorrent(paths, {
+  createTorrent(input, {
     name: 'multi',
     pieceLength: 32768, // force piece length to 32KB so info-hash will
                         // match what transmission generated, since we use
@@ -430,10 +428,10 @@ test('create multi file torrent with array of mixed types', function (t) {
       ['wss://tracker.webtorrent.io']
     ])
 
-    t.deepEquals(path.normalize(parsedTorrent.files[0].path), path.normalize('multi/10.txt'))
+    t.deepEquals(path.normalize(parsedTorrent.files[0].path), path.normalize('multi/11.txt'))
     t.deepEquals(parsedTorrent.files[0].length, 2)
 
-    t.deepEquals(path.normalize(parsedTorrent.files[1].path), path.normalize('multi/11.txt'))
+    t.deepEquals(path.normalize(parsedTorrent.files[1].path), path.normalize('multi/10.txt'))
     t.deepEquals(parsedTorrent.files[1].length, 2)
 
     t.deepEquals(path.normalize(parsedTorrent.files[2].path), path.normalize('multi/numbers/1.txt'))
@@ -449,10 +447,9 @@ test('create multi file torrent with array of mixed types', function (t) {
     t.equal(parsedTorrent.info.pieces.length, 20)
     t.equal(parsedTorrent.pieceLength, 32768)
 
-    // TODO: i did not know how to check the pieces hash in transmission so hope it is correct.
     t.deepEquals(parsedTorrent.pieces, [
-      '1c4e1ba6da4d771ff82025d7cf76e8c368c6c3dd'
+      '9ad893bb9aeca601a0fab4ba85bd4a4c18b630e3'
     ])
-    t.equals(sha1.sync(parsedTorrent.infoBuffer), 'df25a2959378892f6ddaf4a2d7e75174e09878bb')
+    t.equals(sha1.sync(parsedTorrent.infoBuffer), 'bad3f8ea0d1d8a55c18a039dd464f1078f83dba2')
   })
 })

@@ -59,22 +59,25 @@ function parseInput (input, opts, cb) {
 
   if (isFileList(input))
     input = Array.prototype.slice.call(input)
-
-  if (isBlob(input) || Buffer.isBuffer(input) || isReadable(input))
+  if (!Array.isArray(input))
     input = [ input ]
 
-  var files
-  if (Array.isArray(input) && input.length > 0) {
-    opts.name = opts.name || input[0].name
-    if (opts.name === undefined)
-      throw new Error('missing option \'name\' and unable to infer it from input[0].name')
+  if (input.length === 0) throw new Error('invalid input type')
 
-    // If there's just one file, allow the name to be set by `opts.name`
-    if (input.length === 1 && !input[0].name) input[0].name = opts.name
+  if (!opts.name)
+    opts.name = input[0].name || (typeof input[0] === 'string' && corePath.basename(input))
+  if (opts.name === undefined)
+    throw new Error('missing option \'name\' and unable to infer it from input[0].name')
 
-    files = []
-    var paths = []
-    input.forEach(function (item) {
+  // If there's just one file, allow the name to be set by `opts.name`
+  if (input.length === 1 && !input[0].name) input[0].name = opts.name
+
+  var numPaths = input.reduce(function (sum, item) {
+    return sum + Number(typeof item === 'string')
+  }, 0)
+
+  parallel(input.map(function (item) {
+    return function (cb) {
       var file = {}
 
       if (isBlob(item)) {
@@ -89,45 +92,28 @@ function parseInput (input, opts, cb) {
         file.getStream = getStreamStream(item, file)
         file.length = 0
       } else if (typeof item === 'string') {
-        return paths.push(item);
+        var keepRoot = numPaths > 1
+        getFiles(item, keepRoot, cb)
+        return
       } else {
-        throw new Error('input must contain only File|Blob|Buffer|Stream|string objects')
+        throw new Error('invalid input type in array')
       }
-
       if (!item.name) throw new Error('missing requied `name` property on input')
       file.path = [ item.name ]
-      files.push(file)
-    })
-
-    // Path strings are resolved asynchronously
-    if(paths.length > 0) {
-      parallel(paths.map(function (item) {
-        return function (cb) {
-          // TODO: this is really an assertion, since the user has no control of this.
-          if (typeof item !== 'string') throw new Error('paths must only contain string elements!')
-
-          getFiles(item, true, cb)
-        }
-      }), function(err, asyncFiles) {
-        if (err) return cb(err)
-        asyncFiles = flatten(asyncFiles)
-        files = files.concat(asyncFiles);
-        cb(null, files)
-      })
-    } else {
-      process.nextTick(function () {
-        cb(null, files)
-      })
+      cb(null, file)
     }
-  } else if (typeof input === 'string') {
-    opts.name = opts.name || corePath.basename(input)
-    getFiles(input, false, cb)
-  } else {
-    throw new Error('invalid input type')
-  }
+  }), function (err, files) {
+    if (err) return cb(err)
+    files = flatten(files)
+
+    if (numPaths === 0) process.nextTick(function () {
+      cb(null, files) // dezalgo
+    })
+    else cb(null, files)
+  })
 }
 
-function getFiles(path, keepRoot, cb) {
+function getFiles (path, keepRoot, cb) {
   traversePath(getFileInfo, path, function (err, files) {
       if (err) return cb(err)
 
@@ -135,7 +121,7 @@ function getFiles(path, keepRoot, cb) {
       else files = [ files ]
 
       var dirName = corePath.normalize(path)
-      if(keepRoot || files.length === 1) {
+      if (keepRoot || files.length === 1) {
         dirName = dirName.slice(0, dirName.lastIndexOf(corePath.sep) + 1)
       } else {
         if (dirName[dirName.length - 1] !== corePath.sep) dirName += corePath.sep
