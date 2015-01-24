@@ -40,6 +40,7 @@ test('create single file torrent', function (t) {
     t.deepEquals(parsedTorrent.announceList, [
       ['udp://tracker.publicbt.com:80'],
       ['udp://tracker.openbittorrent.com:80'],
+      ['udp://open.demonii.com:1337'],
       ['udp://tracker.webtorrent.io:80'],
       ['wss://tracker.webtorrent.io']
     ])
@@ -109,6 +110,7 @@ test('create multi file torrent', function (t) {
     t.deepEquals(parsedTorrent.announceList, [
       ['udp://tracker.publicbt.com:80'],
       ['udp://tracker.openbittorrent.com:80'],
+      ['udp://open.demonii.com:1337'],
       ['udp://tracker.webtorrent.io:80'],
       ['wss://tracker.webtorrent.io']
     ])
