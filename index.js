@@ -95,12 +95,12 @@ function parseInput (input, opts, cb) {
       } else if (typeof item === 'string') {
         var keepRoot = numPaths > 1
         getFiles(item, keepRoot, cb)
-        return
+        return // early return!
       } else {
         throw new Error('invalid input type in array')
       }
       if (!item.name) throw new Error('missing requied `name` property on input')
-      file.path = [ item.name ]
+      file.path = item.name.split(corePath.sep)
       cb(null, file)
     }
   }), function (err, files) {
