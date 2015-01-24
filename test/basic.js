@@ -477,7 +477,6 @@ test('create nested torrent with array of buffers', function (t) {
     t.error(err)
 
     var parsedTorrent = parseTorrent(torrent)
-    console.log(parsedTorrent)
 
     t.equals(parsedTorrent.name, 'multi')
 
