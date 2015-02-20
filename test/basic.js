@@ -187,7 +187,6 @@ test('create multi file torrent with nested directories', function (t) {
     t.deepEquals(path.normalize(parsedTorrent.files[5].path), path.normalize('lots-of-numbers/small numbers/3.txt'))
     t.deepEquals(parsedTorrent.files[5].length, 3)
 
-
     t.equal(parsedTorrent.length, 12)
     t.equal(parsedTorrent.pieceLength, 32768)
 

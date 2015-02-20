@@ -27,6 +27,7 @@
   "devDependencies": {
     "brfs": "^1.1.2",
     "parse-torrent": "^3.0.0",
+    "standard": "^2.6.5",
     "tape": "^3.0.3",
     "zuul": "^1.11.2"
   },
@@ -51,7 +52,7 @@
     "url": "git://github.com/feross/create-torrent.git"
   },
   "scripts": {
-    "test": "npm run test-node && npm run test-browser",
+    "test": "standard && npm run test-node && npm run test-browser",
     "test-browser": "zuul -- test/browser/*.js",
     "test-browser-local": "zuul --local -- test/browser/*.js",
     "test-node": "tape test/*.js"

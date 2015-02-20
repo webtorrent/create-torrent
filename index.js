@@ -1,3 +1,5 @@
+/*global FileList */
+
 module.exports = createTorrent
 
 module.exports.announceList = [
@@ -293,7 +295,6 @@ function isBlob (obj) {
 function isFileList (obj) {
   return typeof FileList === 'function' && obj instanceof FileList
 }
-
 
 /**
  * Check if `obj` is a node Readable stream
