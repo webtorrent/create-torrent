@@ -510,3 +510,18 @@ test('create nested torrent with array of buffers', function (t) {
     t.equals(sha1.sync(parsedTorrent.infoBuffer), '8fa3c08e640db9576156b21f31353402456a0208')
   })
 })
+
+test('create ssl cert torrent', function (t) {
+  t.plan(2)
+
+  var sslCert = new Buffer('content cert X.509')
+
+  createTorrent(new Buffer('abc'), {
+    name: 'abc.txt',
+    sslCert: sslCert
+  }, function (err, torrent) {
+    t.error(err)
+    var parsedTorrent = parseTorrent(torrent)
+    t.deepEqual(parsedTorrent.info['ssl-cert'], sslCert)
+  })
+})

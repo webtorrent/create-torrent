@@ -233,6 +233,13 @@ function onFiles (files, opts, cb) {
   if (opts.private !== undefined)
     torrent.info.private = Number(opts.private)
 
+  // "ssl-cert" key is for SSL torrents, see:
+  //   - http://blog.libtorrent.org/2012/01/bittorrent-over-ssl/
+  //   - http://www.libtorrent.org/manual-ref.html#ssl-torrents
+  //   - http://www.libtorrent.org/reference-Create_Torrents.html
+  if (opts.sslCert !== undefined)
+    torrent.info['ssl-cert'] = opts.sslCert
+
   if (opts.urlList !== undefined)
     torrent['url-list'] = opts.urlList
 
