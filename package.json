@@ -10,7 +10,7 @@
     "url": "https://github.com/feross/create-torrent/issues"
   },
   "dependencies": {
-    "bencode": "^0.6.0",
+    "bencode": "^0.7.0",
     "block-stream": "^0.0.7",
     "filestream": "^3.0.0",
     "flatten": "0.0.1",
