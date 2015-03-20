@@ -1,4 +1,4 @@
-/*global FileList */
+/*global Blob, FileList */
 
 module.exports = createTorrent
 
@@ -24,7 +24,6 @@ var once = require('once')
 var parallel = require('run-parallel')
 var sha1 = require('simple-sha1')
 var stream = require('stream')
-var Transform = stream.Transform
 
 /**
  * Create a torrent.
@@ -60,17 +59,17 @@ function parseInput (input, opts, cb) {
   }
   if (!opts) opts = {}
 
-  if (isFileList(input))
-    input = Array.prototype.slice.call(input)
-  if (!Array.isArray(input))
-    input = [ input ]
+  if (isFileList(input)) input = Array.prototype.slice.call(input)
+  if (!Array.isArray(input)) input = [ input ]
 
   if (input.length === 0) throw new Error('invalid input type')
 
-  if (!opts.name)
+  if (!opts.name) {
     opts.name = input[0].name || (typeof input[0] === 'string' && corePath.basename(input))
-  if (opts.name === undefined)
+  }
+  if (opts.name === undefined) {
     throw new Error('missing option \'name\' and unable to infer it from input[0].name')
+  }
 
   // If there's just one file, allow the name to be set by `opts.name`
   if (input.length === 1 && !input[0].name) input[0].name = opts.name
@@ -90,8 +89,9 @@ function parseInput (input, opts, cb) {
         file.getStream = getBufferStream(item)
         file.length = item.length
       } else if (isReadable(item)) {
-        if (!opts.pieceLength)
+        if (!opts.pieceLength) {
           throw new Error('must specify `pieceLength` option if input is Stream')
+        }
         file.getStream = getStreamStream(item, file)
         file.length = 0
       } else if (typeof item === 'string') {
@@ -108,11 +108,7 @@ function parseInput (input, opts, cb) {
   }), function (err, files) {
     if (err) return cb(err)
     files = flatten(files)
-
-    if (numPaths === 0) process.nextTick(function () {
-      cb(null, files) // dezalgo
-    })
-    else cb(null, files)
+    cb(null, files)
   })
 }
 
@@ -204,8 +200,9 @@ function getPieceList (files, pieceLength, cb) {
     .on('error', cb)
 
   function maybeDone () {
-    if (ended && remainingHashes === 0)
+    if (ended && remainingHashes === 0) {
       cb(null, new Buffer(pieces.join(''), 'hex'), length)
+    }
   }
 }
 
@@ -226,24 +223,19 @@ function onFiles (files, opts, cb) {
     encoding: 'UTF-8'
   }
 
-  if (opts.comment !== undefined)
-    torrent.info.comment = opts.comment
+  if (opts.comment !== undefined) torrent.info.comment = opts.comment
 
-  if (opts.createdBy !== undefined)
-    torrent.info['created by'] = opts.createdBy
+  if (opts.createdBy !== undefined) torrent.info['created by'] = opts.createdBy
 
-  if (opts.private !== undefined)
-    torrent.info.private = Number(opts.private)
+  if (opts.private !== undefined) torrent.info.private = Number(opts.private)
 
   // "ssl-cert" key is for SSL torrents, see:
   //   - http://blog.libtorrent.org/2012/01/bittorrent-over-ssl/
   //   - http://www.libtorrent.org/manual-ref.html#ssl-torrents
   //   - http://www.libtorrent.org/reference-Create_Torrents.html
-  if (opts.sslCert !== undefined)
-    torrent.info['ssl-cert'] = opts.sslCert
+  if (opts.sslCert !== undefined) torrent.info['ssl-cert'] = opts.sslCert
 
-  if (opts.urlList !== undefined)
-    torrent['url-list'] = opts.urlList
+  if (opts.urlList !== undefined) torrent['url-list'] = opts.urlList
 
   var singleFile = files.length === 1
 
@@ -348,15 +340,15 @@ function getFilePathStream (path) {
  * @param  {Object} file
  * @return {function}
  */
-function getStreamStream (stream, file) {
+function getStreamStream (readable, file) {
   return function () {
-    var counter = new Transform()
+    var counter = new stream.Transform()
     counter._transform = function (buf, enc, done) {
       file.length += buf.length
       this.push(buf)
       done()
     }
-    stream.pipe(counter)
+    readable.pipe(counter)
     return counter
   }
 }

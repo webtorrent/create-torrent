@@ -1,3 +1,5 @@
+/*global Blob */
+
 var createTorrent = require('../../')
 var fs = require('fs')
 var parseTorrent = require('parse-torrent')
