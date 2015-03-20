@@ -59,14 +59,14 @@ function parseInput (input, opts, cb) {
   }
   if (!opts) opts = {}
 
+  if (Array.isArray(input) && input.length === 0) throw new Error('invalid input type')
+
   if (isFileList(input)) input = Array.prototype.slice.call(input)
   if (!Array.isArray(input)) input = [ input ]
 
-  if (input.length === 0) throw new Error('invalid input type')
+  if (!opts.name) opts.name = input[0] && input[0].name
+  if (!opts.name) opts.name = typeof input[0] === 'string' && corePath.basename(input[0])
 
-  if (!opts.name) {
-    opts.name = input[0].name || (typeof input[0] === 'string' && corePath.basename(input))
-  }
   if (opts.name === undefined) {
     throw new Error('missing option \'name\' and unable to infer it from input[0].name')
   }
