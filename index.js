@@ -157,13 +157,17 @@ function traversePath (fn, path, cb) {
       cb(err)
     } else {
       // this is a folder
-      parallel(entries.map(function (entry) {
+      parallel(entries.filter(notHidden).map(function (entry) {
         return function (cb) {
           traversePath(fn, corePath.join(path, entry), cb)
         }
       }), cb)
     }
   })
+}
+
+function notHidden (file) {
+  return file[0] !== '.'
 }
 
 function getPieceList (files, pieceLength, cb) {
