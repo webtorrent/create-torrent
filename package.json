@@ -25,7 +25,7 @@
     "brfs": "^1.1.2",
     "parse-torrent": "^4.0.0",
     "standard": "^3.2.0",
-    "tape": "^3.0.3",
+    "tape": "^4.0.0",
     "zuul": "^2.0.0"
   },
   "homepage": "https://github.com/feross/create-torrent",
