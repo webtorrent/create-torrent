@@ -95,11 +95,14 @@ function parseInput (input, opts, cb) {
         file.getStream = getStreamStream(item, file)
         file.length = 0
       } else if (typeof item === 'string') {
+        if (typeof fs.readdir !== 'function') {
+          throw new Error('filesystem paths do not work in the browser')
+        }
         var keepRoot = numPaths > 1
         getFiles(item, keepRoot, cb)
         return // early return!
       } else {
-        throw new Error('invalid input type in array')
+        throw new Error('invalid input type')
       }
       if (!item.name) throw new Error('missing requied `name` property on input')
       file.path = item.name.split(corePath.sep)
