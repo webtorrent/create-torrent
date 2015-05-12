@@ -24,12 +24,12 @@ test('create single file torrent', function (t) {
     t.ok(createdTime >= startTime, 'created time is after start time')
     t.ok(createdTime <= Date.now(), 'created time is before now')
 
-    t.deepEquals(parsedTorrent.announceList, [
-      ['udp://tracker.publicbt.com:80'],
-      ['udp://tracker.openbittorrent.com:80'],
-      ['udp://open.demonii.com:1337'],
-      ['udp://tracker.webtorrent.io:80'],
-      ['wss://tracker.webtorrent.io']
+    t.deepEquals(parsedTorrent.announce, [
+      'udp://open.demonii.com:1337',
+      'udp://tracker.openbittorrent.com:80',
+      'udp://tracker.publicbt.com:80',
+      'udp://tracker.webtorrent.io:80',
+      'wss://tracker.webtorrent.io'
     ])
 
     t.equals(path.normalize(parsedTorrent.files[0].path), path.normalize('Leaves of Grass by Walt Whitman.epub'))
@@ -107,12 +107,12 @@ test('create multi file torrent', function (t) {
     t.ok(createdTime >= startTime, 'created time is after start time')
     t.ok(createdTime <= Date.now(), 'created time is before now')
 
-    t.deepEquals(parsedTorrent.announceList, [
-      ['udp://tracker.publicbt.com:80'],
-      ['udp://tracker.openbittorrent.com:80'],
-      ['udp://open.demonii.com:1337'],
-      ['udp://tracker.webtorrent.io:80'],
-      ['wss://tracker.webtorrent.io']
+    t.deepEquals(parsedTorrent.announce, [
+      'udp://open.demonii.com:1337',
+      'udp://tracker.openbittorrent.com:80',
+      'udp://tracker.publicbt.com:80',
+      'udp://tracker.webtorrent.io:80',
+      'wss://tracker.webtorrent.io'
     ])
 
     t.deepEquals(path.normalize(parsedTorrent.files[0].path), path.normalize('numbers/1.txt'))
@@ -161,12 +161,12 @@ test('create multi file torrent with nested directories', function (t) {
     t.ok(createdTime >= startTime, 'created time is after start time')
     t.ok(createdTime <= Date.now(), 'created time is before now')
 
-    t.deepEquals(parsedTorrent.announceList, [
-      ['udp://tracker.publicbt.com:80'],
-      ['udp://tracker.openbittorrent.com:80'],
-      ['udp://open.demonii.com:1337'],
-      ['udp://tracker.webtorrent.io:80'],
-      ['wss://tracker.webtorrent.io']
+    t.deepEquals(parsedTorrent.announce, [
+      'udp://open.demonii.com:1337',
+      'udp://tracker.openbittorrent.com:80',
+      'udp://tracker.publicbt.com:80',
+      'udp://tracker.webtorrent.io:80',
+      'wss://tracker.webtorrent.io'
     ])
 
     t.deepEquals(path.normalize(parsedTorrent.files[0].path), path.normalize('lots-of-numbers/big numbers/10.txt'))
@@ -220,12 +220,12 @@ test('create single file torrent from a stream', function (t) {
     t.ok(createdTime >= startTime, 'created time is after start time')
     t.ok(createdTime <= Date.now(), 'created time is before now')
 
-    t.deepEquals(parsedTorrent.announceList, [
-      ['udp://tracker.publicbt.com:80'],
-      ['udp://tracker.openbittorrent.com:80'],
-      ['udp://open.demonii.com:1337'],
-      ['udp://tracker.webtorrent.io:80'],
-      ['wss://tracker.webtorrent.io']
+    t.deepEquals(parsedTorrent.announce, [
+      'udp://open.demonii.com:1337',
+      'udp://tracker.openbittorrent.com:80',
+      'udp://tracker.publicbt.com:80',
+      'udp://tracker.webtorrent.io:80',
+      'wss://tracker.webtorrent.io'
     ])
 
     t.equals(path.normalize(parsedTorrent.files[0].path), path.normalize('Leaves of Grass by Walt Whitman.epub'))
@@ -298,12 +298,12 @@ test('create multi file torrent with streams', function (t) {
     t.ok(createdTime >= startTime, 'created time is after start time')
     t.ok(createdTime <= Date.now(), 'created time is before now')
 
-    t.deepEquals(parsedTorrent.announceList, [
-      ['udp://tracker.publicbt.com:80'],
-      ['udp://tracker.openbittorrent.com:80'],
-      ['udp://open.demonii.com:1337'],
-      ['udp://tracker.webtorrent.io:80'],
-      ['wss://tracker.webtorrent.io']
+    t.deepEquals(parsedTorrent.announce, [
+      'udp://open.demonii.com:1337',
+      'udp://tracker.openbittorrent.com:80',
+      'udp://tracker.publicbt.com:80',
+      'udp://tracker.webtorrent.io:80',
+      'wss://tracker.webtorrent.io'
     ])
 
     t.deepEquals(path.normalize(parsedTorrent.files[0].path), path.normalize('numbers/1.txt'))
@@ -357,12 +357,12 @@ test('create multi file torrent with array of paths', function (t) {
     t.ok(createdTime >= startTime, 'created time is after start time')
     t.ok(createdTime <= Date.now(), 'created time is before now')
 
-    t.deepEquals(parsedTorrent.announceList, [
-      ['udp://tracker.publicbt.com:80'],
-      ['udp://tracker.openbittorrent.com:80'],
-      ['udp://open.demonii.com:1337'],
-      ['udp://tracker.webtorrent.io:80'],
-      ['wss://tracker.webtorrent.io']
+    t.deepEquals(parsedTorrent.announce, [
+      'udp://open.demonii.com:1337',
+      'udp://tracker.openbittorrent.com:80',
+      'udp://tracker.publicbt.com:80',
+      'udp://tracker.webtorrent.io:80',
+      'wss://tracker.webtorrent.io'
     ])
 
     t.deepEquals(path.normalize(parsedTorrent.files[0].path), path.normalize('multi/10.txt'))
@@ -426,12 +426,12 @@ test('create multi file torrent with array of mixed types', function (t) {
     t.ok(createdTime >= startTime, 'created time is after start time')
     t.ok(createdTime <= Date.now(), 'created time is before now')
 
-    t.deepEquals(parsedTorrent.announceList, [
-      ['udp://tracker.publicbt.com:80'],
-      ['udp://tracker.openbittorrent.com:80'],
-      ['udp://open.demonii.com:1337'],
-      ['udp://tracker.webtorrent.io:80'],
-      ['wss://tracker.webtorrent.io']
+    t.deepEquals(parsedTorrent.announce, [
+      'udp://open.demonii.com:1337',
+      'udp://tracker.openbittorrent.com:80',
+      'udp://tracker.publicbt.com:80',
+      'udp://tracker.webtorrent.io:80',
+      'wss://tracker.webtorrent.io'
     ])
 
     t.deepEquals(path.normalize(parsedTorrent.files[0].path), path.normalize('multi/11.txt'))
@@ -485,12 +485,12 @@ test('create nested torrent with array of buffers', function (t) {
     t.ok(createdTime >= startTime, 'created time is after start time')
     t.ok(createdTime <= Date.now(), 'created time is before now')
 
-    t.deepEquals(parsedTorrent.announceList, [
-      ['udp://tracker.publicbt.com:80'],
-      ['udp://tracker.openbittorrent.com:80'],
-      ['udp://open.demonii.com:1337'],
-      ['udp://tracker.webtorrent.io:80'],
-      ['wss://tracker.webtorrent.io']
+    t.deepEquals(parsedTorrent.announce, [
+      'udp://open.demonii.com:1337',
+      'udp://tracker.openbittorrent.com:80',
+      'udp://tracker.publicbt.com:80',
+      'udp://tracker.webtorrent.io:80',
+      'wss://tracker.webtorrent.io'
     ])
 
     t.deepEquals(path.normalize(parsedTorrent.files[0].path), path.normalize('multi/dir1/buf1.txt'))
