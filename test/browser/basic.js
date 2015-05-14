@@ -1,4 +1,4 @@
-/*global Blob */
+/* global Blob */
 
 var createTorrent = require('../../')
 var fs = require('fs')
@@ -14,7 +14,7 @@ function makeFileShim (buf, name) {
 
 var leaves = makeFileShim(fs.readFileSync(__dirname + '/../content/Leaves of Grass by Walt Whitman.epub'), 'Leaves of Grass by Walt Whitman.epub')
 
-// HACK: Using utf8 explicitly here workaround a node 0.10.29 bug with base64.
+// HACK: Using utf8 explicitly here to workaround a node 0.10.29 bug with base64.
 // Apparrently if you call fs.createReadStream(file, { encoding: 'base64' }) on a
 // very short file (1 or 2 chars), then no data is ever emitted.
 
