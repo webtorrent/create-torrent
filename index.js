@@ -119,25 +119,25 @@ function parseInput (input, opts, cb) {
 
 function getFiles (path, keepRoot, cb) {
   traversePath(getFileInfo, path, function (err, files) {
-      if (err) return cb(err)
+    if (err) return cb(err)
 
-      if (Array.isArray(files)) files = flatten(files)
-      else files = [ files ]
+    if (Array.isArray(files)) files = flatten(files)
+    else files = [ files ]
 
-      var dirName = corePath.normalize(path)
-      if (keepRoot || files.length === 1) {
-        dirName = dirName.slice(0, dirName.lastIndexOf(corePath.sep) + 1)
-      } else {
-        if (dirName[dirName.length - 1] !== corePath.sep) dirName += corePath.sep
-      }
+    var dirName = corePath.normalize(path)
+    if (keepRoot || files.length === 1) {
+      dirName = dirName.slice(0, dirName.lastIndexOf(corePath.sep) + 1)
+    } else {
+      if (dirName[dirName.length - 1] !== corePath.sep) dirName += corePath.sep
+    }
 
-      files.forEach(function (file) {
-        file.getStream = getFilePathStream(file.path)
-        file.path = file.path.replace(dirName, '').split(corePath.sep)
-      })
-
-      cb(null, files)
+    files.forEach(function (file) {
+      file.getStream = getFilePathStream(file.path)
+      file.path = file.path.replace(dirName, '').split(corePath.sep)
     })
+
+    cb(null, files)
+  })
 }
 
 function getFileInfo (path, cb) {
