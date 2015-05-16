@@ -13,7 +13,7 @@ module.exports.announceList = [
 module.exports.parseInput = parseInput
 
 var bencode = require('bencode')
-var BlockStream = require('block-stream')
+var BlockStream = require('block-stream2')
 var calcPieceLength = require('piece-length')
 var corePath = require('path')
 var dezalgo = require('dezalgo')
@@ -188,28 +188,50 @@ function getPieceList (files, pieceLength, cb) {
   var pieceNum = 0
   var ended = false
 
-  new MultiStream(streams)
-    .pipe(new BlockStream(pieceLength, { nopad: true }))
-    .on('data', function (chunk) {
-      length += chunk.length
+  var multistream = new MultiStream(streams)
+  var blockstream = new BlockStream(pieceLength, { zeroPadding: false })
 
-      var i = pieceNum
-      sha1(chunk, function (hash) {
-        pieces[i] = hash
-        remainingHashes -= 1
-        maybeDone()
-      })
-      remainingHashes += 1
-      pieceNum += 1
-    })
-    .on('end', function () {
-      ended = true
+  multistream.on('error', onError)
+
+  multistream
+    .pipe(blockstream)
+    .on('data', onData)
+    .on('end', onEnd)
+    .on('error', onError)
+
+  function onData (chunk) {
+    length += chunk.length
+
+    var i = pieceNum
+    sha1(chunk, function (hash) {
+      pieces[i] = hash
+      remainingHashes -= 1
       maybeDone()
     })
-    .on('error', cb)
+    remainingHashes += 1
+    pieceNum += 1
+  }
+
+  function onEnd () {
+    ended = true
+    maybeDone()
+  }
+
+  function onError (err) {
+    cleanup()
+    cb(err)
+  }
+
+  function cleanup () {
+    multistream.removeListener('error', onError)
+    blockstream.removeListener('data', onData)
+    blockstream.removeListener('end', onEnd)
+    blockstream.removeListener('error', onError)
+  }
 
   function maybeDone () {
     if (ended && remainingHashes === 0) {
+      cleanup()
       cb(null, new Buffer(pieces.join(''), 'hex'), length)
     }
   }

@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "bencode": "^0.7.0",
-    "block-stream": "^0.0.7",
+    "block-stream2": "^1.0.0",
     "dezalgo": "^1.0.1",
     "filestream": "git://github.com/feross/filestream.git",
     "flatten": "0.0.1",
