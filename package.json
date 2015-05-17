@@ -13,7 +13,7 @@
     "bencode": "^0.7.0",
     "block-stream2": "^1.0.0",
     "dezalgo": "^1.0.1",
-    "filestream": "git://github.com/feross/filestream.git",
+    "filestream": "^4.0.0",
     "flatten": "0.0.1",
     "minimist": "^1.1.0",
     "multistream": "^1.0.0",
