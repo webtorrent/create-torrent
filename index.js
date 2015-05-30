@@ -238,11 +238,21 @@ function getPieceList (files, pieceLength, cb) {
 }
 
 function onFiles (files, opts, cb) {
-  var announceList = opts.announceList !== undefined
-    ? opts.announceList
-    : opts.announce !== undefined
-      ? opts.announce.map(function (u) { return [ u ] })
-      : module.exports.announceList // default
+  var announceList = opts.announceList
+
+  if (!announceList) {
+    if (typeof opts.announce === 'string') announceList = [ [ opts.announce ] ]
+    else if (Array.isArray(opts.announce)) {
+      announceList = opts.announce.map(function (u) { return [ u ] })
+    }
+  }
+
+  if (!announceList) announceList = []
+
+  // When no trackers specified, use some reasonable defaults
+  if (announceList.length === 0) {
+    announceList = announceList.concat(module.exports.announceList)
+  }
 
   var torrent = {
     info: {
