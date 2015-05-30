@@ -249,6 +249,16 @@ function onFiles (files, opts, cb) {
 
   if (!announceList) announceList = []
 
+  if (global.WEBTORRENT_ANNOUNCE) {
+    if (typeof global.WEBTORRENT_ANNOUNCE === 'string') {
+      announceList.push([ [ global.WEBTORRENT_ANNOUNCE ] ])
+    } else if (Array.isArray(global.WEBTORRENT_ANNOUNCE)) {
+      announceList = announceList.concat(global.WEBTORRENT_ANNOUNCE.map(function (u) {
+        return [ u ]
+      }))
+    }
+  }
+
   // When no trackers specified, use some reasonable defaults
   if (announceList.length === 0) {
     announceList = announceList.concat(module.exports.announceList)
