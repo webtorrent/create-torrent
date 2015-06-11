@@ -20,6 +20,7 @@ var dezalgo = require('dezalgo')
 var FileReadStream = require('filestream/read')
 var flatten = require('flatten')
 var fs = require('fs')
+var isFile = require('is-file')
 var MultiStream = require('multistream')
 var once = require('once')
 var parallel = require('run-parallel')
@@ -47,8 +48,9 @@ function createTorrent (input, opts, cb) {
     opts = {}
   }
   if (!opts) opts = {}
-  parseInput(input, opts, function (err, files) {
+  parseInput(input, opts, function (err, files, singleFileTorrent) {
     if (err) return cb(err)
+    opts.singleFileTorrent = singleFileTorrent
     onFiles(files, opts, cb)
   })
 }
@@ -80,62 +82,76 @@ function parseInput (input, opts, cb) {
     return sum + Number(typeof item === 'string')
   }, 0)
 
-  parallel(input.map(function (item) {
-    return function (cb) {
-      var file = {}
+  var isSingleFileTorrent = (input.length === 1)
 
-      if (isBlob(item)) {
-        file.getStream = getBlobStream(item)
-        file.length = item.size
-      } else if (Buffer.isBuffer(item)) {
-        file.getStream = getBufferStream(item)
-        file.length = item.length
-      } else if (isReadable(item)) {
-        if (!opts.pieceLength) {
-          throw new Error('must specify `pieceLength` option if input is Stream')
+  if (input.length === 1 && typeof input[0] === 'string') {
+    // If there's a single path, verify it's a file before deciding this is a single
+    // file torrent
+    isFile(input[0], function (err, pathIsFile) {
+      if (err) return cb(err)
+      isSingleFileTorrent = pathIsFile
+      processInput()
+    })
+  } else {
+    processInput()
+  }
+
+  function processInput () {
+    parallel(input.map(function (item) {
+      return function (cb) {
+        var file = {}
+
+        if (isBlob(item)) {
+          file.getStream = getBlobStream(item)
+          file.length = item.size
+        } else if (Buffer.isBuffer(item)) {
+          file.getStream = getBufferStream(item)
+          file.length = item.length
+        } else if (isReadable(item)) {
+          if (!opts.pieceLength) {
+            throw new Error('must specify `pieceLength` option if input is Stream')
+          }
+          file.getStream = getStreamStream(item, file)
+          file.length = 0
+        } else if (typeof item === 'string') {
+          if (typeof fs.readdir !== 'function') {
+            throw new Error('filesystem paths do not work in the browser')
+          }
+          var keepRoot = numPaths > 1 || isSingleFileTorrent
+          getFiles(item, keepRoot, cb)
+          return // early return!
+        } else {
+          throw new Error('invalid input type')
         }
-        file.getStream = getStreamStream(item, file)
-        file.length = 0
-      } else if (typeof item === 'string') {
-        if (typeof fs.readdir !== 'function') {
-          throw new Error('filesystem paths do not work in the browser')
-        }
-        var keepRoot = numPaths > 1
-        getFiles(item, keepRoot, cb)
-        return // early return!
-      } else {
-        throw new Error('invalid input type')
+        if (!item.name) throw new Error('missing requied `name` property on input')
+        file.path = item.name.split(corePath.sep)
+        cb(null, file)
       }
-      if (!item.name) throw new Error('missing requied `name` property on input')
-      file.path = item.name.split(corePath.sep)
-      cb(null, file)
-    }
-  }), function (err, files) {
-    if (err) return cb(err)
-    files = flatten(files)
-    cb(null, files)
-  })
+    }), function (err, files) {
+      if (err) return cb(err)
+      files = flatten(files)
+      cb(null, files, isSingleFileTorrent)
+    })
+  }
 }
 
 function getFiles (path, keepRoot, cb) {
-  traversePath(getFileInfo, path, function (err, files) {
+  traversePath(path, getFileInfo, function (err, files) {
     if (err) return cb(err)
 
     if (Array.isArray(files)) files = flatten(files)
     else files = [ files ]
 
-    var dirName = corePath.normalize(path)
-    if (keepRoot || files.length === 1) {
-      dirName = dirName.slice(0, dirName.lastIndexOf(corePath.sep) + 1)
-    } else {
-      if (dirName[dirName.length - 1] !== corePath.sep) dirName += corePath.sep
+    path = corePath.normalize(path)
+    if (keepRoot) {
+      path = path.slice(0, path.lastIndexOf(corePath.sep) + 1)
     }
+    if (path[path.length - 1] !== corePath.sep) path += corePath.sep
 
     files.forEach(function (file) {
       file.getStream = getFilePathStream(file.path)
-      file.path = file.path.replace(dirName, '').split(corePath.sep)
+      file.path = file.path.replace(path, '').split(corePath.sep)
     })
-
     cb(null, files)
   })
 }
@@ -152,7 +168,7 @@ function getFileInfo (path, cb) {
   })
 }
 
-function traversePath (fn, path, cb) {
+function traversePath (path, fn, cb) {
   fs.readdir(path, function (err, entries) {
     if (err && err.code === 'ENOTDIR') {
       // this is a file
@@ -164,7 +180,7 @@ function traversePath (fn, path, cb) {
       // this is a folder
       parallel(entries.filter(notHidden).map(function (entry) {
         return function (cb) {
-          traversePath(fn, corePath.join(path, entry), cb)
+          traversePath(corePath.join(path, entry), fn, cb)
         }
       }), cb)
     }
@@ -288,8 +304,6 @@ function onFiles (files, opts, cb) {
 
   if (opts.urlList !== undefined) torrent['url-list'] = opts.urlList
 
-  var singleFile = files.length === 1
-
   var pieceLength = opts.pieceLength || calcPieceLength(files.reduce(sumLength, 0))
   torrent.info['piece length'] = pieceLength
 
@@ -301,10 +315,10 @@ function onFiles (files, opts, cb) {
       delete file.getStream
     })
 
-    if (!singleFile) {
-      torrent.info.files = files
-    } else {
+    if (opts.singleFileTorrent) {
       torrent.info.length = torrentLength
+    } else {
+      torrent.info.files = files
     }
 
     cb(null, bencode.encode(torrent))
