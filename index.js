@@ -274,9 +274,9 @@ function onFiles (files, opts, cb) {
     encoding: 'UTF-8'
   }
 
-  if (opts.comment !== undefined) torrent.info.comment = opts.comment
+  if (opts.comment !== undefined) torrent.comment = opts.comment
 
-  if (opts.createdBy !== undefined) torrent.info['created by'] = opts.createdBy
+  if (opts.createdBy !== undefined) torrent['created by'] = opts.createdBy
 
   if (opts.private !== undefined) torrent.info.private = Number(opts.private)
 
