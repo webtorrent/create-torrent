@@ -21,6 +21,7 @@ var FileReadStream = require('filestream/read')
 var flatten = require('flatten')
 var fs = require('fs')
 var isFile = require('is-file')
+var junk = require('junk')
 var MultiStream = require('multistream')
 var once = require('once')
 var parallel = require('run-parallel')
@@ -178,7 +179,7 @@ function traversePath (path, fn, cb) {
       cb(err)
     } else {
       // this is a folder
-      parallel(entries.filter(notHidden).map(function (entry) {
+      parallel(entries.filter(notHidden).filter(junk.not).map(function (entry) {
         return function (cb) {
           traversePath(corePath.join(path, entry), fn, cb)
         }
