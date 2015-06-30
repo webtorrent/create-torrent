@@ -57,6 +57,9 @@
     "test-browser-local": "zuul --local -- test/browser/*.js",
     "test-node": "tape test/*.js"
   },
+  "standard": {
+    "globals": ["Blob", "FileList"]
+  },
   "testling": {
     "files": "test/browser/*.js"
   }

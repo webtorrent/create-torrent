@@ -1,5 +1,3 @@
-/*global Blob, FileList */
-
 module.exports = createTorrent
 
 module.exports.announceList = [
