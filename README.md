@@ -51,8 +51,8 @@ Create a new `.torrent` file.
 - path to the file or folder on filesystem (string)
 - W3C [File](https://developer.mozilla.org/en-US/docs/Web/API/File) object (from an `<input>` or drag and drop)
 - W3C [FileList](https://developer.mozilla.org/en-US/docs/Web/API/FileList) object (basically an array of `File` objects)
-- Node [Buffer](http://nodejs.org/api/buffer.html) object (works in [the browser](https://www.npmjs.org/package/buffer))
-- Node [stream.Readable](http://nodejs.org/api/stream.html) object (must attach a `name` property on it (or set `opt.name`), and set `opt.pieceLength`)
+- Node [Buffer](http://nodejs.org/api/buffer.html) object (works in [the browser](https://www.npmjs.org/package/buffer)) (must set a `name` property on it)
+- Node [stream.Readable](http://nodejs.org/api/stream.html) object (must set `name` and `opt.pieceLength` properties on it)
 
 Or, an **array of `string`, `File`, `Buffer`, or `stream.Readable` objects**.
 
