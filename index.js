@@ -279,6 +279,8 @@ function onFiles (files, opts, cb) {
     announceList = announceList.concat(module.exports.announceList)
   }
 
+  if (typeof opts.urlList === 'string') opts.urlList = [ opts.urlList ]
+
   var torrent = {
     info: {
       name: opts.name
