@@ -5,7 +5,8 @@ module.exports.announceList = [
   [ 'udp://tracker.openbittorrent.com:80' ],
   [ 'udp://open.demonii.com:1337' ],
   [ 'udp://tracker.webtorrent.io:80' ],
-  [ 'wss://tracker.webtorrent.io' ] // For WebRTC peers (see: WebTorrent.io)
+  [ 'wss://tracker.webtorrent.io' ], // For WebRTC peers (see: WebTorrent.io)
+  [ 'wss://tracker.btorrent.xyz' ]
 ]
 
 module.exports.parseInput = parseInput
