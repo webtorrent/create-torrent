@@ -39,13 +39,7 @@ test('create single file torrent', function (t) {
     t.ok(createdTime >= startTime, 'created time is after start time')
     t.ok(createdTime <= Date.now(), 'created time is before now')
 
-    t.deepEquals(parsedTorrent.announce, [
-      'udp://open.demonii.com:1337',
-      'udp://tracker.openbittorrent.com:80',
-      'udp://tracker.publicbt.com:80',
-      'udp://tracker.webtorrent.io:80',
-      'wss://tracker.webtorrent.io'
-    ])
+    t.ok(Array.isArray(parsedTorrent.announce))
 
     t.equals(parsedTorrent.files[0].path, 'Leaves of Grass by Walt Whitman.epub')
     t.equals(parsedTorrent.files[0].length, 362017)
@@ -109,13 +103,7 @@ test('create multi file torrent', function (t) {
     t.ok(createdTime >= startTime, 'created time is after start time')
     t.ok(createdTime <= Date.now(), 'created time is before now')
 
-    t.deepEquals(parsedTorrent.announce, [
-      'udp://open.demonii.com:1337',
-      'udp://tracker.openbittorrent.com:80',
-      'udp://tracker.publicbt.com:80',
-      'udp://tracker.webtorrent.io:80',
-      'wss://tracker.webtorrent.io'
-    ])
+    t.ok(Array.isArray(parsedTorrent.announce))
 
     t.deepEquals(parsedTorrent.files[0].path, 'numbers/1.txt')
     t.deepEquals(parsedTorrent.files[0].length, 1)
