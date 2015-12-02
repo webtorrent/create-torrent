@@ -115,7 +115,7 @@ function parseInput (input, opts, cb) {
           file.getStream = getStreamStream(item, file)
           file.length = 0
         } else if (typeof item === 'string') {
-          if (typeof fs.readdir !== 'function') {
+          if (typeof fs.stat !== 'function') {
             throw new Error('filesystem paths do not work in the browser')
           }
           var keepRoot = numPaths > 1 || isSingleFileTorrent
