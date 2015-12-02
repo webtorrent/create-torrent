@@ -73,11 +73,13 @@ Or, an **array of `string`, `File`, `Buffer`, or `stream.Readable` objects**.
 
 If `announceList` is omitted, the following trackers will be included automatically:
 
-- udp://tracker.publicbt.com:80
 - udp://tracker.openbittorrent.com:80
-- udp://open.demonii.com:1337
-- udp://tracker.webtorrent.io:80
+- udp://tracker.internetwarriors.net:1337
+- udp://tracker.leechers-paradise.org:6969
+- udp://tracker.coppersurfer.tk:6969
+- udp://exodus.desync.com:6969
 - wss://tracker.webtorrent.io (For WebRTC peers, see: [WebTorrent](http://webtorrent.io))
+  
 
 `callback` is called with an error and a Buffer of the torrent data. It is up to you to
 save it to a file if that's what you want to do.
