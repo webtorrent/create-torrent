@@ -86,6 +86,9 @@ function parseInput (input, opts, cb) {
   var isSingleFileTorrent = (input.length === 1)
 
   if (input.length === 1 && typeof input[0] === 'string') {
+    if (typeof fs.stat !== 'function') {
+      throw new Error('filesystem paths do not work in the browser')
+    }
     // If there's a single path, verify it's a file before deciding this is a single
     // file torrent
     isFile(input[0], function (err, pathIsFile) {
