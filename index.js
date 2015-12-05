@@ -69,8 +69,8 @@ function parseInput (input, opts, cb) {
   if (isFileList(input)) input = Array.prototype.slice.call(input)
   if (!Array.isArray(input)) input = [ input ]
 
-  if (!opts.name) opts.name = input[0] && input[0].name
-  if (!opts.name) opts.name = typeof input[0] === 'string' && corePath.basename(input[0])
+  if (!opts.name && input[0] && input[0].name) opts.name = input[0].name
+  if (!opts.name && typeof input[0] === 'string') opts.name = corePath.basename(input[0])
 
   if (opts.name === undefined) {
     throw new Error('missing option \'name\' and unable to infer it from input[0].name')
