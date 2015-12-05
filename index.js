@@ -69,15 +69,47 @@ function parseInput (input, opts, cb) {
   if (isFileList(input)) input = Array.prototype.slice.call(input)
   if (!Array.isArray(input)) input = [ input ]
 
+  // If there's just one file, allow the name to be set by `opts.name`
+  if (input.length === 1 && typeof input[0] !== 'string' && !input[0].name) input[0].name = opts.name
+
+  var commonPrefix = null
+  input.forEach(function (item, i) {
+    if (typeof item === 'string') {
+      return
+    }
+    var path = item.fullPath || item.name
+    if (!path) throw new Error('missing required `fullPath` or `name` property on input')
+    var components = path.split('/')
+    // Remove initial slash
+    if (!components[0]) {
+      components.shift()
+    }
+    item.path = components
+    if (components.length < 2) { // No real prefix
+      commonPrefix = null
+    } else if (i === 0) { // The first file has a prefix
+      commonPrefix = components[0]
+    } else if (components[0] !== commonPrefix) { // The prefix doesn't match
+      commonPrefix = null
+    }
+  })
+
+  if (commonPrefix) {
+    input.forEach(function (item) {
+      if (typeof item === 'string') {
+        return
+      }
+      item.path.shift()
+    })
+  }
+
+  if (!opts.name && commonPrefix) opts.name = commonPrefix
   if (!opts.name && input[0] && input[0].name) opts.name = input[0].name
   if (!opts.name && typeof input[0] === 'string') opts.name = corePath.basename(input[0])
 
   if (opts.name === undefined) {
     throw new Error('missing option \'name\' and unable to infer it from input[0].name')
   }
-
-  // If there's just one file, allow the name to be set by `opts.name`
-  if (input.length === 1 && !input[0].name) input[0].name = opts.name
 
   var numPaths = input.reduce(function (sum, item) {
     return sum + Number(typeof item === 'string')
@@ -127,8 +159,7 @@ function parseInput (input, opts, cb) {
         } else {
           throw new Error('invalid input type')
         }
-        if (!item.name) throw new Error('missing requied `name` property on input')
-        file.path = item.name.split(corePath.sep)
+        file.path = item.path
         cb(null, file)
       }
     }), function (err, files) {
