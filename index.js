@@ -74,31 +74,27 @@ function parseInput (input, opts, cb) {
 
   var commonPrefix = null
   input.forEach(function (item, i) {
-    if (typeof item === 'string') {
-      return
-    }
+    if (typeof item === 'string') return
+
     var path = item.fullPath || item.name
     if (!path) throw new Error('missing required `fullPath` or `name` property on input')
-    var components = path.split('/')
-    // Remove initial slash
-    if (!components[0]) {
-      components.shift()
-    }
-    item.path = components
-    if (components.length < 2) { // No real prefix
+
+    item.path = path.split('/')
+
+    if (!item.path[0]) item.path.shift() // Remove initial slash
+
+    if (item.path.length < 2) { // No real prefix
       commonPrefix = null
     } else if (i === 0) { // The first file has a prefix
-      commonPrefix = components[0]
-    } else if (components[0] !== commonPrefix) { // The prefix doesn't match
+      commonPrefix = item.path[0]
+    } else if (item.path[0] !== commonPrefix) { // The prefix doesn't match
       commonPrefix = null
     }
   })
 
   if (commonPrefix) {
     input.forEach(function (item) {
-      if (typeof item === 'string') {
-        return
-      }
+      if (typeof item === 'string') return
       item.path.shift()
     })
   }
