@@ -92,6 +92,13 @@ function parseInput (input, opts, cb) {
     }
   })
 
+  // remove junk files
+  input = input.filter(function (item) {
+    if (typeof item === 'string') return true
+    var filename = item.path[item.path.length - 1]
+    return notHidden(filename) && junk.not(filename)
+  })
+
   if (commonPrefix) {
     input.forEach(function (item) {
       if (typeof item === 'string') return
