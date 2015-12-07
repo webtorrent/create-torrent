@@ -1,4 +1,5 @@
 module.exports = createTorrent
+module.exports.parseInput = parseInput
 
 module.exports.announceList = [
   [ 'udp://tracker.openbittorrent.com:80' ],
@@ -8,8 +9,6 @@ module.exports.announceList = [
   [ 'udp://exodus.desync.com:6969' ],
   [ 'wss://tracker.webtorrent.io' ] // For WebRTC peers (see: WebTorrent.io)
 ]
-
-module.exports.parseInput = parseInput
 
 var bencode = require('bencode')
 var BlockStream = require('block-stream2')
