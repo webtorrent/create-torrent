@@ -312,7 +312,7 @@ function onFiles (files, opts, cb) {
   }
 
   // When no trackers specified, use some reasonable defaults
-  if (announceList.length === 0) {
+  if (opts.announce === undefined && opts.announceList === undefined) {
     announceList = announceList.concat(module.exports.announceList)
   }
 
@@ -322,10 +322,13 @@ function onFiles (files, opts, cb) {
     info: {
       name: opts.name
     },
-    announce: announceList[0][0],
-    'announce-list': announceList,
     'creation date': Number(opts.creationDate) || Date.now(),
     encoding: 'UTF-8'
+  }
+
+  if (announceList.length !== 0) {
+    torrent.announce = announceList[0][0]
+    torrent['announce-list'] = announceList
   }
 
   if (opts.comment !== undefined) torrent.comment = opts.comment
