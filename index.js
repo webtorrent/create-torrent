@@ -401,7 +401,7 @@ function isFileList (obj) {
  * @return {boolean}
  */
 function isReadable (obj) {
-  return typeof obj === 'object' && typeof obj.pipe === 'function'
+  return typeof obj === 'object' && obj != null && typeof obj.pipe === 'function'
 }
 
 /**
