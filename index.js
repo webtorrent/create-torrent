@@ -84,7 +84,7 @@ function parseInput (input, opts, cb) {
 
     if (item.path.length < 2) { // No real prefix
       commonPrefix = null
-    } else if (i === 0) { // The first file has a prefix
+    } else if (i === 0 && input.length > 1) { // The first file has a prefix
       commonPrefix = item.path[0]
     } else if (item.path[0] !== commonPrefix) { // The prefix doesn't match
       commonPrefix = null
