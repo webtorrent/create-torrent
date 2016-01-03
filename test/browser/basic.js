@@ -8,6 +8,7 @@ var test = require('tape')
 
 function makeFileShim (buf, name) {
   var file = new Blob([ buf ])
+  file.fullPath = '/' + name
   file.name = name
   return file
 }
