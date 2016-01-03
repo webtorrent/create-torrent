@@ -68,6 +68,12 @@ function parseInput (input, opts, cb) {
   if (isFileList(input)) input = Array.prototype.slice.call(input)
   if (!Array.isArray(input)) input = [ input ]
 
+  // In Electron, use the true file path
+  input = input.map(function (item) {
+    if (isBlob(item) && typeof item.path === 'string') return item.path
+    return item
+  })
+
   // If there's just one file, allow the name to be set by `opts.name`
   if (input.length === 1 && typeof input[0] !== 'string' && !input[0].name) input[0].name = opts.name
 
