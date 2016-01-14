@@ -16,6 +16,7 @@ var BlockStream = require('block-stream2')
 var calcPieceLength = require('piece-length')
 var corePath = require('path')
 var dezalgo = require('dezalgo')
+var extend = require('xtend')
 var FileReadStream = require('filestream/read')
 var flatten = require('flatten')
 var fs = require('fs')
@@ -43,11 +44,10 @@ var stream = require('stream')
  * @return {Buffer} buffer of .torrent file data
  */
 function createTorrent (input, opts, cb) {
-  if (typeof opts === 'function') {
-    cb = opts
-    opts = {}
-  }
-  if (!opts) opts = {}
+  if (typeof opts === 'function') return createTorrent(input, null, opts)
+  if (opts) opts = extend(opts)
+  else opts = {}
+
   parseInput(input, opts, function (err, files, singleFileTorrent) {
     if (err) return cb(err)
     opts.singleFileTorrent = singleFileTorrent
@@ -56,11 +56,9 @@ function createTorrent (input, opts, cb) {
 }
 
 function parseInput (input, opts, cb) {
-  if (typeof opts === 'function') {
-    cb = opts
-    opts = {}
-  }
-  if (!opts) opts = {}
+  if (typeof opts === 'function') return parseInput(input, null, opts)
+  if (opts) opts = extend(opts)
+  else opts = {}
   cb = dezalgo(cb)
 
   if (Array.isArray(input) && input.length === 0) throw new Error('invalid input type')
