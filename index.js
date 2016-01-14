@@ -44,8 +44,7 @@ var stream = require('stream')
  */
 function createTorrent (input, opts, cb) {
   if (typeof opts === 'function') return createTorrent(input, null, opts)
-  if (opts) opts = extend(opts)
-  else opts = {}
+  opts = opts ? extend(opts) : {}
 
   parseInput(input, opts, function (err, files, singleFileTorrent) {
     if (err) return cb(err)
@@ -56,8 +55,7 @@ function createTorrent (input, opts, cb) {
 
 function parseInput (input, opts, cb) {
   if (typeof opts === 'function') return parseInput(input, null, opts)
-  if (opts) opts = extend(opts)
-  else opts = {}
+  opts = opts ? extend(opts) : {}
 
   if (Array.isArray(input) && input.length === 0) throw new Error('invalid input type')
 
