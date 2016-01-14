@@ -1,10 +1,10 @@
 # create-torrent [![travis][travis-image]][travis-url] [![npm][npm-image]][npm-url] [![downloads][downloads-image]][downloads-url]
 
-[travis-image]: https://img.shields.io/travis/feross/create-torrent/master.svg?style=flat
+[travis-image]: https://img.shields.io/travis/feross/create-torrent/master.svg
 [travis-url]: https://travis-ci.org/feross/create-torrent
-[npm-image]: https://img.shields.io/npm/v/create-torrent.svg?style=flat
+[npm-image]: https://img.shields.io/npm/v/create-torrent.svg
 [npm-url]: https://npmjs.org/package/create-torrent
-[downloads-image]: https://img.shields.io/npm/dm/create-torrent.svg?style=flat
+[downloads-image]: https://img.shields.io/npm/dm/create-torrent.svg
 [downloads-url]: https://npmjs.org/package/create-torrent
 
 #### Create .torrent files
