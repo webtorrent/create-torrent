@@ -12,7 +12,6 @@
   "dependencies": {
     "bencode": "^0.7.0",
     "block-stream2": "^1.0.0",
-    "dezalgo": "^1.0.1",
     "filestream": "^4.0.0",
     "flatten": "0.0.1",
     "is-file": "^1.0.0",

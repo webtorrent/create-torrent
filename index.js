@@ -15,7 +15,6 @@ var bencode = require('bencode')
 var BlockStream = require('block-stream2')
 var calcPieceLength = require('piece-length')
 var corePath = require('path')
-var dezalgo = require('dezalgo')
 var extend = require('xtend')
 var FileReadStream = require('filestream/read')
 var flatten = require('flatten')
@@ -59,7 +58,6 @@ function parseInput (input, opts, cb) {
   if (typeof opts === 'function') return parseInput(input, null, opts)
   if (opts) opts = extend(opts)
   else opts = {}
-  cb = dezalgo(cb)
 
   if (Array.isArray(input) && input.length === 0) throw new Error('invalid input type')
 
@@ -135,7 +133,9 @@ function parseInput (input, opts, cb) {
       processInput()
     })
   } else {
-    processInput()
+    process.nextTick(function () {
+      processInput()
+    })
   }
 
   function processInput () {
