@@ -46,7 +46,7 @@ function createTorrent (input, opts, cb) {
   if (typeof opts === 'function') return createTorrent(input, null, opts)
   opts = opts ? extend(opts) : {}
 
-  parseInput(input, opts, function (err, files, singleFileTorrent) {
+  _parseInput(input, opts, function (err, files, singleFileTorrent) {
     if (err) return cb(err)
     opts.singleFileTorrent = singleFileTorrent
     onFiles(files, opts, cb)
@@ -56,7 +56,13 @@ function createTorrent (input, opts, cb) {
 function parseInput (input, opts, cb) {
   if (typeof opts === 'function') return parseInput(input, null, opts)
   opts = opts ? extend(opts) : {}
+  _parseInput(input, opts, cb)
+}
 
+/**
+ * Parse input file and return file information.
+ */
+function _parseInput (input, opts, cb) {
   if (Array.isArray(input) && input.length === 0) throw new Error('invalid input type')
 
   if (isFileList(input)) input = Array.prototype.slice.call(input)
