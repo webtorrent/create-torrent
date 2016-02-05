@@ -1,14 +1,14 @@
-var path = require('path')
-var fs = require('fs')
 var createTorrent = require('../')
+var fs = require('fs')
 var parseTorrent = require('parse-torrent')
+var path = require('path')
 var sha1 = require('simple-sha1')
 var test = require('tape')
 
 test('create single file torrent', function (t) {
   t.plan(12)
 
-  var leavesPath = __dirname + '/content/Leaves of Grass by Walt Whitman.epub'
+  var leavesPath = path.join(__dirname, 'content/Leaves of Grass by Walt Whitman.epub')
 
   var startTime = Date.now()
   createTorrent(leavesPath, function (err, torrent) {
@@ -78,7 +78,7 @@ test('create single file torrent from buffer', function (t) {
 test('create multi file torrent', function (t) {
   t.plan(17)
 
-  var numbersPath = __dirname + '/content/numbers'
+  var numbersPath = path.join(__dirname, 'content/numbers')
 
   var startTime = Date.now()
   createTorrent(numbersPath, {
@@ -126,7 +126,7 @@ test('create multi file torrent', function (t) {
 test('create multi file torrent with nested directories', function (t) {
   t.plan(22)
 
-  var numbersPath = __dirname + '/content/lots-of-numbers'
+  var numbersPath = path.join(__dirname, 'content/lots-of-numbers')
 
   var startTime = Date.now()
   createTorrent(numbersPath, {
@@ -183,7 +183,7 @@ test('create multi file torrent with nested directories', function (t) {
 test('create single file torrent from a stream', function (t) {
   t.plan(12)
 
-  var leavesPath = __dirname + '/content/Leaves of Grass by Walt Whitman.epub'
+  var leavesPath = path.join(__dirname, 'content/Leaves of Grass by Walt Whitman.epub')
   var stream = fs.createReadStream(leavesPath)
 
   stream.name = 'Leaves of Grass by Walt Whitman.epub'
@@ -243,7 +243,7 @@ test('create single file torrent from a stream', function (t) {
 test('create multi file torrent with streams', function (t) {
   t.plan(17)
 
-  var numbersPath = __dirname + '/content/numbers'
+  var numbersPath = path.join(__dirname, 'content/numbers')
 
   var files = fs.readdirSync(numbersPath).map(function (file) {
     var stream = fs.createReadStream(numbersPath + '/' + file)
@@ -299,9 +299,9 @@ test('create multi file torrent with streams', function (t) {
 test('create multi file torrent with array of paths', function (t) {
   t.plan(21)
 
-  var number10Path = __dirname + '/content/lots-of-numbers/big numbers/10.txt'
-  var number11Path = __dirname + '/content/lots-of-numbers/big numbers/11.txt'
-  var numbersPath = __dirname + '/content/numbers'
+  var number10Path = path.join(__dirname, 'content/lots-of-numbers/big numbers/10.txt')
+  var number11Path = path.join(__dirname, 'content/lots-of-numbers/big numbers/11.txt')
+  var numbersPath = path.join(__dirname, 'content/numbers')
 
   var input = [ number10Path, number11Path, numbersPath ]
 
@@ -358,9 +358,9 @@ test('create multi file torrent with array of paths', function (t) {
 test('create multi file torrent with array of mixed types', function (t) {
   t.plan(21)
 
-  var number11Path = __dirname + '/content/lots-of-numbers/big numbers/11.txt'
-  var number10Path = __dirname + '/content/lots-of-numbers/big numbers/10.txt'
-  var numbersPath = __dirname + '/content/numbers'
+  var number11Path = path.join(__dirname, 'content/lots-of-numbers/big numbers/11.txt')
+  var number10Path = path.join(__dirname, 'content/lots-of-numbers/big numbers/10.txt')
+  var numbersPath = path.join(__dirname, 'content/numbers')
 
   var stream = fs.createReadStream(number10Path)
   stream.name = '10.txt'

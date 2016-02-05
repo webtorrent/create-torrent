@@ -3,6 +3,7 @@
 var createTorrent = require('../../')
 var fs = require('fs')
 var parseTorrent = require('parse-torrent')
+var path = require('path')
 var sha1 = require('simple-sha1')
 var test = require('tape')
 
@@ -13,9 +14,9 @@ function makeFileShim (buf, name, fullPath) {
   return file
 }
 
-var numbers1 = makeFileShim(fs.readFileSync(__dirname + '/../content/numbers/1.txt', 'utf8'), '1.txt', '/numbers/1.txt')
-var numbers2 = makeFileShim(fs.readFileSync(__dirname + '/../content/numbers/2.txt', 'utf8'), '2.txt', '/numbers/2.txt')
-var numbers3 = makeFileShim(fs.readFileSync(__dirname + '/../content/numbers/3.txt', 'utf8'), '3.txt', '/numbers/3.txt')
+var numbers1 = makeFileShim(fs.readFileSync(path.join(__dirname, '../content/numbers/1.txt'), 'utf8'), '1.txt', '/numbers/1.txt')
+var numbers2 = makeFileShim(fs.readFileSync(path.join(__dirname, '../content/numbers/2.txt'), 'utf8'), '2.txt', '/numbers/2.txt')
+var numbers3 = makeFileShim(fs.readFileSync(path.join(__dirname, '../content/numbers/3.txt'), 'utf8'), '3.txt', '/numbers/3.txt')
 var DSStore = makeFileShim('blah', '.DS_Store', '/numbers/.DS_Store') // this should be ignored
 
 test('create multi file torrent with directory at root', function (t) {

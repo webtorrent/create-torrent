@@ -3,6 +3,7 @@
 var createTorrent = require('../../')
 var fs = require('fs')
 var parseTorrent = require('parse-torrent')
+var path = require('path')
 var sha1 = require('simple-sha1')
 var test = require('tape')
 
@@ -13,11 +14,11 @@ function makeFileShim (buf, name) {
   return file
 }
 
-var leaves = makeFileShim(fs.readFileSync(__dirname + '/../content/Leaves of Grass by Walt Whitman.epub'), 'Leaves of Grass by Walt Whitman.epub')
+var leaves = makeFileShim(fs.readFileSync(path.join(__dirname, '../content/Leaves of Grass by Walt Whitman.epub')), 'Leaves of Grass by Walt Whitman.epub')
 
-var numbers1 = makeFileShim(fs.readFileSync(__dirname + '/../content/numbers/1.txt', 'utf8'), '1.txt')
-var numbers2 = makeFileShim(fs.readFileSync(__dirname + '/../content/numbers/2.txt', 'utf8'), '2.txt')
-var numbers3 = makeFileShim(fs.readFileSync(__dirname + '/../content/numbers/3.txt', 'utf8'), '3.txt')
+var numbers1 = makeFileShim(fs.readFileSync(path.join(__dirname, '../content/numbers/1.txt'), 'utf8'), '1.txt')
+var numbers2 = makeFileShim(fs.readFileSync(path.join(__dirname, '../content/numbers/2.txt'), 'utf8'), '2.txt')
+var numbers3 = makeFileShim(fs.readFileSync(path.join(__dirname, '../content/numbers/3.txt'), 'utf8'), '3.txt')
 
 test('create single file torrent', function (t) {
   t.plan(12)
