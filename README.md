@@ -78,8 +78,12 @@ If `announceList` is omitted, the following trackers will be included automatica
 - udp://tracker.leechers-paradise.org:6969
 - udp://tracker.coppersurfer.tk:6969
 - udp://exodus.desync.com:6969
-- wss://tracker.webtorrent.io (For WebRTC peers, see: [WebTorrent](https://webtorrent.io))
-- wss://tracker.btorrent.xyz (For WebRTC peers, see: [βTorrent](https://btorrent.xyz))
+- wss://tracker.webtorrent.io
+- wss://tracker.btorrent.xyz
+- wss://tracker.openwebtorrent.com
+
+Trackers that start with `wss://` are for WebRTC peers. See
+[WebTorrent](https://webtorrent.io) to learn more.
 
 `callback` is called with an error and a Buffer of the torrent data. It is up to you to
 save it to a file if that's what you want to do.
