@@ -60,7 +60,7 @@ Or, an **array of `string`, `File`, `Buffer`, or `stream.Readable` objects**.
 
 ``` js
 {
-  name: String,            // name of the torrent (default = basename of `path`)
+  name: String,            // name of the torrent (default = basename of `path`, or 1st file's name)
   comment: String,         // free-form textual comments of the author
   createdBy: String,       // name and version of program used to create torrent
   creationDate: Date       // creation time in UNIX epoch format (default = now)
