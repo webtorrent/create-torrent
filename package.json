@@ -1,7 +1,7 @@
 {
   "name": "create-torrent",
   "description": "Create .torrent files",
-  "version": "3.22.1",
+  "version": "3.22.2",
   "author": "Feross Aboukhadijeh <feross@feross.org> (http://feross.org/)",
   "bin": {
     "create-torrent": "./bin/cmd.js"
