@@ -26,7 +26,7 @@
   },
   "devDependencies": {
     "brfs": "^1.1.2",
-    "parse-torrent": "^5.0.0",
+    "parse-torrent": "^5.7.2",
     "standard": "^6.0.5",
     "tape": "^4.0.0",
     "zuul": "^3.0.0"
