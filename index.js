@@ -26,7 +26,7 @@ var MultiStream = require('multistream')
 var once = require('once')
 var parallel = require('run-parallel')
 var sha1 = require('simple-sha1')
-var stream = require('stream')
+var stream = require('readable-stream')
 
 /**
  * Create a torrent.
