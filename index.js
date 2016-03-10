@@ -10,7 +10,7 @@ module.exports.announceList = [
   [ 'wss://tracker.webtorrent.io' ],
   [ 'wss://tracker.btorrent.xyz' ],
   [ 'wss://tracker.openwebtorrent.com' ],
-  [ 'wss://tracker.fastcast.nz' ],
+  [ 'wss://tracker.fastcast.nz' ]
 ]
 
 var bencode = require('bencode')
