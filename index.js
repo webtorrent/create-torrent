@@ -9,7 +9,8 @@ module.exports.announceList = [
   [ 'udp://exodus.desync.com:6969' ],
   [ 'wss://tracker.webtorrent.io' ],
   [ 'wss://tracker.btorrent.xyz' ],
-  [ 'wss://tracker.openwebtorrent.com' ]
+  [ 'wss://tracker.openwebtorrent.com' ],
+  [ 'wss://tracker.fastcast.nz' ],
 ]
 
 var bencode = require('bencode')
