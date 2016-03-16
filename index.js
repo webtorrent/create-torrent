@@ -81,7 +81,7 @@ function _parseInput (input, opts, cb) {
 
   var commonPrefix = null
   input.forEach(function (item, i) {
-    if (typeof item === 'string') return
+    if (typeof item === 'string' || Buffer.isBuffer(item) && !item.name) return
 
     var path = item.fullPath || item.name
     if (!path) throw new Error('missing required `fullPath` or `name` property on input')
@@ -101,14 +101,14 @@ function _parseInput (input, opts, cb) {
 
   // remove junk files
   input = input.filter(function (item) {
-    if (typeof item === 'string') return true
+    if (typeof item === 'string' || Buffer.isBuffer(item)) return true
     var filename = item.path[item.path.length - 1]
     return notHidden(filename) && junk.not(filename)
   })
 
   if (commonPrefix) {
     input.forEach(function (item) {
-      if (typeof item === 'string') return
+      if (typeof item === 'string' || Buffer.isBuffer(item)) return
       item.path.shift()
     })
   }
@@ -118,7 +118,7 @@ function _parseInput (input, opts, cb) {
   if (!opts.name && typeof input[0] === 'string') opts.name = corePath.basename(input[0])
 
   if (opts.name === undefined) {
-    throw new Error('missing option \'name\' and unable to infer it from input[0].name')
+    opts.name = 'create-torrent:' + Date.now()
   }
 
   var numPaths = input.reduce(function (sum, item) {
