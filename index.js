@@ -81,7 +81,7 @@ function _parseInput (input, opts, cb) {
 
   var commonPrefix = null
   input.forEach(function (item, i) {
-    if (typeof item === 'string' || Buffer.isBuffer(item) && !item.name) return
+    if (typeof item === 'string' || (Buffer.isBuffer(item) && !item.name)) return
 
     var path = item.fullPath || item.name
     if (!path) throw new Error('missing required `fullPath` or `name` property on input')
