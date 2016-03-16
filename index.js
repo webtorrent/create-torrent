@@ -113,9 +113,22 @@ function _parseInput (input, opts, cb) {
     })
   }
 
-  if (!opts.name && commonPrefix) opts.name = commonPrefix
-  if (!opts.name && input[0] && input[0].name) opts.name = input[0].name
-  if (!opts.name && typeof input[0] === 'string') opts.name = corePath.basename(input[0])
+  if (!opts.name) {
+    if (commonPrefix) opts.name = commonPrefix
+
+    // use first found file name
+    input.some(function (item) {
+      if (Buffer.isBuffer(item) && !item.name) return
+      if (typeof item === 'string') {
+        opts.name = corePath.basename(item)
+        return true
+      }
+      if (item.name) {
+        opts.name = item.name
+        return true
+      }
+    })
+  }
 
   if (opts.name === undefined) {
     opts.name = 'create-torrent:' + Date.now()
