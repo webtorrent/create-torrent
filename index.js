@@ -116,8 +116,8 @@ function _parseInput (input, opts, cb) {
     })
   }
 
+  if (!opts.name && commonPrefix) opts.name = commonPrefix
   if (!opts.name) {
-    if (commonPrefix) opts.name = commonPrefix
     // use first found file name
     input.some(function (item) {
       var nameless = (Buffer.isBuffer(item) || isReadable(item)) && !item.name
