@@ -134,7 +134,7 @@ function _parseInput (input, opts, cb) {
   }
 
   if (opts.name === undefined) {
-    opts.name = 'create-torrent:' + Date.now()
+    opts.name = 'Unnamed Torrent ' + Date.now()
   }
 
   var numPaths = input.reduce(function (sum, item) {
