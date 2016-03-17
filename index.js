@@ -81,7 +81,8 @@ function _parseInput (input, opts, cb) {
 
   var commonPrefix = null
   input.forEach(function (item, i) {
-    if (typeof item === 'string' || (Buffer.isBuffer(item) && !item.name)) return
+    var nameless = (Buffer.isBuffer(item) || isReadable(item)) && !item.name
+    if (typeof item === 'string' || nameless) return
 
     var path = item.fullPath || item.name
     if (!path) throw new Error('missing required `fullPath` or `name` property on input')
@@ -101,30 +102,32 @@ function _parseInput (input, opts, cb) {
 
   // remove junk files
   input = input.filter(function (item) {
-    if (typeof item === 'string' || Buffer.isBuffer(item)) return true
+    var pathless = (Buffer.isBuffer(item) || isReadable(item)) && !item.path
+    if (typeof item === 'string' || pathless) return true
     var filename = item.path[item.path.length - 1]
     return notHidden(filename) && junk.not(filename)
   })
 
   if (commonPrefix) {
     input.forEach(function (item) {
-      if (typeof item === 'string' || Buffer.isBuffer(item)) return
+      var pathless = (Buffer.isBuffer(item) || isReadable(item)) && !item.path
+      if (typeof item === 'string' || pathless) return
       item.path.shift()
     })
   }
 
   if (!opts.name) {
     if (commonPrefix) opts.name = commonPrefix
-
     // use first found file name
     input.some(function (item) {
-      if (Buffer.isBuffer(item) && !item.name) return
-      if (typeof item === 'string') {
-        opts.name = corePath.basename(item)
-        return true
-      }
+      var nameless = (Buffer.isBuffer(item) || isReadable(item)) && !item.name
+      if (nameless) return
       if (item.name) {
         opts.name = item.name
+        return true
+      }
+      if (typeof item === 'string') {
+        opts.name = corePath.basename(item)
         return true
       }
     })
