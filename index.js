@@ -81,15 +81,22 @@ function _parseInput (input, opts, cb) {
 
   var commonPrefix = null
   input.forEach(function (item, i) {
-    var nameless = (Buffer.isBuffer(item) || isReadable(item)) && !item.name
-    if (typeof item === 'string' || nameless) return
+    if (typeof item === 'string') {
+      return
+    }
 
     var path = item.fullPath || item.name
-    if (!path) throw new Error('missing required `fullPath` or `name` property on input')
+    if (!path) {
+      path = 'Unknown File ' + (i + 1)
+      item.unknownName = true
+    }
 
     item.path = path.split('/')
 
-    if (!item.path[0]) item.path.shift() // Remove initial slash
+    // Remove initial slash
+    if (!item.path[0]) {
+      item.path.shift()
+    }
 
     if (item.path.length < 2) { // No real prefix
       commonPrefix = null
@@ -100,17 +107,11 @@ function _parseInput (input, opts, cb) {
     }
   })
 
-  input.forEach(function (item, index) {
-    var nameless = (Buffer.isBuffer(item) || isReadable(item)) && !item.name
-    if (nameless) {
-      item.path = opts.name + '-' + index
-    }
-  })
-
   // remove junk files
   input = input.filter(function (item) {
-    var pathless = (Buffer.isBuffer(item) || isReadable(item)) && !item.path
-    if (typeof item === 'string' || pathless) return true
+    if (typeof item === 'string') {
+      return true
+    }
     var filename = item.path[item.path.length - 1]
     return notHidden(filename) && junk.not(filename)
   })
@@ -123,24 +124,24 @@ function _parseInput (input, opts, cb) {
     })
   }
 
-  if (!opts.name && commonPrefix) opts.name = commonPrefix
+  if (!opts.name && commonPrefix) {
+    opts.name = commonPrefix
+  }
+
   if (!opts.name) {
-    // use first found file name
+    // use first user-set file name
     input.some(function (item) {
-      var nameless = (Buffer.isBuffer(item) || isReadable(item)) && !item.name
-      if (nameless) return
-      if (item.name) {
-        opts.name = item.name
-        return true
-      }
       if (typeof item === 'string') {
         opts.name = corePath.basename(item)
+        return true
+      } else if (!item.unknownName) {
+        opts.name = item.path[item.path.length - 1]
         return true
       }
     })
   }
 
-  if (opts.name === undefined) {
+  if (!opts.name) {
     opts.name = 'Unnamed Torrent ' + Date.now()
   }
 
