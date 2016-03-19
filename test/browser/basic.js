@@ -1,6 +1,7 @@
 /* global Blob */
 
 var createTorrent = require('../../')
+var fixtures = require('webtorrent-fixtures')
 var fs = require('fs')
 var parseTorrent = require('parse-torrent')
 var path = require('path')
@@ -14,11 +15,11 @@ function makeFileShim (buf, name) {
   return file
 }
 
-var leaves = makeFileShim(fs.readFileSync(path.join(__dirname, '../content/Leaves of Grass by Walt Whitman.epub')), 'Leaves of Grass by Walt Whitman.epub')
+var leaves = makeFileShim(fixtures.leaves.content, 'Leaves of Grass by Walt Whitman.epub')
 
-var numbers1 = makeFileShim(fs.readFileSync(path.join(__dirname, '../content/numbers/1.txt'), 'utf8'), '1.txt')
-var numbers2 = makeFileShim(fs.readFileSync(path.join(__dirname, '../content/numbers/2.txt'), 'utf8'), '2.txt')
-var numbers3 = makeFileShim(fs.readFileSync(path.join(__dirname, '../content/numbers/3.txt'), 'utf8'), '3.txt')
+var numbers1 = makeFileShim(fs.readFileSync(path.join(__dirname, '../../node_modules/webtorrent-fixtures/fixtures/numbers/1.txt'), 'utf8'), '1.txt')
+var numbers2 = makeFileShim(fs.readFileSync(path.join(__dirname, '../../node_modules/webtorrent-fixtures/fixtures/numbers/2.txt'), 'utf8'), '2.txt')
+var numbers3 = makeFileShim(fs.readFileSync(path.join(__dirname, '../../node_modules/webtorrent-fixtures/fixtures/numbers/3.txt'), 'utf8'), '3.txt')
 
 test('create single file torrent', function (t) {
   t.plan(12)

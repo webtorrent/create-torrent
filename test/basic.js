@@ -1,4 +1,5 @@
 var createTorrent = require('../')
+var fixtures = require('webtorrent-fixtures')
 var fs = require('fs')
 var parseTorrent = require('parse-torrent')
 var path = require('path')
@@ -8,10 +9,8 @@ var test = require('tape')
 test('create single file torrent', function (t) {
   t.plan(12)
 
-  var leavesPath = path.join(__dirname, 'content/Leaves of Grass by Walt Whitman.epub')
-
   var startTime = Date.now()
-  createTorrent(leavesPath, function (err, torrent) {
+  createTorrent(fixtures.leaves.contentPath, function (err, torrent) {
     t.error(err)
 
     var parsedTorrent = parseTorrent(torrent)
@@ -78,10 +77,8 @@ test('create single file torrent from buffer', function (t) {
 test('create multi file torrent', function (t) {
   t.plan(17)
 
-  var numbersPath = path.join(__dirname, 'content/numbers')
-
   var startTime = Date.now()
-  createTorrent(numbersPath, {
+  createTorrent(fixtures.numbers.contentPath, {
     pieceLength: 32768, // force piece length to 32KB so info-hash will
                         // match what transmission generated, since we use
                         // a different algo for picking piece length
@@ -126,10 +123,8 @@ test('create multi file torrent', function (t) {
 test('create multi file torrent with nested directories', function (t) {
   t.plan(22)
 
-  var numbersPath = path.join(__dirname, 'content/lots-of-numbers')
-
   var startTime = Date.now()
-  createTorrent(numbersPath, {
+  createTorrent(fixtures.lotsOfNumbers.contentPath, {
     pieceLength: 32768, // force piece length to 32KB so info-hash will
                         // match what transmission generated, since we use
                         // a different algo for picking piece length
@@ -183,9 +178,7 @@ test('create multi file torrent with nested directories', function (t) {
 test('create single file torrent from a stream', function (t) {
   t.plan(12)
 
-  var leavesPath = path.join(__dirname, 'content/Leaves of Grass by Walt Whitman.epub')
-  var stream = fs.createReadStream(leavesPath)
-
+  var stream = fs.createReadStream(fixtures.leaves.contentPath)
   stream.name = 'Leaves of Grass by Walt Whitman.epub'
 
   var startTime = Date.now()
@@ -243,10 +236,8 @@ test('create single file torrent from a stream', function (t) {
 test('create multi file torrent with streams', function (t) {
   t.plan(17)
 
-  var numbersPath = path.join(__dirname, 'content/numbers')
-
-  var files = fs.readdirSync(numbersPath).map(function (file) {
-    var stream = fs.createReadStream(numbersPath + '/' + file)
+  var files = fs.readdirSync(fixtures.numbers.contentPath).map(function (file) {
+    var stream = fs.createReadStream(fixtures.numbers.contentPath + '/' + file)
     stream.name = file
     return stream
   })
@@ -299,9 +290,9 @@ test('create multi file torrent with streams', function (t) {
 test('create multi file torrent with array of paths', function (t) {
   t.plan(21)
 
-  var number10Path = path.join(__dirname, 'content/lots-of-numbers/big numbers/10.txt')
-  var number11Path = path.join(__dirname, 'content/lots-of-numbers/big numbers/11.txt')
-  var numbersPath = path.join(__dirname, 'content/numbers')
+  var number10Path = path.join(fixtures.lotsOfNumbers.contentPath, 'big numbers', '10.txt')
+  var number11Path = path.join(fixtures.lotsOfNumbers.contentPath, 'big numbers', '11.txt')
+  var numbersPath = fixtures.numbers.contentPath
 
   var input = [ number10Path, number11Path, numbersPath ]
 
@@ -358,9 +349,9 @@ test('create multi file torrent with array of paths', function (t) {
 test('create multi file torrent with array of mixed types', function (t) {
   t.plan(21)
 
-  var number11Path = path.join(__dirname, 'content/lots-of-numbers/big numbers/11.txt')
-  var number10Path = path.join(__dirname, 'content/lots-of-numbers/big numbers/10.txt')
-  var numbersPath = path.join(__dirname, 'content/numbers')
+  var number11Path = path.join(fixtures.lotsOfNumbers.contentPath, 'big numbers', '11.txt')
+  var number10Path = path.join(fixtures.lotsOfNumbers.contentPath, 'big numbers', '10.txt')
+  var numbersPath = fixtures.numbers.contentPath
 
   var stream = fs.createReadStream(number10Path)
   stream.name = '10.txt'
