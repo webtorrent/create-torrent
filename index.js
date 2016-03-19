@@ -81,7 +81,8 @@ function _parseInput (input, opts, cb) {
 
   var commonPrefix = null
   input.forEach(function (item, i) {
-    if (typeof item === 'string') return
+    var nameless = (Buffer.isBuffer(item) || isReadable(item)) && !item.name
+    if (typeof item === 'string' || nameless) return
 
     var path = item.fullPath || item.name
     if (!path) throw new Error('missing required `fullPath` or `name` property on input')
@@ -101,25 +102,47 @@ function _parseInput (input, opts, cb) {
 
   // remove junk files
   input = input.filter(function (item) {
-    if (typeof item === 'string') return true
+    var pathless = (Buffer.isBuffer(item) || isReadable(item)) && !item.path
+    if (typeof item === 'string' || pathless) return true
     var filename = item.path[item.path.length - 1]
     return notHidden(filename) && junk.not(filename)
   })
 
   if (commonPrefix) {
     input.forEach(function (item) {
-      if (typeof item === 'string') return
+      var pathless = (Buffer.isBuffer(item) || isReadable(item)) && !item.path
+      if (typeof item === 'string' || pathless) return
       item.path.shift()
     })
   }
 
   if (!opts.name && commonPrefix) opts.name = commonPrefix
-  if (!opts.name && input[0] && input[0].name) opts.name = input[0].name
-  if (!opts.name && typeof input[0] === 'string') opts.name = corePath.basename(input[0])
+  if (!opts.name) {
+    // use first found file name
+    input.some(function (item) {
+      var nameless = (Buffer.isBuffer(item) || isReadable(item)) && !item.name
+      if (nameless) return
+      if (item.name) {
+        opts.name = item.name
+        return true
+      }
+      if (typeof item === 'string') {
+        opts.name = corePath.basename(item)
+        return true
+      }
+    })
+  }
 
   if (opts.name === undefined) {
-    throw new Error('missing option \'name\' and unable to infer it from input[0].name')
+    opts.name = 'Unnamed Torrent ' + Date.now()
   }
+
+  input.forEach(function (item, index) {
+    var nameless = (Buffer.isBuffer(item) || isReadable(item)) && !item.name
+    if (nameless) {
+      item.name = opts.name + '-' + index
+    }
+  })
 
   var numPaths = input.reduce(function (sum, item) {
     return sum + Number(typeof item === 'string')
