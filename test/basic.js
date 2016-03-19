@@ -3,7 +3,7 @@ var parseTorrent = require('parse-torrent')
 var test = require('tape')
 
 test('implicit torrent name and file name', function (t) {
-  t.plan(4)
+  t.plan(5)
 
   var buf1 = new Buffer('buf1')
 
@@ -15,11 +15,12 @@ test('implicit torrent name and file name', function (t) {
 
     t.equal(parsedTorrent.files.length, 1)
     t.ok(parsedTorrent.files[0].name.indexOf('Unnamed Torrent') >= 0)
+    t.ok(parsedTorrent.files[0].path.indexOf('Unnamed Torrent') >= 0)
   })
 })
 
 test('implicit file name from torrent name', function (t) {
-  t.plan(4)
+  t.plan(5)
 
   var buf1 = new Buffer('buf1')
 
@@ -31,11 +32,12 @@ test('implicit file name from torrent name', function (t) {
 
     t.equal(parsedTorrent.files.length, 1)
     t.equal(parsedTorrent.files[0].name, 'My Cool File')
+    t.equal(parsedTorrent.files[0].path, 'My Cool File')
   })
 })
 
 test('implicit torrent name from file name', function (t) {
-  t.plan(4)
+  t.plan(5)
 
   var buf1 = new Buffer('buf1')
   buf1.name = 'My Cool File'
@@ -48,11 +50,12 @@ test('implicit torrent name from file name', function (t) {
 
     t.equal(parsedTorrent.files.length, 1)
     t.equal(parsedTorrent.files[0].name, 'My Cool File')
+    t.equal(parsedTorrent.files[0].path, 'My Cool File')
   })
 })
 
 test('implicit file names from torrent name', function (t) {
-  t.plan(5)
+  t.plan(7)
 
   var buf1 = new Buffer('buf1')
   var buf2 = new Buffer('buf2')
@@ -64,13 +67,17 @@ test('implicit file names from torrent name', function (t) {
     t.equal(parsedTorrent.name, 'My Cool File')
 
     t.equal(parsedTorrent.files.length, 2)
+
     t.ok(parsedTorrent.files[0].name.indexOf('Unknown File') >= 0)
+    t.ok(parsedTorrent.files[0].path.indexOf('Unknown File') >= 0)
+
     t.ok(parsedTorrent.files[1].name.indexOf('Unknown File') >= 0)
+    t.ok(parsedTorrent.files[1].path.indexOf('Unknown File') >= 0)
   })
 })
 
 test('set file name with `name` property', function (t) {
-  t.plan(4)
+  t.plan(5)
 
   var buf1 = new Buffer('buf1')
   buf1.name = 'My Cool File'
@@ -83,11 +90,12 @@ test('set file name with `name` property', function (t) {
 
     t.equal(parsedTorrent.files.length, 1)
     t.equal(parsedTorrent.files[0].name, 'My Cool File')
+    t.equal(parsedTorrent.files[0].path, 'My Cool File')
   })
 })
 
 test('set file names with `name` property', function (t) {
-  t.plan(6)
+  t.plan(7)
 
   var buf1 = new Buffer('buf1')
   buf1.name = 'My Cool File 1'
@@ -102,15 +110,17 @@ test('set file names with `name` property', function (t) {
     t.equal(parsedTorrent.name, 'My Cool Torrent')
 
     t.equal(parsedTorrent.files.length, 2)
-    t.equal(parsedTorrent.files[0].name, 'My Cool File 1')
 
-    t.equal(parsedTorrent.files.length, 2)
+    t.equal(parsedTorrent.files[0].name, 'My Cool File 1')
+    t.equal(parsedTorrent.files[0].path, 'My Cool Torrent/My Cool File 1')
+
     t.equal(parsedTorrent.files[1].name, 'My Cool File 2')
+    t.equal(parsedTorrent.files[1].path, 'My Cool Torrent/My Cool File 2')
   })
 })
 
 test('set file name with `fullPath` property', function (t) {
-  t.plan(4)
+  t.plan(5)
 
   var buf1 = new Buffer('buf1')
   buf1.fullPath = 'My Cool File'
@@ -123,11 +133,12 @@ test('set file name with `fullPath` property', function (t) {
 
     t.equal(parsedTorrent.files.length, 1)
     t.equal(parsedTorrent.files[0].name, 'My Cool File')
+    t.equal(parsedTorrent.files[0].path, 'My Cool File')
   })
 })
 
 test('set file names with `fullPath` property', function (t) {
-  t.plan(6)
+  t.plan(7)
 
   var buf1 = new Buffer('buf1')
   buf1.fullPath = 'My Cool File 1'
@@ -142,10 +153,12 @@ test('set file names with `fullPath` property', function (t) {
     t.equal(parsedTorrent.name, 'My Cool Torrent')
 
     t.equal(parsedTorrent.files.length, 2)
-    t.equal(parsedTorrent.files[0].name, 'My Cool File 1')
 
-    t.equal(parsedTorrent.files.length, 2)
+    t.equal(parsedTorrent.files[0].name, 'My Cool File 1')
+    t.equal(parsedTorrent.files[0].path, 'My Cool Torrent/My Cool File 1')
+
     t.equal(parsedTorrent.files[1].name, 'My Cool File 2')
+    t.equal(parsedTorrent.files[1].path, 'My Cool Torrent/My Cool File 2')
   })
 })
 
@@ -153,16 +166,41 @@ test('implicit torrent name from file name with slashes in it', function (t) {
   t.plan(5)
 
   var buf1 = new Buffer('buf1')
-  buf1.name = 'My Folder/My File'
+  buf1.name = 'My Cool Folder/My Cool File'
 
   createTorrent(buf1, function (err, torrent) {
     t.error(err)
     var parsedTorrent = parseTorrent(torrent)
 
-    t.equal(parsedTorrent.name, 'My File')
+    t.equal(parsedTorrent.name, 'My Cool File')
 
     t.equal(parsedTorrent.files.length, 1)
-    t.equal(parsedTorrent.files[0].name, 'My File')
-    t.equal(parsedTorrent.files[0].path, 'My File')
+    t.equal(parsedTorrent.files[0].name, 'My Cool File')
+    t.equal(parsedTorrent.files[0].path, 'My Cool File')
+  })
+})
+
+test('implicit torrent name from file names with slashes in them', function (t) {
+  t.plan(7)
+
+  var buf1 = new Buffer('buf1')
+  buf1.name = 'My Cool Folder/My Cool File 1'
+
+  var buf2 = new Buffer('buf2')
+  buf2.name = 'My Cool Folder/My Cool File 2'
+
+  createTorrent([buf1, buf2], function (err, torrent) {
+    t.error(err)
+    var parsedTorrent = parseTorrent(torrent)
+
+    t.equal(parsedTorrent.name, 'My Cool Folder')
+
+    t.equal(parsedTorrent.files.length, 2)
+
+    t.equal(parsedTorrent.files[0].name, 'My Cool File 1')
+    t.equal(parsedTorrent.files[0].path, 'My Cool Folder/My Cool File 1')
+
+    t.equal(parsedTorrent.files[1].name, 'My Cool File 2')
+    t.equal(parsedTorrent.files[1].path, 'My Cool Folder/My Cool File 2')
   })
 })
