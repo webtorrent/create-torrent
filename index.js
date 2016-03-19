@@ -137,6 +137,13 @@ function _parseInput (input, opts, cb) {
     opts.name = 'Unnamed Torrent ' + Date.now()
   }
 
+  input.forEach(function (item, index) {
+    var nameless = (Buffer.isBuffer(item) || isReadable(item)) && !item.name
+    if (nameless) {
+      item.name = opts.name + '-' + index
+    }
+  })
+
   var numPaths = input.reduce(function (sum, item) {
     return sum + Number(typeof item === 'string')
   }, 0)
