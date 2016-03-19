@@ -100,6 +100,13 @@ function _parseInput (input, opts, cb) {
     }
   })
 
+  input.forEach(function (item, index) {
+    var nameless = (Buffer.isBuffer(item) || isReadable(item)) && !item.name
+    if (nameless) {
+      item.path = opts.name + '-' + index
+    }
+  })
+
   // remove junk files
   input = input.filter(function (item) {
     var pathless = (Buffer.isBuffer(item) || isReadable(item)) && !item.path
@@ -136,13 +143,6 @@ function _parseInput (input, opts, cb) {
   if (opts.name === undefined) {
     opts.name = 'Unnamed Torrent ' + Date.now()
   }
-
-  input.forEach(function (item, index) {
-    var nameless = (Buffer.isBuffer(item) || isReadable(item)) && !item.name
-    if (nameless) {
-      item.name = opts.name + '-' + index
-    }
-  })
 
   var numPaths = input.reduce(function (sum, item) {
     return sum + Number(typeof item === 'string')

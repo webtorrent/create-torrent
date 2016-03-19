@@ -50,3 +50,21 @@ test('implicit torrent name from file name', function (t) {
     t.equal(parsedTorrent.files[0].name, 'My Cool File')
   })
 })
+
+test('implicit file names from torrent name', function (t) {
+  t.plan(5)
+
+  var buf1 = new Buffer('buf1')
+  var buf2 = new Buffer('buf2')
+
+  createTorrent([buf1, buf2], { name: 'My Cool File' }, function (err, torrent) {
+    t.error(err)
+    var parsedTorrent = parseTorrent(torrent)
+
+    t.equal(parsedTorrent.name, 'My Cool File')
+
+    t.equal(parsedTorrent.files.length, 2)
+    t.ok(parsedTorrent.files[0].name.indexOf('My Cool File') >= 0)
+    t.ok(parsedTorrent.files[1].name.indexOf('My Cool File') >= 0)
+  })
+})
