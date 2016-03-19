@@ -51,8 +51,8 @@ Create a new `.torrent` file.
 - path to the file or folder on filesystem (string)
 - W3C [File](https://developer.mozilla.org/en-US/docs/Web/API/File) object (from an `<input>` or drag and drop)
 - W3C [FileList](https://developer.mozilla.org/en-US/docs/Web/API/FileList) object (basically an array of `File` objects)
-- Node [Buffer](http://nodejs.org/api/buffer.html) object (works in [the browser](https://www.npmjs.org/package/buffer)) (must set a `name` property on it)
-- Node [stream.Readable](http://nodejs.org/api/stream.html) object (must set `name` and `opt.pieceLength` properties on it)
+- Node [Buffer](http://nodejs.org/api/buffer.html) object
+- Node [stream.Readable](http://nodejs.org/api/stream.html) object
 
 Or, an **array of `string`, `File`, `Buffer`, or `stream.Readable` objects**.
 
@@ -87,6 +87,25 @@ Trackers that start with `wss://` are for WebRTC peers. See
 
 `callback` is called with an error and a Buffer of the torrent data. It is up to you to
 save it to a file if that's what you want to do.
+
+**Note:** Every torrent is required to have a name. If one is not explicitly provided
+through `opts.name`, one will be determined automatically using the following logic:
+
+- If all files share a common path prefix, that will be used. For example, if all file
+  paths start with `/imgs/` the torrent name will be `imgs`.
+- Otherwise, the first file that has a name will determine the torrent name. For example,
+  if the first file is `/foo/bar/baz.txt`, the torrent name will be `baz.txt`.
+- If no files have names (say that all files are Buffer or Stream objects), then a name
+  like "Unnamed Torrent <id>" will be generated.
+
+**Note:** Every file is required to have a name. For filesystem paths or W3C File objects,
+the name is included in the object. For Buffer or Readable stream types, a `name` property
+can be set on the object, like this:
+
+```js
+var buf = new Buffer('Some file content')
+buf.name = 'Some file name'
+```
 
 ### command line
 
