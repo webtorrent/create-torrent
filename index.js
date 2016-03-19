@@ -180,9 +180,6 @@ function _parseInput (input, opts, cb) {
           file.getStream = getBufferStream(item)
           file.length = item.length
         } else if (isReadable(item)) {
-          if (!opts.pieceLength) {
-            throw new Error('must specify `pieceLength` option if input is Stream')
-          }
           file.getStream = getStreamStream(item, file)
           file.length = 0
         } else if (typeof item === 'string') {

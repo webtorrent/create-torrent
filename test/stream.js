@@ -119,7 +119,7 @@ test('create multi file torrent with streams', function (t) {
 })
 
 test('implicit name and pieceLength for stream', function (t) {
-  t.plan(5)
+  t.plan(6)
 
   var stream = fs.createReadStream(fixtures.leaves.contentPath)
 
@@ -127,10 +127,11 @@ test('implicit name and pieceLength for stream', function (t) {
     t.error(err)
     var parsedTorrent = parseTorrent(torrent)
 
-    t.ok(parsedTorrent.name.indexOf('Unknown Torrent') >= 0)
+    t.ok(parsedTorrent.name.indexOf('Unnamed Torrent') >= 0)
+    t.equal(parsedTorrent.pieceLength, 16384)
 
     t.equal(parsedTorrent.files.length, 1)
-    t.equal(parsedTorrent.files[0].name, 'Unknown File 1')
-    t.equal(parsedTorrent.files[0].path, 'Unknown File 1')
+    t.ok(parsedTorrent.files[0].name.indexOf('Unnamed Torrent') >= 0)
+    t.ok(parsedTorrent.files[0].path.indexOf('Unnamed Torrent') >= 0)
   })
 })
