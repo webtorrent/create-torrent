@@ -117,3 +117,20 @@ test('create multi file torrent with streams', function (t) {
     t.equals(sha1.sync(parsedTorrent.infoBuffer), '80562f38656b385ea78959010e51a2cc9db41ea0')
   })
 })
+
+test('implicit name and pieceLength for stream', function (t) {
+  t.plan(5)
+
+  var stream = fs.createReadStream(fixtures.leaves.contentPath)
+
+  createTorrent(stream, function (err, torrent) {
+    t.error(err)
+    var parsedTorrent = parseTorrent(torrent)
+
+    t.ok(parsedTorrent.name.indexOf('Unknown Torrent') >= 0)
+
+    t.equal(parsedTorrent.files.length, 1)
+    t.equal(parsedTorrent.files[0].name, 'Unknown File 1')
+    t.equal(parsedTorrent.files[0].path, 'Unknown File 1')
+  })
+})
