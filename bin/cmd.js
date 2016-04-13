@@ -7,10 +7,12 @@ var argv = minimist(process.argv.slice(2), {
   alias: {
     o: 'outfile',
     n: 'name',
-    h: 'help'
+    h: 'help',
+    v: 'version'
   },
   boolean: [
-    'help'
+    'help',
+    'version'
   ],
   string: [
     'outfile',
@@ -25,6 +27,11 @@ var argv = minimist(process.argv.slice(2), {
 
 var infile = argv._[0]
 var outfile = argv.outfile
+
+if (argv.version) {
+  console.log(require('../package.json').version)
+  process.exit(0)
+}
 
 if (!infile || argv.help) {
   console.log('usage: create-torrent <directory OR file> [OPTIONS]')
