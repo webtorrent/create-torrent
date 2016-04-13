@@ -22,7 +22,10 @@ var argv = minimist(process.argv.slice(2), {
     'createdBy',
     'announce',
     'urlList'
-  ]
+  ],
+  default: {
+    createdBy: 'WebTorrent <https://webtorrent.io>'
+  }
 })
 
 var infile = argv._[0]
