@@ -21,7 +21,7 @@ var numbers3 = makeFileShim(fs.readFileSync(path.join(fixtures.numbers.contentPa
 var DSStore = makeFileShim('blah', '.DS_Store', '/numbers/.DS_Store') // this should be ignored
 
 test('create multi file torrent with directory at root', function (t) {
-  t.plan(16)
+  t.plan(15)
 
   var startTime = Date.now()
   createTorrent([ numbers1, numbers2, numbers3, DSStore ], function (err, torrent) {
@@ -33,9 +33,7 @@ test('create multi file torrent with directory at root', function (t) {
 
     t.notOk(parsedTorrent.private)
 
-    var createdTime = parsedTorrent.created / 1000
-    t.ok(createdTime >= startTime, 'created time is after start time')
-    t.ok(createdTime <= Date.now(), 'created time is before now')
+    t.ok(parsedTorrent.created.getTime() >= startTime, 'created time is after start time')
 
     t.ok(Array.isArray(parsedTorrent.announce))
 

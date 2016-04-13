@@ -6,7 +6,7 @@ var sha1 = require('simple-sha1')
 var test = require('tape')
 
 test('create single file torrent', function (t) {
-  t.plan(12)
+  t.plan(11)
 
   var startTime = Date.now()
   createTorrent(fixtures.leaves.contentPath, function (err, torrent) {
@@ -18,9 +18,7 @@ test('create single file torrent', function (t) {
 
     t.notOk(parsedTorrent.private)
 
-    var createdTime = parsedTorrent.created / 1000
-    t.ok(createdTime >= startTime, 'created time is after start time')
-    t.ok(createdTime <= Date.now(), 'created time is before now')
+    t.ok(parsedTorrent.created.getTime() >= startTime, 'created time is after start time')
 
     t.ok(Array.isArray(parsedTorrent.announce))
 
@@ -74,7 +72,7 @@ test('create single file torrent from buffer', function (t) {
 })
 
 test('create multi file torrent', function (t) {
-  t.plan(17)
+  t.plan(16)
 
   var startTime = Date.now()
   createTorrent(fixtures.numbers.contentPath, {
@@ -93,9 +91,7 @@ test('create multi file torrent', function (t) {
 
     t.notOk(parsedTorrent.private)
 
-    var createdTime = parsedTorrent.created / 1000
-    t.ok(createdTime >= startTime, 'created time is after start time')
-    t.ok(createdTime <= Date.now(), 'created time is before now')
+    t.ok(parsedTorrent.created.getTime() >= startTime, 'created time is after start time')
 
     t.ok(Array.isArray(parsedTorrent.announce))
 
@@ -120,7 +116,7 @@ test('create multi file torrent', function (t) {
 })
 
 test('create multi file torrent with nested directories', function (t) {
-  t.plan(22)
+  t.plan(21)
 
   var startTime = Date.now()
   createTorrent(fixtures.lotsOfNumbers.contentPath, {
@@ -139,9 +135,7 @@ test('create multi file torrent with nested directories', function (t) {
 
     t.notOk(parsedTorrent.private)
 
-    var createdTime = parsedTorrent.created / 1000
-    t.ok(createdTime >= startTime, 'created time is after start time')
-    t.ok(createdTime <= Date.now(), 'created time is before now')
+    t.ok(parsedTorrent.created.getTime() >= startTime, 'created time is after start time')
 
     t.ok(Array.isArray(parsedTorrent.announce))
 
@@ -175,7 +169,7 @@ test('create multi file torrent with nested directories', function (t) {
 })
 
 test('create multi file torrent with array of paths', function (t) {
-  t.plan(21)
+  t.plan(20)
 
   var number10Path = path.join(fixtures.lotsOfNumbers.contentPath, 'big numbers', '10.txt')
   var number11Path = path.join(fixtures.lotsOfNumbers.contentPath, 'big numbers', '11.txt')
@@ -201,9 +195,7 @@ test('create multi file torrent with array of paths', function (t) {
 
     t.notOk(parsedTorrent.private)
 
-    var createdTime = parsedTorrent.created / 1000
-    t.ok(createdTime >= startTime, 'created time is after start time')
-    t.ok(createdTime <= Date.now(), 'created time is before now')
+    t.ok(parsedTorrent.created.getTime() >= startTime, 'created time is after start time')
 
     t.ok(Array.isArray(parsedTorrent.announce))
 

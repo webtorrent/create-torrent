@@ -354,7 +354,7 @@ function onFiles (files, opts, cb) {
     info: {
       name: opts.name
     },
-    'creation date': Number(opts.creationDate) || Date.now(),
+    'creation date': Math.ceil((Number(opts.creationDate) || Date.now()) / 1000),
     encoding: 'UTF-8'
   }
 

@@ -7,7 +7,7 @@ var sha1 = require('simple-sha1')
 var test = require('tape')
 
 test('create multi file torrent with array of mixed types', function (t) {
-  t.plan(21)
+  t.plan(20)
 
   var number11Path = path.join(fixtures.lotsOfNumbers.contentPath, 'big numbers', '11.txt')
   var number10Path = path.join(fixtures.lotsOfNumbers.contentPath, 'big numbers', '10.txt')
@@ -37,9 +37,7 @@ test('create multi file torrent with array of mixed types', function (t) {
 
     t.notOk(parsedTorrent.private)
 
-    var createdTime = parsedTorrent.created / 1000
-    t.ok(createdTime >= startTime, 'created time is after start time')
-    t.ok(createdTime <= Date.now(), 'created time is before now')
+    t.ok(parsedTorrent.created.getTime() >= startTime, 'created time is after start time')
 
     t.ok(Array.isArray(parsedTorrent.announce))
 

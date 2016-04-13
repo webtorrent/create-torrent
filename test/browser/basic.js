@@ -22,7 +22,7 @@ var numbers2 = makeFileShim(fs.readFileSync(path.join(__dirname, '../../node_mod
 var numbers3 = makeFileShim(fs.readFileSync(path.join(__dirname, '../../node_modules/webtorrent-fixtures/fixtures/numbers/3.txt'), 'utf8'), '3.txt')
 
 test('create single file torrent', function (t) {
-  t.plan(12)
+  t.plan(11)
 
   var startTime = Date.now()
   createTorrent(leaves, function (err, torrent) {
@@ -34,9 +34,7 @@ test('create single file torrent', function (t) {
 
     t.notOk(parsedTorrent.private)
 
-    var createdTime = parsedTorrent.created / 1000
-    t.ok(createdTime >= startTime, 'created time is after start time')
-    t.ok(createdTime <= Date.now(), 'created time is before now')
+    t.ok(parsedTorrent.created.getTime() >= startTime, 'created time is after start time')
 
     t.ok(Array.isArray(parsedTorrent.announce))
 
@@ -78,7 +76,7 @@ test('create single file torrent', function (t) {
 })
 
 test('create multi file torrent', function (t) {
-  t.plan(17)
+  t.plan(16)
 
   var startTime = Date.now()
   createTorrent([ numbers1, numbers2, numbers3 ], {
@@ -98,9 +96,7 @@ test('create multi file torrent', function (t) {
 
     t.notOk(parsedTorrent.private)
 
-    var createdTime = parsedTorrent.created / 1000
-    t.ok(createdTime >= startTime, 'created time is after start time')
-    t.ok(createdTime <= Date.now(), 'created time is before now')
+    t.ok(parsedTorrent.created.getTime() >= startTime, 'created time is after start time')
 
     t.ok(Array.isArray(parsedTorrent.announce))
 

@@ -7,7 +7,7 @@ var sha1 = require('simple-sha1')
 var test = require('tape')
 
 test('create single file torrent from a stream', function (t) {
-  t.plan(12)
+  t.plan(11)
 
   var stream = fs.createReadStream(fixtures.leaves.contentPath)
   stream.name = 'Leaves of Grass by Walt Whitman.epub'
@@ -22,9 +22,7 @@ test('create single file torrent from a stream', function (t) {
 
     t.notOk(parsedTorrent.private)
 
-    var createdTime = parsedTorrent.created / 1000
-    t.ok(createdTime >= startTime, 'created time is after start time')
-    t.ok(createdTime <= Date.now(), 'created time is before now')
+    t.ok(parsedTorrent.created.getTime() >= startTime, 'created time is after start time')
 
     t.ok(Array.isArray(parsedTorrent.announce))
 
@@ -65,7 +63,7 @@ test('create single file torrent from a stream', function (t) {
 })
 
 test('create multi file torrent with streams', function (t) {
-  t.plan(17)
+  t.plan(16)
 
   var files = fs.readdirSync(fixtures.numbers.contentPath).map(function (file) {
     var stream = fs.createReadStream(fixtures.numbers.contentPath + '/' + file)
@@ -92,9 +90,7 @@ test('create multi file torrent with streams', function (t) {
 
     t.notOk(parsedTorrent.private)
 
-    var createdTime = parsedTorrent.created / 1000
-    t.ok(createdTime >= startTime, 'created time is after start time')
-    t.ok(createdTime <= Date.now(), 'created time is before now')
+    t.ok(parsedTorrent.created.getTime() >= startTime, 'created time is after start time')
 
     t.ok(Array.isArray(parsedTorrent.announce))
 

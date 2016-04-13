@@ -5,7 +5,7 @@ var sha1 = require('simple-sha1')
 var test = require('tape')
 
 test('create nested torrent with array of buffers', function (t) {
-  t.plan(15)
+  t.plan(14)
 
   var buf1 = new Buffer('bl')
   buf1.name = 'dir1/buf1.txt'
@@ -25,9 +25,7 @@ test('create nested torrent with array of buffers', function (t) {
 
     t.notOk(parsedTorrent.private)
 
-    var createdTime = parsedTorrent.created / 1000
-    t.ok(createdTime >= startTime, 'created time is after start time')
-    t.ok(createdTime <= Date.now(), 'created time is before now')
+    t.ok(parsedTorrent.created.getTime() >= startTime, 'created time is after start time')
 
     t.ok(Array.isArray(parsedTorrent.announce))
 
