@@ -186,8 +186,27 @@ function _parseInput (input, opts, cb) {
           if (typeof fs.stat !== 'function') {
             throw new Error('filesystem paths do not work in the browser')
           }
+
+          // TODO: isn't keepRoot always true, then?
           var keepRoot = numPaths > 1 || isSingleFileTorrent
-          getFiles(item, keepRoot, cb)
+
+          // TODO: this is still janky
+          // If the user passes in a list of paths as the input, they still
+          // have to find the common prefix themselves and set opts.path/name
+          // accordingly. Otherwise, if the paths represent nested folders,
+          // all the files will be copied into the top-level folder.
+          var rootPath
+          if (opts.path && opts.name) {
+            rootPath = isSingleFileTorrent ? (opts.path + corePath.sep)
+              : (opts.path + corePath.sep + opts.name + corePath.sep)
+          } else {
+            rootPath = corePath.normalize(item)
+            if (keepRoot) {
+              rootPath = rootPath.slice(0, rootPath.lastIndexOf(corePath.sep) + 1)
+            }
+          }
+
+          getFiles(item, rootPath, cb)
           return // early return!
         } else {
           throw new Error('invalid input type')
@@ -203,22 +222,16 @@ function _parseInput (input, opts, cb) {
   }
 }
 
-function getFiles (path, keepRoot, cb) {
+function getFiles (path, rootPath, cb) {
   traversePath(path, getFileInfo, function (err, files) {
     if (err) return cb(err)
 
     if (Array.isArray(files)) files = flatten(files)
     else files = [ files ]
 
-    path = corePath.normalize(path)
-    if (keepRoot) {
-      path = path.slice(0, path.lastIndexOf(corePath.sep) + 1)
-    }
-    if (path[path.length - 1] !== corePath.sep) path += corePath.sep
-
     files.forEach(function (file) {
       file.getStream = getFilePathStream(file.path)
-      file.path = file.path.replace(path, '').split(corePath.sep)
+      file.path = file.path.replace(rootPath, '').split(corePath.sep)
     })
     cb(null, files)
   })
