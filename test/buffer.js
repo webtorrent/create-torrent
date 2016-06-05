@@ -45,3 +45,18 @@ test('create nested torrent with array of buffers', function (t) {
     t.equals(sha1.sync(parsedTorrent.infoBuffer), '8fa3c08e640db9576156b21f31353402456a0208')
   })
 })
+
+test('identify when the input is already a torrent and just return it', function (t) {
+  t.plan(1)
+
+  var buf1 = new Buffer('buf1')
+  createTorrent(buf1, function (err, torrent1) {
+    t.error(err)
+
+    createTorrent(torrent1, function (err, torrent2) {
+      t.error(err)
+
+      t.equal(0, Buffer.compare(torrent1, torrent2))
+    })
+  })
+})

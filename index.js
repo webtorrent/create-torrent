@@ -45,6 +45,7 @@ var stream = require('readable-stream')
  * @return {Buffer} buffer of .torrent file data
  */
 function createTorrent (input, opts, cb) {
+  if (_alreadyIsTorrent(input)) return input
   if (typeof opts === 'function') return createTorrent(input, null, opts)
   opts = opts ? extend(opts) : {}
 
@@ -56,9 +57,27 @@ function createTorrent (input, opts, cb) {
 }
 
 function parseInput (input, opts, cb) {
+  if (_alreadyIsTorrent(input)) return input
   if (typeof opts === 'function') return parseInput(input, null, opts)
   opts = opts ? extend(opts) : {}
   _parseInput(input, opts, cb)
+}
+
+/**
+ * Returns true if input is already a torrent file buffer, false otherwise
+ */
+function _alreadyIsTorrent (input) {
+  if (Buffer.isBuffer(input)) {
+    try {
+      var torrentDict = bencode.decode(input)
+      if (torrentDict.info.name) {
+        return true
+      }
+    } catch (e) {
+      // Errors indicate this is not a torrent file and we'll return false
+    }
+  }
+  return false
 }
 
 /**
