@@ -13,4 +13,4 @@ browsers:
   - name: android
     version: latest
   - name: iphone
-    version: latest
+    version: 9.0
