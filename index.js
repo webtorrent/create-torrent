@@ -423,7 +423,7 @@ function isBlob (obj) {
  * @return {boolean}
  */
 function isFileList (obj) {
-  return typeof FileList === 'function' && obj instanceof FileList
+  return typeof FileList !== 'undefined' && obj instanceof FileList
 }
 
 /**
