@@ -28,7 +28,7 @@
   "devDependencies": {
     "brfs": "^1.1.2",
     "parse-torrent": "^5.0.0",
-    "standard": "^7.0.0",
+    "standard": "*",
     "tape": "^4.0.0",
     "webtorrent-fixtures": "^1.4.0",
     "zuul": "^3.0.0"
