@@ -64,8 +64,5 @@
       "Blob",
       "FileList"
     ]
-  },
-  "testling": {
-    "files": "test/browser/*.js"
   }
 }
