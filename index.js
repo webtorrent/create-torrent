@@ -72,7 +72,7 @@ function _parseInput (input, opts, cb) {
 
   // In Electron, use the true file path
   input = input.map(function (item) {
-    if (isBlob(item) && typeof item.path === 'string') return item.path
+    if (isBlob(item) && typeof item.path === 'string' && typeof fs.stat === 'function') return item.path
     return item
   })
 
