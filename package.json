@@ -33,6 +33,9 @@
     "webtorrent-fixtures": "^1.4.0",
     "zuul": "^3.0.0"
   },
+  "engines": {
+    "node": ">=4"
+  },
   "homepage": "https://github.com/feross/create-torrent",
   "keywords": [
     ".torrent",
