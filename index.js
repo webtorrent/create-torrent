@@ -7,7 +7,6 @@ module.exports.announceList = [
   [ 'udp://tracker.leechers-paradise.org:6969' ],
   [ 'udp://tracker.coppersurfer.tk:6969' ],
   [ 'udp://exodus.desync.com:6969' ],
-  [ 'wss://tracker.webtorrent.io' ],
   [ 'wss://tracker.btorrent.xyz' ],
   [ 'wss://tracker.openwebtorrent.com' ],
   [ 'wss://tracker.fastcast.nz' ]
