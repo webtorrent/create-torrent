@@ -1,7 +1,7 @@
 var createTorrent = require('../')
 var parseTorrent = require('parse-torrent')
 var test = require('tape')
-var Path = require('path')
+var path = require('path')
 
 test('implicit torrent name and file name', function (t) {
   t.plan(5)
@@ -113,10 +113,10 @@ test('set file names with `name` property', function (t) {
     t.equal(parsedTorrent.files.length, 2)
 
     t.equal(parsedTorrent.files[0].name, 'My Cool File 1')
-    t.equal(parsedTorrent.files[0].path, Path.join('My Cool Torrent', 'My Cool File 1'))
+    t.equal(parsedTorrent.files[0].path, path.join('My Cool Torrent', 'My Cool File 1'))
 
     t.equal(parsedTorrent.files[1].name, 'My Cool File 2')
-    t.equal(parsedTorrent.files[1].path, Path.join('My Cool Torrent', 'My Cool File 2'))
+    t.equal(parsedTorrent.files[1].path, path.join('My Cool Torrent', 'My Cool File 2'))
   })
 })
 
@@ -156,10 +156,10 @@ test('set file names with `fullPath` property', function (t) {
     t.equal(parsedTorrent.files.length, 2)
 
     t.equal(parsedTorrent.files[0].name, 'My Cool File 1')
-    t.equal(parsedTorrent.files[0].path, Path.join('My Cool Torrent', 'My Cool File 1'))
+    t.equal(parsedTorrent.files[0].path, path.join('My Cool Torrent', 'My Cool File 1'))
 
     t.equal(parsedTorrent.files[1].name, 'My Cool File 2')
-    t.equal(parsedTorrent.files[1].path, Path.join('My Cool Torrent', 'My Cool File 2'))
+    t.equal(parsedTorrent.files[1].path, path.join('My Cool Torrent', 'My Cool File 2'))
   })
 })
 
@@ -199,9 +199,9 @@ test('implicit torrent name from file names with slashes in them', function (t) 
     t.equal(parsedTorrent.files.length, 2)
 
     t.equal(parsedTorrent.files[0].name, 'My Cool File 1')
-    t.equal(parsedTorrent.files[0].path, Path.join('My Cool Folder', 'My Cool File 1'))
+    t.equal(parsedTorrent.files[0].path, path.join('My Cool Folder', 'My Cool File 1'))
 
     t.equal(parsedTorrent.files[1].name, 'My Cool File 2')
-    t.equal(parsedTorrent.files[1].path, Path.join('My Cool Folder', 'My Cool File 2'))
+    t.equal(parsedTorrent.files[1].path, path.join('My Cool Folder', 'My Cool File 2'))
   })
 })
