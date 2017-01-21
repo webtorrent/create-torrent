@@ -237,26 +237,20 @@ function getFileInfo (path, cb) {
 
 function traversePath (path, fn, cb) {
   fs.stat(path, function (err, stats) {
-    if (err) {
-      // real error
-      cb(err)
-    } else if (stats.isDirectory()) {
-      // this is a folder
+    if (err) return cb(err)
+    if (stats.isDirectory()) {
       fs.readdir(path, function (err, entries) {
-        if (err) {
-          cb(err) // real error
-        } else {
-          parallel(entries.filter(notHidden).filter(junk.not).map(function (entry) {
-            return function (cb) {
-              traversePath(corePath.join(path, entry), fn, cb)
-            }
-          }), cb)
-        }
+        if (err) return cb(err)
+        parallel(entries.filter(notHidden).filter(junk.not).map(function (entry) {
+          return function (cb) {
+            traversePath(corePath.join(path, entry), fn, cb)
+          }
+        }), cb)
       })
     } else if (stats.isFile()) {
       fn(path, cb)
     }
-    // ignore anything else (which is not a file, neither a directory)
+    // Ignore other types (not a file or directory)
   })
 }
 
