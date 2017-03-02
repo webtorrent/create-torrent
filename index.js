@@ -317,7 +317,7 @@ function getPieceList (files, pieceLength, cb) {
   function maybeDone () {
     if (ended && remainingHashes === 0) {
       cleanup()
-      cb(null, new Buffer(pieces.join(''), 'hex'), length)
+      cb(null, Buffer.from(pieces.join(''), 'hex'), length)
     }
   }
 }
