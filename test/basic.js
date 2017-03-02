@@ -6,7 +6,7 @@ var path = require('path')
 test('implicit torrent name and file name', function (t) {
   t.plan(5)
 
-  var buf1 = new Buffer('buf1')
+  var buf1 = Buffer.from('buf1')
 
   createTorrent(buf1, function (err, torrent) {
     t.error(err)
@@ -23,7 +23,7 @@ test('implicit torrent name and file name', function (t) {
 test('implicit file name from torrent name', function (t) {
   t.plan(5)
 
-  var buf1 = new Buffer('buf1')
+  var buf1 = Buffer.from('buf1')
 
   createTorrent(buf1, { name: 'My Cool File' }, function (err, torrent) {
     t.error(err)
@@ -40,7 +40,7 @@ test('implicit file name from torrent name', function (t) {
 test('implicit torrent name from file name', function (t) {
   t.plan(5)
 
-  var buf1 = new Buffer('buf1')
+  var buf1 = Buffer.from('buf1')
   buf1.name = 'My Cool File'
 
   createTorrent(buf1, function (err, torrent) {
@@ -58,8 +58,8 @@ test('implicit torrent name from file name', function (t) {
 test('implicit file names from torrent name', function (t) {
   t.plan(7)
 
-  var buf1 = new Buffer('buf1')
-  var buf2 = new Buffer('buf2')
+  var buf1 = Buffer.from('buf1')
+  var buf2 = Buffer.from('buf2')
 
   createTorrent([buf1, buf2], { name: 'My Cool File' }, function (err, torrent) {
     t.error(err)
@@ -80,7 +80,7 @@ test('implicit file names from torrent name', function (t) {
 test('set file name with `name` property', function (t) {
   t.plan(5)
 
-  var buf1 = new Buffer('buf1')
+  var buf1 = Buffer.from('buf1')
   buf1.name = 'My Cool File'
 
   createTorrent(buf1, function (err, torrent) {
@@ -98,10 +98,10 @@ test('set file name with `name` property', function (t) {
 test('set file names with `name` property', function (t) {
   t.plan(7)
 
-  var buf1 = new Buffer('buf1')
+  var buf1 = Buffer.from('buf1')
   buf1.name = 'My Cool File 1'
 
-  var buf2 = new Buffer('buf2')
+  var buf2 = Buffer.from('buf2')
   buf2.name = 'My Cool File 2'
 
   createTorrent([buf1, buf2], { name: 'My Cool Torrent' }, function (err, torrent) {
@@ -123,7 +123,7 @@ test('set file names with `name` property', function (t) {
 test('set file name with `fullPath` property', function (t) {
   t.plan(5)
 
-  var buf1 = new Buffer('buf1')
+  var buf1 = Buffer.from('buf1')
   buf1.fullPath = 'My Cool File'
 
   createTorrent(buf1, function (err, torrent) {
@@ -141,10 +141,10 @@ test('set file name with `fullPath` property', function (t) {
 test('set file names with `fullPath` property', function (t) {
   t.plan(7)
 
-  var buf1 = new Buffer('buf1')
+  var buf1 = Buffer.from('buf1')
   buf1.fullPath = 'My Cool File 1'
 
-  var buf2 = new Buffer('buf2')
+  var buf2 = Buffer.from('buf2')
   buf2.fullPath = 'My Cool File 2'
 
   createTorrent([buf1, buf2], { name: 'My Cool Torrent' }, function (err, torrent) {
@@ -166,7 +166,7 @@ test('set file names with `fullPath` property', function (t) {
 test('implicit torrent name from file name with slashes in it', function (t) {
   t.plan(5)
 
-  var buf1 = new Buffer('buf1')
+  var buf1 = Buffer.from('buf1')
   buf1.name = 'My Cool Folder/My Cool File'
 
   createTorrent(buf1, function (err, torrent) {
@@ -184,10 +184,10 @@ test('implicit torrent name from file name with slashes in it', function (t) {
 test('implicit torrent name from file names with slashes in them', function (t) {
   t.plan(7)
 
-  var buf1 = new Buffer('buf1')
+  var buf1 = Buffer.from('buf1')
   buf1.name = 'My Cool Folder/My Cool File 1'
 
-  var buf2 = new Buffer('buf2')
+  var buf2 = Buffer.from('buf2')
   buf2.name = 'My Cool Folder/My Cool File 2'
 
   createTorrent([buf1, buf2], function (err, torrent) {

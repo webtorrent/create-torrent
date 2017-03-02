@@ -7,10 +7,10 @@ var test = require('tape')
 test('create nested torrent with array of buffers', function (t) {
   t.plan(14)
 
-  var buf1 = new Buffer('bl')
+  var buf1 = Buffer.from('bl')
   buf1.name = 'dir1/buf1.txt'
 
-  var buf2 = new Buffer('ah')
+  var buf2 = Buffer.from('ah')
   buf2.name = 'dir2/buf2.txt'
 
   var startTime = Date.now()

@@ -103,7 +103,7 @@ the name is included in the object. For Buffer or Readable stream types, a `name
 can be set on the object, like this:
 
 ```js
-var buf = new Buffer('Some file content')
+var buf = Buffer.from('Some file content')
 buf.name = 'Some file name'
 ```
 
