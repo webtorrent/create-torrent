@@ -2,12 +2,16 @@
   "name": "create-torrent",
   "description": "Create .torrent files",
   "version": "3.29.0",
-  "author": "Feross Aboukhadijeh <feross@feross.org> (http://feross.org/)",
+  "author": {
+    "name": "WebTorrent, LLC",
+    "email": "feross@webtorrent.io",
+    "url": "https://webtorrent.io"
+  },
   "bin": {
     "create-torrent": "./bin/cmd.js"
   },
   "bugs": {
-    "url": "https://github.com/feross/create-torrent/issues"
+    "url": "https://github.com/webtorrent/create-torrent/issues"
   },
   "dependencies": {
     "bencode": "^0.11.0",
@@ -36,7 +40,6 @@
   "engines": {
     "node": ">=4"
   },
-  "homepage": "https://github.com/feross/create-torrent",
   "keywords": [
     ".torrent",
     "bittorrent",
@@ -54,7 +57,7 @@
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "git://github.com/feross/create-torrent.git"
+    "url": "git://github.com/webtorrent/create-torrent.git"
   },
   "scripts": {
     "test": "standard && npm run test-node && npm run test-browser",
