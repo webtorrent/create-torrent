@@ -1,6 +1,4 @@
-# create-torrent [![travis][travis-image]][travis-url] [![npm][npm-image]][npm-url] [![downloads][downloads-image]][downloads-url] [![javascript style guide][standard-image]][standard-url]
-
-[![Greenkeeper badge](https://badges.greenkeeper.io/webtorrent/create-torrent.svg)](https://greenkeeper.io/)
+# create-torrent [![travis][travis-image]][travis-url] [![npm][npm-image]][npm-url] [![downloads][downloads-image]][downloads-url] [![javascript style guide][standard-image]][standard-url] [![Greenkeeper badge][greenkeeper-image]][greenkeeper-url]
 
 [travis-image]: https://img.shields.io/travis/webtorrent/create-torrent/master.svg
 [travis-url]: https://travis-ci.org/webtorrent/create-torrent
@@ -10,6 +8,8 @@
 [downloads-url]: https://npmjs.org/package/create-torrent
 [standard-image]: https://img.shields.io/badge/code_style-standard-brightgreen.svg
 [standard-url]: https://standardjs.com
+[greenkeeper-image]: https://badges.greenkeeper.io/webtorrent/create-torrent.svg
+[greenkeeper-url]: https://greenkeeper.io/
 
 #### Create .torrent files
 
