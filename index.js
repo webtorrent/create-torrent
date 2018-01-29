@@ -64,10 +64,14 @@ function parseInput (input, opts, cb) {
  * Parse input file and return file information.
  */
 function _parseInput (input, opts, cb) {
-  if (Array.isArray(input) && input.length === 0) throw new Error('invalid input type')
-
   if (isFileList(input)) input = Array.prototype.slice.call(input)
   if (!Array.isArray(input)) input = [ input ]
+
+  if (input.length === 0) throw new Error('invalid input type')
+
+  input.forEach(function (item) {
+    if (item == null) throw new Error('invalid input type: ' + item)
+  })
 
   // In Electron, use the true file path
   input = input.map(function (item) {
