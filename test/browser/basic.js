@@ -80,11 +80,12 @@ test('create multi file torrent', function (t) {
 
   var startTime = Date.now()
   createTorrent([ numbers1, numbers2, numbers3 ], {
-    pieceLength: 32768, // force piece length to 32KB so info-hash will
-                        // match what transmission generated, since we use
-                        // a different algo for picking piece length
+    // force piece length to 32KB so info-hash will
+    // match what transmission generated, since we use
+    // a different algo for picking piece length
+    pieceLength: 32768,
 
-    private: false,      // also force `private: false` to match transmission
+    private: false, // also force `private: false` to match transmission
     name: 'numbers'
 
   }, function (err, torrent) {

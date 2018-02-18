@@ -76,11 +76,12 @@ test('create multi file torrent', function (t) {
 
   var startTime = Date.now()
   createTorrent(fixtures.numbers.contentPath, {
-    pieceLength: 32768, // force piece length to 32KB so info-hash will
-                        // match what transmission generated, since we use
-                        // a different algo for picking piece length
+    // force piece length to 32KB so info-hash will
+    // match what transmission generated, since we use
+    // a different algo for picking piece length
+    pieceLength: 32768,
 
-    private: false      // also force `private: false` to match transmission
+    private: false // also force `private: false` to match transmission
 
   }, function (err, torrent) {
     t.error(err)
@@ -120,11 +121,12 @@ test('create multi file torrent with nested directories', function (t) {
 
   var startTime = Date.now()
   createTorrent(fixtures.lotsOfNumbers.contentPath, {
-    pieceLength: 32768, // force piece length to 32KB so info-hash will
-                        // match what transmission generated, since we use
-                        // a different algo for picking piece length
+    // force piece length to 32KB so info-hash will
+    // match what transmission generated, since we use
+    // a different algo for picking piece length
+    pieceLength: 32768,
 
-    private: false      // also force `private: false` to match transmission
+    private: false // also force `private: false` to match transmission
 
   }, function (err, torrent) {
     t.error(err)
@@ -180,11 +182,13 @@ test('create multi file torrent with array of paths', function (t) {
   var startTime = Date.now()
   createTorrent(input, {
     name: 'multi',
-    pieceLength: 32768, // force piece length to 32KB so info-hash will
-                        // match what transmission generated, since we use
-                        // a different algo for picking piece length
 
-    private: false      // also force `private: false` to match transmission
+    // force piece length to 32KB so info-hash will
+    // match what transmission generated, since we use
+    // a different algo for picking piece length
+    pieceLength: 32768,
+
+    private: false // also force `private: false` to match transmission
 
   }, function (err, torrent) {
     t.error(err)
