@@ -14,7 +14,7 @@
     "url": "https://github.com/webtorrent/create-torrent/issues"
   },
   "dependencies": {
-    "bencode": "^1.0.0",
+    "bencode": "^2.0.0",
     "block-stream2": "^1.0.0",
     "filestream": "^4.0.0",
     "flatten": "^1.0.2",
