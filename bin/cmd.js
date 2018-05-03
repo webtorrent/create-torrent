@@ -12,7 +12,8 @@ var argv = minimist(process.argv.slice(2), {
   },
   boolean: [
     'help',
-    'version'
+    'version',
+    'private'
   ],
   string: [
     'outfile',
