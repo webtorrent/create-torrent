@@ -31,7 +31,7 @@
   },
   "devDependencies": {
     "airtap": "0.0.7",
-    "brfs": "^1.1.2",
+    "brfs": "^2.0.0",
     "parse-torrent": "^6.0.0",
     "standard": "*",
     "tape": "^4.0.0",
