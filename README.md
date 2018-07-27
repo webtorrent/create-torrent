@@ -11,8 +11,6 @@
 
 #### Create .torrent files
 
-[![Sauce Test Status](https://saucelabs.com/browser-matrix/create-torrent.svg)](https://saucelabs.com/u/create-torrent)
-
 ![creation](https://raw.githubusercontent.com/webtorrent/create-torrent/master/img.jpg)
 
 This module is used by [WebTorrent](http://webtorrent.io)! This module works in node.js and the browser (with [browserify](http://browserify.org/)).
@@ -39,8 +37,9 @@ createTorrent('/path/to/folder', function (err, torrent) {
 })
 ```
 
-A reasonable piece length (~1024 pieces) will automatically be selected for the .torrent
-file, or you can override it if you want a different size (See API docs below).
+A reasonable piece length (approx. 1024 pieces) will automatically be selected
+for the .torrent file, or you can override it if you want a different size (See
+API docs below).
 
 ### api
 
