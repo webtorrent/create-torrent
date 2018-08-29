@@ -43,7 +43,7 @@ const stream = require('readable-stream')
  * @return {Buffer} buffer of .torrent file data
  */
 function createTorrent (input, opts, cb) {
-  if (typeof opts === 'function') [opts, cb] = [cb, opts]
+  if (typeof opts === 'function') [ opts, cb ] = [ cb, opts ]
   opts = opts ? Object.assign({}, opts) : {}
 
   _parseInput(input, opts, (err, files, singleFileTorrent) => {
@@ -54,7 +54,7 @@ function createTorrent (input, opts, cb) {
 }
 
 function parseInput (input, opts, cb) {
-  if (typeof opts === 'function') [opts, cb] = [cb, opts]
+  if (typeof opts === 'function') [ opts, cb ] = [ cb, opts ]
   opts = opts ? Object.assign({}, opts) : {}
   _parseInput(input, opts, cb)
 }
