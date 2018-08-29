@@ -1,26 +1,12 @@
-var createTorrent = require('../')
-var test = require('tape')
+const test = require('tape')
+const createTorrent = require('../')
 
-test('error handling', function (t) {
+test('error handling', t => {
   t.plan(5)
 
-  t.throws(function () {
-    createTorrent(null, function () {})
-  })
-
-  t.throws(function () {
-    createTorrent(undefined, function () {})
-  })
-
-  t.throws(function () {
-    createTorrent([null], function () {})
-  })
-
-  t.throws(function () {
-    createTorrent([undefined], function () {})
-  })
-
-  t.throws(function () {
-    createTorrent([null, undefined], function () {})
-  })
+  t.throws(() => createTorrent(null, () => {}))
+  t.throws(() => createTorrent(undefined, () => {}))
+  t.throws(() => createTorrent([null], () => {}))
+  t.throws(() => createTorrent([undefined], () => {}))
+  t.throws(() => createTorrent([null, undefined], () => {}))
 })

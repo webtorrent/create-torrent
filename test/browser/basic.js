@@ -1,34 +1,34 @@
 /* global Blob */
 
-var createTorrent = require('../../')
-var fixtures = require('webtorrent-fixtures')
-var fs = require('fs')
-var parseTorrent = require('parse-torrent')
-var path = require('path')
-var sha1 = require('simple-sha1')
-var test = require('tape')
+const fixtures = require('webtorrent-fixtures')
+const fs = require('fs')
+const parseTorrent = require('parse-torrent')
+const path = require('path')
+const sha1 = require('simple-sha1')
+const test = require('tape')
+const createTorrent = require('../../')
 
 function makeFileShim (buf, name) {
-  var file = new Blob([ buf ])
-  file.fullPath = '/' + name
+  const file = new Blob([ buf ])
+  file.fullPath = `/${name}`
   file.name = name
   return file
 }
 
-var leaves = makeFileShim(fixtures.leaves.content, 'Leaves of Grass by Walt Whitman.epub')
+const leaves = makeFileShim(fixtures.leaves.content, 'Leaves of Grass by Walt Whitman.epub')
 
-var numbers1 = makeFileShim(fs.readFileSync(path.join(__dirname, '../../node_modules/webtorrent-fixtures/fixtures/numbers/1.txt'), 'utf8'), '1.txt')
-var numbers2 = makeFileShim(fs.readFileSync(path.join(__dirname, '../../node_modules/webtorrent-fixtures/fixtures/numbers/2.txt'), 'utf8'), '2.txt')
-var numbers3 = makeFileShim(fs.readFileSync(path.join(__dirname, '../../node_modules/webtorrent-fixtures/fixtures/numbers/3.txt'), 'utf8'), '3.txt')
+const numbers1 = makeFileShim(fs.readFileSync(path.join(__dirname, '../../node_modules/webtorrent-fixtures/fixtures/numbers/1.txt'), 'utf8'), '1.txt')
+const numbers2 = makeFileShim(fs.readFileSync(path.join(__dirname, '../../node_modules/webtorrent-fixtures/fixtures/numbers/2.txt'), 'utf8'), '2.txt')
+const numbers3 = makeFileShim(fs.readFileSync(path.join(__dirname, '../../node_modules/webtorrent-fixtures/fixtures/numbers/3.txt'), 'utf8'), '3.txt')
 
-test('create single file torrent', function (t) {
+test('create single file torrent', t => {
   t.plan(11)
 
-  var startTime = Date.now()
-  createTorrent(leaves, function (err, torrent) {
+  const startTime = Date.now()
+  createTorrent(leaves, (err, torrent) => {
     t.error(err)
 
-    var parsedTorrent = parseTorrent(torrent)
+    const parsedTorrent = parseTorrent(torrent)
 
     t.equals(parsedTorrent.name, 'Leaves of Grass by Walt Whitman.epub')
 
@@ -75,10 +75,10 @@ test('create single file torrent', function (t) {
   })
 })
 
-test('create multi file torrent', function (t) {
+test('create multi file torrent', t => {
   t.plan(16)
 
-  var startTime = Date.now()
+  const startTime = Date.now()
   createTorrent([ numbers1, numbers2, numbers3 ], {
     // force piece length to 32KB so info-hash will
     // match what transmission generated, since we use
@@ -88,10 +88,10 @@ test('create multi file torrent', function (t) {
     private: false, // also force `private: false` to match transmission
     name: 'numbers'
 
-  }, function (err, torrent) {
+  }, (err, torrent) => {
     t.error(err)
 
-    var parsedTorrent = parseTorrent(torrent)
+    const parsedTorrent = parseTorrent(torrent)
 
     t.equals(parsedTorrent.name, 'numbers')
 

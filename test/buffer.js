@@ -1,25 +1,25 @@
-var createTorrent = require('../')
-var parseTorrent = require('parse-torrent')
-var path = require('path')
-var sha1 = require('simple-sha1')
-var test = require('tape')
+const createTorrent = require('../')
+const parseTorrent = require('parse-torrent')
+const path = require('path')
+const sha1 = require('simple-sha1')
+const test = require('tape')
 
-test('create nested torrent with array of buffers', function (t) {
+test('create nested torrent with array of buffers', t => {
   t.plan(14)
 
-  var buf1 = Buffer.from('bl')
+  const buf1 = Buffer.from('bl')
   buf1.name = 'dir1/buf1.txt'
 
-  var buf2 = Buffer.from('ah')
+  const buf2 = Buffer.from('ah')
   buf2.name = 'dir2/buf2.txt'
 
-  var startTime = Date.now()
+  const startTime = Date.now()
   createTorrent([ buf1, buf2 ], {
     name: 'multi'
-  }, function (err, torrent) {
+  }, (err, torrent) => {
     t.error(err)
 
-    var parsedTorrent = parseTorrent(torrent)
+    const parsedTorrent = parseTorrent(torrent)
 
     t.equals(parsedTorrent.name, 'multi')
 

@@ -1,22 +1,22 @@
-var createTorrent = require('../')
-var fixtures = require('webtorrent-fixtures')
-var fs = require('fs')
-var parseTorrent = require('parse-torrent')
-var path = require('path')
-var sha1 = require('simple-sha1')
-var test = require('tape')
+const fixtures = require('webtorrent-fixtures')
+const fs = require('fs')
+const parseTorrent = require('parse-torrent')
+const path = require('path')
+const sha1 = require('simple-sha1')
+const test = require('tape')
+const createTorrent = require('../')
 
-test('create single file torrent from a stream', function (t) {
+test('create single file torrent from a stream', t => {
   t.plan(11)
 
-  var stream = fs.createReadStream(fixtures.leaves.contentPath)
+  const stream = fs.createReadStream(fixtures.leaves.contentPath)
   stream.name = 'Leaves of Grass by Walt Whitman.epub'
 
-  var startTime = Date.now()
-  createTorrent(stream, { pieceLength: 16384 }, function (err, torrent) {
+  const startTime = Date.now()
+  createTorrent(stream, { pieceLength: 16384 }, (err, torrent) => {
     t.error(err)
 
-    var parsedTorrent = parseTorrent(torrent)
+    const parsedTorrent = parseTorrent(torrent)
 
     t.equals(parsedTorrent.name, 'Leaves of Grass by Walt Whitman.epub')
 
@@ -62,16 +62,16 @@ test('create single file torrent from a stream', function (t) {
   })
 })
 
-test('create multi file torrent with streams', function (t) {
+test('create multi file torrent with streams', t => {
   t.plan(16)
 
-  var files = fs.readdirSync(fixtures.numbers.contentPath).map(function (file) {
-    var stream = fs.createReadStream(fixtures.numbers.contentPath + '/' + file)
+  const files = fs.readdirSync(fixtures.numbers.contentPath).map(file => {
+    const stream = fs.createReadStream(`${fixtures.numbers.contentPath}/${file}`)
     stream.name = file
     return stream
   })
 
-  var startTime = Date.now()
+  const startTime = Date.now()
   createTorrent(files, {
     // force piece length to 32KB so info-hash will
     // match what transmission generated, since we use
@@ -82,10 +82,10 @@ test('create multi file torrent with streams', function (t) {
 
     name: 'numbers'
 
-  }, function (err, torrent) {
+  }, (err, torrent) => {
     t.error(err)
 
-    var parsedTorrent = parseTorrent(torrent)
+    const parsedTorrent = parseTorrent(torrent)
 
     t.equals(parsedTorrent.name, 'numbers')
 
@@ -115,20 +115,20 @@ test('create multi file torrent with streams', function (t) {
   })
 })
 
-test('implicit name and pieceLength for stream', function (t) {
+test('implicit name and pieceLength for stream', t => {
   t.plan(6)
 
-  var stream = fs.createReadStream(fixtures.leaves.contentPath)
+  const stream = fs.createReadStream(fixtures.leaves.contentPath)
 
-  createTorrent(stream, function (err, torrent) {
+  createTorrent(stream, (err, torrent) => {
     t.error(err)
-    var parsedTorrent = parseTorrent(torrent)
+    const parsedTorrent = parseTorrent(torrent)
 
-    t.ok(parsedTorrent.name.indexOf('Unnamed Torrent') >= 0)
+    t.ok(parsedTorrent.name.includes('Unnamed Torrent'))
     t.equal(parsedTorrent.pieceLength, 16384)
 
     t.equal(parsedTorrent.files.length, 1)
-    t.ok(parsedTorrent.files[0].name.indexOf('Unnamed Torrent') >= 0)
-    t.ok(parsedTorrent.files[0].path.indexOf('Unnamed Torrent') >= 0)
+    t.ok(parsedTorrent.files[0].name.includes('Unnamed Torrent'))
+    t.ok(parsedTorrent.files[0].path.includes('Unnamed Torrent'))
   })
 })
