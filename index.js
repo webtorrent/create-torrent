@@ -16,7 +16,6 @@ const bencode = require('bencode')
 const BlockStream = require('block-stream2')
 const calcPieceLength = require('piece-length')
 const corePath = require('path')
-const extend = require('xtend')
 const FileReadStream = require('filestream/read')
 const flatten = require('flatten')
 const fs = require('fs')
@@ -44,8 +43,8 @@ const stream = require('readable-stream')
  * @return {Buffer} buffer of .torrent file data
  */
 function createTorrent (input, opts, cb) {
-  if (typeof opts === 'function') return createTorrent(input, null, opts)
-  opts = opts ? extend(opts) : {}
+  if (typeof opts === 'function') [opts, cb] = [cb, opts]
+  opts = opts ? Object.assign({}, opts) : {}
 
   _parseInput(input, opts, (err, files, singleFileTorrent) => {
     if (err) return cb(err)
@@ -55,8 +54,8 @@ function createTorrent (input, opts, cb) {
 }
 
 function parseInput (input, opts, cb) {
-  if (typeof opts === 'function') return parseInput(input, null, opts)
-  opts = opts ? extend(opts) : {}
+  if (typeof opts === 'function') [opts, cb] = [cb, opts]
+  opts = opts ? Object.assign({}, opts) : {}
   _parseInput(input, opts, cb)
 }
 
@@ -64,7 +63,7 @@ function parseInput (input, opts, cb) {
  * Parse input file and return file information.
  */
 function _parseInput (input, opts, cb) {
-  if (isFileList(input)) input = Array.prototype.slice.call(input)
+  if (isFileList(input)) input = Array.from(input)
   if (!Array.isArray(input)) input = [ input ]
 
   if (input.length === 0) throw new Error('invalid input type')
