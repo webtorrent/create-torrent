@@ -13,6 +13,17 @@ const parallel = require('run-parallel')
 const sha1 = require('simple-sha1')
 const stream = require('readable-stream')
 
+const announceList = [
+  [ 'udp://tracker.leechers-paradise.org:6969' ],
+  [ 'udp://tracker.coppersurfer.tk:6969' ],
+  [ 'udp://tracker.opentrackr.org:1337' ],
+  [ 'udp://explodie.org:6969' ],
+  [ 'udp://tracker.empire-js.us:1337' ],
+  [ 'wss://tracker.btorrent.xyz' ],
+  [ 'wss://tracker.openwebtorrent.com' ],
+  [ 'wss://tracker.fastcast.nz' ]
+]
+
 /**
  * Create a torrent.
  * @param  {string|File|FileList|Buffer|Stream|Array.<string|File|Buffer|Stream>} input
@@ -467,14 +478,4 @@ function getStreamStream (readable, file) {
 
 module.exports = createTorrent
 module.exports.parseInput = parseInput
-
-module.exports.announceList = [
-  [ 'udp://tracker.leechers-paradise.org:6969' ],
-  [ 'udp://tracker.coppersurfer.tk:6969' ],
-  [ 'udp://tracker.opentrackr.org:1337' ],
-  [ 'udp://explodie.org:6969' ],
-  [ 'udp://tracker.empire-js.us:1337' ],
-  [ 'wss://tracker.btorrent.xyz' ],
-  [ 'wss://tracker.openwebtorrent.com' ],
-  [ 'wss://tracker.fastcast.nz' ]
-]
+module.exports.announceList = announceList
