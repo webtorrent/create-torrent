@@ -12,21 +12,21 @@ module.exports.announceList = [
   [ 'wss://tracker.fastcast.nz' ]
 ]
 
-var bencode = require('bencode')
-var BlockStream = require('block-stream2')
-var calcPieceLength = require('piece-length')
-var corePath = require('path')
-var extend = require('xtend')
-var FileReadStream = require('filestream/read')
-var flatten = require('flatten')
-var fs = require('fs')
-var isFile = require('is-file')
-var junk = require('junk')
-var MultiStream = require('multistream')
-var once = require('once')
-var parallel = require('run-parallel')
-var sha1 = require('simple-sha1')
-var stream = require('readable-stream')
+const bencode = require('bencode')
+const BlockStream = require('block-stream2')
+const calcPieceLength = require('piece-length')
+const corePath = require('path')
+const extend = require('xtend')
+const FileReadStream = require('filestream/read')
+const flatten = require('flatten')
+const fs = require('fs')
+const isFile = require('is-file')
+const junk = require('junk')
+const MultiStream = require('multistream')
+const once = require('once')
+const parallel = require('run-parallel')
+const sha1 = require('simple-sha1')
+const stream = require('readable-stream')
 
 /**
  * Create a torrent.
@@ -47,7 +47,7 @@ function createTorrent (input, opts, cb) {
   if (typeof opts === 'function') return createTorrent(input, null, opts)
   opts = opts ? extend(opts) : {}
 
-  _parseInput(input, opts, function (err, files, singleFileTorrent) {
+  _parseInput(input, opts, (err, files, singleFileTorrent) => {
     if (err) return cb(err)
     opts.singleFileTorrent = singleFileTorrent
     onFiles(files, opts, cb)
@@ -69,12 +69,12 @@ function _parseInput (input, opts, cb) {
 
   if (input.length === 0) throw new Error('invalid input type')
 
-  input.forEach(function (item) {
-    if (item == null) throw new Error('invalid input type: ' + item)
+  input.forEach(item => {
+    if (item == null) throw new Error(`invalid input type: ${item}`)
   })
 
   // In Electron, use the true file path
-  input = input.map(function (item) {
+  input = input.map(item => {
     if (isBlob(item) && typeof item.path === 'string' && typeof fs.stat === 'function') return item.path
     return item
   })
@@ -82,15 +82,15 @@ function _parseInput (input, opts, cb) {
   // If there's just one file, allow the name to be set by `opts.name`
   if (input.length === 1 && typeof input[0] !== 'string' && !input[0].name) input[0].name = opts.name
 
-  var commonPrefix = null
-  input.forEach(function (item, i) {
+  let commonPrefix = null
+  input.forEach((item, i) => {
     if (typeof item === 'string') {
       return
     }
 
-    var path = item.fullPath || item.name
+    let path = item.fullPath || item.name
     if (!path) {
-      path = 'Unknown File ' + (i + 1)
+      path = `Unknown File ${i + 1}`
       item.unknownName = true
     }
 
@@ -111,17 +111,17 @@ function _parseInput (input, opts, cb) {
   })
 
   // remove junk files
-  input = input.filter(function (item) {
+  input = input.filter(item => {
     if (typeof item === 'string') {
       return true
     }
-    var filename = item.path[item.path.length - 1]
+    const filename = item.path[item.path.length - 1]
     return notHidden(filename) && junk.not(filename)
   })
 
   if (commonPrefix) {
-    input.forEach(function (item) {
-      var pathless = (Buffer.isBuffer(item) || isReadable(item)) && !item.path
+    input.forEach(item => {
+      const pathless = (Buffer.isBuffer(item) || isReadable(item)) && !item.path
       if (typeof item === 'string' || pathless) return
       item.path.shift()
     })
@@ -133,7 +133,7 @@ function _parseInput (input, opts, cb) {
 
   if (!opts.name) {
     // use first user-set file name
-    input.some(function (item) {
+    input.some(item => {
       if (typeof item === 'string') {
         opts.name = corePath.basename(item)
         return true
@@ -145,14 +145,12 @@ function _parseInput (input, opts, cb) {
   }
 
   if (!opts.name) {
-    opts.name = 'Unnamed Torrent ' + Date.now()
+    opts.name = `Unnamed Torrent ${Date.now()}`
   }
 
-  var numPaths = input.reduce(function (sum, item) {
-    return sum + Number(typeof item === 'string')
-  }, 0)
+  const numPaths = input.reduce((sum, item) => sum + Number(typeof item === 'string'), 0)
 
-  var isSingleFileTorrent = (input.length === 1)
+  let isSingleFileTorrent = (input.length === 1)
 
   if (input.length === 1 && typeof input[0] === 'string') {
     if (typeof fs.stat !== 'function') {
@@ -160,45 +158,43 @@ function _parseInput (input, opts, cb) {
     }
     // If there's a single path, verify it's a file before deciding this is a single
     // file torrent
-    isFile(input[0], function (err, pathIsFile) {
+    isFile(input[0], (err, pathIsFile) => {
       if (err) return cb(err)
       isSingleFileTorrent = pathIsFile
       processInput()
     })
   } else {
-    process.nextTick(function () {
+    process.nextTick(() => {
       processInput()
     })
   }
 
   function processInput () {
-    parallel(input.map(function (item) {
-      return function (cb) {
-        var file = {}
+    parallel(input.map(item => cb => {
+      const file = {}
 
-        if (isBlob(item)) {
-          file.getStream = getBlobStream(item)
-          file.length = item.size
-        } else if (Buffer.isBuffer(item)) {
-          file.getStream = getBufferStream(item)
-          file.length = item.length
-        } else if (isReadable(item)) {
-          file.getStream = getStreamStream(item, file)
-          file.length = 0
-        } else if (typeof item === 'string') {
-          if (typeof fs.stat !== 'function') {
-            throw new Error('filesystem paths do not work in the browser')
-          }
-          var keepRoot = numPaths > 1 || isSingleFileTorrent
-          getFiles(item, keepRoot, cb)
-          return // early return!
-        } else {
-          throw new Error('invalid input type')
+      if (isBlob(item)) {
+        file.getStream = getBlobStream(item)
+        file.length = item.size
+      } else if (Buffer.isBuffer(item)) {
+        file.getStream = getBufferStream(item)
+        file.length = item.length
+      } else if (isReadable(item)) {
+        file.getStream = getStreamStream(item, file)
+        file.length = 0
+      } else if (typeof item === 'string') {
+        if (typeof fs.stat !== 'function') {
+          throw new Error('filesystem paths do not work in the browser')
         }
-        file.path = item.path
-        cb(null, file)
+        const keepRoot = numPaths > 1 || isSingleFileTorrent
+        getFiles(item, keepRoot, cb)
+        return // early return!
+      } else {
+        throw new Error('invalid input type')
       }
-    }), function (err, files) {
+      file.path = item.path
+      cb(null, file)
+    }), (err, files) => {
       if (err) return cb(err)
       files = flatten(files)
       cb(null, files, isSingleFileTorrent)
@@ -207,7 +203,7 @@ function _parseInput (input, opts, cb) {
 }
 
 function getFiles (path, keepRoot, cb) {
-  traversePath(path, getFileInfo, function (err, files) {
+  traversePath(path, getFileInfo, (err, files) => {
     if (err) return cb(err)
 
     if (Array.isArray(files)) files = flatten(files)
@@ -219,7 +215,7 @@ function getFiles (path, keepRoot, cb) {
     }
     if (path[path.length - 1] !== corePath.sep) path += corePath.sep
 
-    files.forEach(function (file) {
+    files.forEach(file => {
       file.getStream = getFilePathStream(file.path)
       file.path = file.path.replace(path, '').split(corePath.sep)
     })
@@ -229,26 +225,24 @@ function getFiles (path, keepRoot, cb) {
 
 function getFileInfo (path, cb) {
   cb = once(cb)
-  fs.stat(path, function (err, stat) {
+  fs.stat(path, (err, stat) => {
     if (err) return cb(err)
-    var info = {
+    const info = {
       length: stat.size,
-      path: path
+      path
     }
     cb(null, info)
   })
 }
 
 function traversePath (path, fn, cb) {
-  fs.stat(path, function (err, stats) {
+  fs.stat(path, (err, stats) => {
     if (err) return cb(err)
     if (stats.isDirectory()) {
-      fs.readdir(path, function (err, entries) {
+      fs.readdir(path, (err, entries) => {
         if (err) return cb(err)
-        parallel(entries.filter(notHidden).filter(junk.not).map(function (entry) {
-          return function (cb) {
-            traversePath(corePath.join(path, entry), fn, cb)
-          }
+        parallel(entries.filter(notHidden).filter(junk.not).map(entry => cb => {
+          traversePath(corePath.join(path, entry), fn, cb)
         }), cb)
       })
     } else if (stats.isFile()) {
@@ -264,19 +258,17 @@ function notHidden (file) {
 
 function getPieceList (files, pieceLength, cb) {
   cb = once(cb)
-  var pieces = []
-  var length = 0
+  const pieces = []
+  let length = 0
 
-  var streams = files.map(function (file) {
-    return file.getStream
-  })
+  const streams = files.map(file => file.getStream)
 
-  var remainingHashes = 0
-  var pieceNum = 0
-  var ended = false
+  let remainingHashes = 0
+  let pieceNum = 0
+  let ended = false
 
-  var multistream = new MultiStream(streams)
-  var blockstream = new BlockStream(pieceLength, { zeroPadding: false })
+  const multistream = new MultiStream(streams)
+  const blockstream = new BlockStream(pieceLength, { zeroPadding: false })
 
   multistream.on('error', onError)
 
@@ -289,8 +281,8 @@ function getPieceList (files, pieceLength, cb) {
   function onData (chunk) {
     length += chunk.length
 
-    var i = pieceNum
-    sha1(chunk, function (hash) {
+    const i = pieceNum
+    sha1(chunk, hash => {
       pieces[i] = hash
       remainingHashes -= 1
       maybeDone()
@@ -325,12 +317,12 @@ function getPieceList (files, pieceLength, cb) {
 }
 
 function onFiles (files, opts, cb) {
-  var announceList = opts.announceList
+  let announceList = opts.announceList
 
   if (!announceList) {
     if (typeof opts.announce === 'string') announceList = [ [ opts.announce ] ]
     else if (Array.isArray(opts.announce)) {
-      announceList = opts.announce.map(function (u) { return [ u ] })
+      announceList = opts.announce.map(u => [ u ])
     }
   }
 
@@ -340,9 +332,7 @@ function onFiles (files, opts, cb) {
     if (typeof global.WEBTORRENT_ANNOUNCE === 'string') {
       announceList.push([ [ global.WEBTORRENT_ANNOUNCE ] ])
     } else if (Array.isArray(global.WEBTORRENT_ANNOUNCE)) {
-      announceList = announceList.concat(global.WEBTORRENT_ANNOUNCE.map(function (u) {
-        return [ u ]
-      }))
+      announceList = announceList.concat(global.WEBTORRENT_ANNOUNCE.map(u => [ u ]))
     }
   }
 
@@ -353,7 +343,7 @@ function onFiles (files, opts, cb) {
 
   if (typeof opts.urlList === 'string') opts.urlList = [ opts.urlList ]
 
-  var torrent = {
+  const torrent = {
     info: {
       name: opts.name
     },
@@ -380,14 +370,14 @@ function onFiles (files, opts, cb) {
 
   if (opts.urlList !== undefined) torrent['url-list'] = opts.urlList
 
-  var pieceLength = opts.pieceLength || calcPieceLength(files.reduce(sumLength, 0))
+  const pieceLength = opts.pieceLength || calcPieceLength(files.reduce(sumLength, 0))
   torrent.info['piece length'] = pieceLength
 
-  getPieceList(files, pieceLength, function (err, pieces, torrentLength) {
+  getPieceList(files, pieceLength, (err, pieces, torrentLength) => {
     if (err) return cb(err)
     torrent.info.pieces = pieces
 
-    files.forEach(function (file) {
+    files.forEach(file => {
       delete file.getStream
     })
 
@@ -444,9 +434,7 @@ function isReadable (obj) {
  * @return {function}
  */
 function getBlobStream (file) {
-  return function () {
-    return new FileReadStream(file)
-  }
+  return () => new FileReadStream(file)
 }
 
 /**
@@ -455,8 +443,8 @@ function getBlobStream (file) {
  * @return {function}
  */
 function getBufferStream (buffer) {
-  return function () {
-    var s = new stream.PassThrough()
+  return () => {
+    const s = new stream.PassThrough()
     s.end(buffer)
     return s
   }
@@ -468,9 +456,7 @@ function getBufferStream (buffer) {
  * @return {function}
  */
 function getFilePathStream (path) {
-  return function () {
-    return fs.createReadStream(path)
-  }
+  return () => fs.createReadStream(path)
 }
 
 /**
@@ -482,8 +468,8 @@ function getFilePathStream (path) {
  * @return {function}
  */
 function getStreamStream (readable, file) {
-  return function () {
-    var counter = new stream.Transform()
+  return () => {
+    const counter = new stream.Transform()
     counter._transform = function (buf, enc, done) {
       file.length += buf.length
       this.push(buf)
