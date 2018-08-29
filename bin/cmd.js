@@ -1,9 +1,9 @@
 #!/usr/bin/env node
-var createTorrent = require('../')
-var fs = require('fs')
-var minimist = require('minimist')
+const fs = require('fs')
+const minimist = require('minimist')
+const createTorrent = require('../')
 
-var argv = minimist(process.argv.slice(2), {
+const argv = minimist(process.argv.slice(2), {
   alias: {
     o: 'outfile',
     n: 'name',
@@ -29,8 +29,24 @@ var argv = minimist(process.argv.slice(2), {
   }
 })
 
-var infile = argv._[0]
-var outfile = argv.outfile
+const infile = argv._[0]
+const outfile = argv.outfile
+const help = `usage: create-torrent <directory OR file> [OPTIONS]
+
+Create a torrent file from a directory or file.
+
+If an output file isn't specified with '-o', the torrent file will be
+written to stdout.
+
+-o, --outfile    Output file. If not specified, stdout is used [string]
+-n, --name       Torrent name [string]
+--creationDate   Creation date [Date]
+--comment        Torrent comment [string]
+--createdBy      Created by client [string]
+--private        Private torrent? [boolean] [default: false]
+--pieceLength    Piece length [number] [default: reasonable length]
+--announce       Tracker url [string] [default: reasonable trackers]
+--urlList        Web seed url [string]`
 
 if (argv.version) {
   console.log(require('../package.json').version)
@@ -38,32 +54,16 @@ if (argv.version) {
 }
 
 if (!infile || argv.help) {
-  console.log('usage: create-torrent <directory OR file> [OPTIONS]')
-  console.log('')
-  console.log('Create a torrent file from a directory or file.')
-  console.log('')
-  console.log('If an output file isn\'t specified with `-o`, the torrent file will be ')
-  console.log('written to stdout.')
-  console.log('')
-  console.log('-o, --outfile    Output file. If not specified, stdout is used [string]')
-  console.log('-n, --name       Torrent name [string]')
-  console.log('--creationDate   Creation date [Date]')
-  console.log('--comment        Torrent comment [string]')
-  console.log('--createdBy      Created by client [string]')
-  console.log('--private        Private torrent? [boolean] [default: false]')
-  console.log('--pieceLength    Piece length [number] [default: reasonable length]')
-  console.log('--announce       Tracker url [string] [default: reasonable trackers]')
-  console.log('--urlList        Web seed url [string]')
-  console.log('')
+  console.log(help)
   process.exit(0)
 }
 
-createTorrent(infile, argv, function (err, torrent) {
+createTorrent(infile, argv, (err, torrent) => {
   if (err) {
     console.error(err.stack)
     process.exit(1)
   } else if (outfile) {
-    fs.writeFile(outfile, torrent, function (err) {
+    fs.writeFile(outfile, torrent, err => {
       if (err) {
         console.error(err.stack)
         process.exit(1)

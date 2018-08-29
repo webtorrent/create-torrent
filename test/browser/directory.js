@@ -1,33 +1,33 @@
 /* global Blob */
 
-var createTorrent = require('../../')
-var fs = require('fs')
-var parseTorrent = require('parse-torrent')
-var path = require('path')
-var sha1 = require('simple-sha1')
-var test = require('tape')
+const fs = require('fs')
+const parseTorrent = require('parse-torrent')
+const path = require('path')
+const sha1 = require('simple-sha1')
+const test = require('tape')
+const createTorrent = require('../../')
 
 function makeFileShim (buf, name, fullPath) {
-  var file = new Blob([ buf ])
+  const file = new Blob([ buf ])
   file.fullPath = fullPath
   file.name = name
   return file
 }
 
-var numbers1 = makeFileShim(fs.readFileSync(path.join(__dirname, '../../node_modules/webtorrent-fixtures/fixtures/numbers/1.txt'), 'utf8'), '1.txt', 'numbers/1.txt')
-var numbers2 = makeFileShim(fs.readFileSync(path.join(__dirname, '../../node_modules/webtorrent-fixtures/fixtures/numbers/2.txt'), 'utf8'), '2.txt', 'numbers/2.txt')
-var numbers3 = makeFileShim(fs.readFileSync(path.join(__dirname, '../../node_modules/webtorrent-fixtures/fixtures/numbers/3.txt'), 'utf8'), '3.txt', 'numbers/3.txt')
+const numbers1 = makeFileShim(fs.readFileSync(path.join(__dirname, '../../node_modules/webtorrent-fixtures/fixtures/numbers/1.txt'), 'utf8'), '1.txt', 'numbers/1.txt')
+const numbers2 = makeFileShim(fs.readFileSync(path.join(__dirname, '../../node_modules/webtorrent-fixtures/fixtures/numbers/2.txt'), 'utf8'), '2.txt', 'numbers/2.txt')
+const numbers3 = makeFileShim(fs.readFileSync(path.join(__dirname, '../../node_modules/webtorrent-fixtures/fixtures/numbers/3.txt'), 'utf8'), '3.txt', 'numbers/3.txt')
 
-var DSStore = makeFileShim('blah', '.DS_Store', '/numbers/.DS_Store') // this should be ignored
+const DSStore = makeFileShim('blah', '.DS_Store', '/numbers/.DS_Store') // this should be ignored
 
-test('create multi file torrent with directory at root', function (t) {
+test('create multi file torrent with directory at root', t => {
   t.plan(15)
 
-  var startTime = Date.now()
-  createTorrent([ numbers1, numbers2, numbers3, DSStore ], function (err, torrent) {
+  const startTime = Date.now()
+  createTorrent([ numbers1, numbers2, numbers3, DSStore ], (err, torrent) => {
     t.error(err)
 
-    var parsedTorrent = parseTorrent(torrent)
+    const parsedTorrent = parseTorrent(torrent)
 
     t.equals(parsedTorrent.name, 'numbers')
 
