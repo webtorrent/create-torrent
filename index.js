@@ -403,7 +403,7 @@ function sumLength (sum, file) {
  * @return {boolean}
  */
 function isBlob (obj) {
-  console.log('isBlob File typeof: %s, instanceof File', typeof File !== 'undefined', obj instanceof File)
+  console.log('isBlob typeof File: %s, instanceof File: %s, typeof obj: %s', typeof File !== 'undefined', obj instanceof File, typeof obj)
   return (typeof Blob !== 'undefined' && obj instanceof Blob) || (typeof File !== 'undefined' && obj instanceof File)
 }
 
