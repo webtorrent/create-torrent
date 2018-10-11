@@ -26,6 +26,15 @@ function traversePath (path, fn, cb) {
   })
 }
 
+/**
+ * Convert a file path to a lazy readable stream.
+ * @param  {string} path
+ * @return {function}
+ */
+function getFilePathStream (path) {
+  return () => fs.createReadStream(path)
+}
+
 function getFiles (path, keepRoot, cb) {
   traversePath(path, getFileInfo, (err, files) => {
     if (err) return cb(err)
@@ -43,6 +52,7 @@ function getFiles (path, keepRoot, cb) {
       file.getStream = getFilePathStream(file.path)
       file.path = file.path.replace(path, '').split(corePath.sep)
     })
+
     cb(null, files)
   })
 }
@@ -57,15 +67,6 @@ function getFileInfo (path, cb) {
     }
     cb(null, info)
   })
-}
-
-/**
- * Convert a file path to a lazy readable stream.
- * @param  {string} path
- * @return {function}
- */
-function getFilePathStream (path) {
-  return () => fs.createReadStream(path)
 }
 
 module.exports = getFiles
