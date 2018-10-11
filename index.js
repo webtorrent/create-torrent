@@ -409,15 +409,6 @@ function getBufferStream (buffer) {
 }
 
 /**
- * Convert a file path to a lazy readable stream.
- * @param  {string} path
- * @return {function}
- */
-function getFilePathStream (path) {
-  return () => fs.createReadStream(path)
-}
-
-/**
  * Convert a readable stream to a lazy readable stream. Adds instrumentation to track
  * the number of bytes in the stream and set `file.length`.
  *
