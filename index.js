@@ -3,7 +3,6 @@ const BlockStream = require('block-stream2')
 const calcPieceLength = require('piece-length')
 const corePath = require('path')
 const FileReadStream = require('filestream/read')
-const fs = require('fs')
 const isFile = require('is-file')
 const junk = require('junk')
 const MultiStream = require('multistream')
@@ -11,6 +10,7 @@ const once = require('once')
 const parallel = require('run-parallel')
 const sha1 = require('simple-sha1')
 const stream = require('readable-stream')
+const getFiles = require('./get-files') // browser exclude
 
 // TODO: When Node 10 support is dropped, replace this with Array.prototype.flat
 function flat (arr1) {
@@ -81,7 +81,7 @@ function _parseInput (input, opts, cb) {
 
   // In Electron, use the true file path
   input = input.map(item => {
-    if (isBlob(item) && typeof item.path === 'string' && typeof fs.stat === 'function') return item.path
+    if (isBlob(item) && typeof item.path === 'string' && typeof getFiles === 'function') return item.path
     return item
   })
 
@@ -159,7 +159,7 @@ function _parseInput (input, opts, cb) {
   let isSingleFileTorrent = (input.length === 1)
 
   if (input.length === 1 && typeof input[0] === 'string') {
-    if (typeof fs.stat !== 'function') {
+    if (typeof getFiles !== 'function') {
       throw new Error('filesystem paths do not work in the browser')
     }
     // If there's a single path, verify it's a file before deciding this is a single
@@ -189,7 +189,7 @@ function _parseInput (input, opts, cb) {
         file.getStream = getStreamStream(item, file)
         file.length = 0
       } else if (typeof item === 'string') {
-        if (typeof fs.stat !== 'function') {
+        if (typeof getFiles !== 'function') {
           throw new Error('filesystem paths do not work in the browser')
         }
         const keepRoot = numPaths > 1 || isSingleFileTorrent
@@ -206,56 +206,6 @@ function _parseInput (input, opts, cb) {
       cb(null, files, isSingleFileTorrent)
     })
   }
-}
-
-function getFiles (path, keepRoot, cb) {
-  traversePath(path, getFileInfo, (err, files) => {
-    if (err) return cb(err)
-
-    if (Array.isArray(files)) files = flat(files)
-    else files = [files]
-
-    path = corePath.normalize(path)
-    if (keepRoot) {
-      path = path.slice(0, path.lastIndexOf(corePath.sep) + 1)
-    }
-    if (path[path.length - 1] !== corePath.sep) path += corePath.sep
-
-    files.forEach(file => {
-      file.getStream = getFilePathStream(file.path)
-      file.path = file.path.replace(path, '').split(corePath.sep)
-    })
-    cb(null, files)
-  })
-}
-
-function getFileInfo (path, cb) {
-  cb = once(cb)
-  fs.stat(path, (err, stat) => {
-    if (err) return cb(err)
-    const info = {
-      length: stat.size,
-      path
-    }
-    cb(null, info)
-  })
-}
-
-function traversePath (path, fn, cb) {
-  fs.stat(path, (err, stats) => {
-    if (err) return cb(err)
-    if (stats.isDirectory()) {
-      fs.readdir(path, (err, entries) => {
-        if (err) return cb(err)
-        parallel(entries.filter(notHidden).filter(junk.not).map(entry => cb => {
-          traversePath(corePath.join(path, entry), fn, cb)
-        }), cb)
-      })
-    } else if (stats.isFile()) {
-      fn(path, cb)
-    }
-    // Ignore other types (not a file or directory)
-  })
 }
 
 function notHidden (file) {
