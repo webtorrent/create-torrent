@@ -324,7 +324,7 @@ function onFiles (files, opts, cb) {
 
   if (!announceList) announceList = []
 
-  if (global.WEBTORRENT_ANNOUNCE) {
+  if (global.WEBTORRENT_ANNOUNCE && announceList.length === 0) {
     if (typeof global.WEBTORRENT_ANNOUNCE === 'string') {
       announceList.push([ [ global.WEBTORRENT_ANNOUNCE ] ])
     } else if (Array.isArray(global.WEBTORRENT_ANNOUNCE)) {
