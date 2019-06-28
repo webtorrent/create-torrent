@@ -19,7 +19,7 @@
     "filestream": "^4.0.0",
     "flatten": "^1.0.2",
     "is-file": "^1.0.0",
-    "junk": "^2.1.0",
+    "junk": "^3.1.0",
     "minimist": "^1.1.0",
     "multistream": "^3.0.0",
     "once": "^1.3.0",
