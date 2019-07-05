@@ -177,7 +177,7 @@ test('create multi file torrent with array of paths', t => {
   const number11Path = path.join(fixtures.lotsOfNumbers.contentPath, 'big numbers', '11.txt')
   const numbersPath = fixtures.numbers.contentPath
 
-  const input = [ number10Path, number11Path, numbersPath ]
+  const input = [number10Path, number11Path, numbersPath]
 
   const startTime = Date.now()
   createTorrent(input, {

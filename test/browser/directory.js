@@ -8,7 +8,7 @@ const test = require('tape')
 const createTorrent = require('../../')
 
 function makeFileShim (buf, name, fullPath) {
-  const file = new Blob([ buf ])
+  const file = new Blob([buf])
   file.fullPath = fullPath
   file.name = name
   return file
@@ -24,7 +24,7 @@ test('create multi file torrent with directory at root', t => {
   t.plan(15)
 
   const startTime = Date.now()
-  createTorrent([ numbers1, numbers2, numbers3, DSStore ], (err, torrent) => {
+  createTorrent([numbers1, numbers2, numbers3, DSStore], (err, torrent) => {
     t.error(err)
 
     const parsedTorrent = parseTorrent(torrent)

@@ -14,7 +14,7 @@ test('create nested torrent with array of buffers', t => {
   buf2.name = 'dir2/buf2.txt'
 
   const startTime = Date.now()
-  createTorrent([ buf1, buf2 ], {
+  createTorrent([buf1, buf2], {
     name: 'multi'
   }, (err, torrent) => {
     t.error(err)

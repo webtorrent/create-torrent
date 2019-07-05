@@ -14,14 +14,14 @@ const sha1 = require('simple-sha1')
 const stream = require('readable-stream')
 
 const announceList = [
-  [ 'udp://tracker.leechers-paradise.org:6969' ],
-  [ 'udp://tracker.coppersurfer.tk:6969' ],
-  [ 'udp://tracker.opentrackr.org:1337' ],
-  [ 'udp://explodie.org:6969' ],
-  [ 'udp://tracker.empire-js.us:1337' ],
-  [ 'wss://tracker.btorrent.xyz' ],
-  [ 'wss://tracker.openwebtorrent.com' ],
-  [ 'wss://tracker.fastcast.nz' ]
+  ['udp://tracker.leechers-paradise.org:6969'],
+  ['udp://tracker.coppersurfer.tk:6969'],
+  ['udp://tracker.opentrackr.org:1337'],
+  ['udp://explodie.org:6969'],
+  ['udp://tracker.empire-js.us:1337'],
+  ['wss://tracker.btorrent.xyz'],
+  ['wss://tracker.openwebtorrent.com'],
+  ['wss://tracker.fastcast.nz']
 ]
 
 /**
@@ -40,7 +40,7 @@ const announceList = [
  * @return {Buffer} buffer of .torrent file data
  */
 function createTorrent (input, opts, cb) {
-  if (typeof opts === 'function') [ opts, cb ] = [ cb, opts ]
+  if (typeof opts === 'function') [opts, cb] = [cb, opts]
   opts = opts ? Object.assign({}, opts) : {}
 
   _parseInput(input, opts, (err, files, singleFileTorrent) => {
@@ -51,7 +51,7 @@ function createTorrent (input, opts, cb) {
 }
 
 function parseInput (input, opts, cb) {
-  if (typeof opts === 'function') [ opts, cb ] = [ cb, opts ]
+  if (typeof opts === 'function') [opts, cb] = [cb, opts]
   opts = opts ? Object.assign({}, opts) : {}
   _parseInput(input, opts, cb)
 }
@@ -61,7 +61,7 @@ function parseInput (input, opts, cb) {
  */
 function _parseInput (input, opts, cb) {
   if (isFileList(input)) input = Array.from(input)
-  if (!Array.isArray(input)) input = [ input ]
+  if (!Array.isArray(input)) input = [input]
 
   if (input.length === 0) throw new Error('invalid input type')
 
@@ -203,7 +203,7 @@ function getFiles (path, keepRoot, cb) {
     if (err) return cb(err)
 
     if (Array.isArray(files)) files = flatten(files)
-    else files = [ files ]
+    else files = [files]
 
     path = corePath.normalize(path)
     if (keepRoot) {
@@ -316,9 +316,9 @@ function onFiles (files, opts, cb) {
   let announceList = opts.announceList
 
   if (!announceList) {
-    if (typeof opts.announce === 'string') announceList = [ [ opts.announce ] ]
+    if (typeof opts.announce === 'string') announceList = [[opts.announce]]
     else if (Array.isArray(opts.announce)) {
-      announceList = opts.announce.map(u => [ u ])
+      announceList = opts.announce.map(u => [u])
     }
   }
 
@@ -326,9 +326,9 @@ function onFiles (files, opts, cb) {
 
   if (global.WEBTORRENT_ANNOUNCE) {
     if (typeof global.WEBTORRENT_ANNOUNCE === 'string') {
-      announceList.push([ [ global.WEBTORRENT_ANNOUNCE ] ])
+      announceList.push([[global.WEBTORRENT_ANNOUNCE]])
     } else if (Array.isArray(global.WEBTORRENT_ANNOUNCE)) {
-      announceList = announceList.concat(global.WEBTORRENT_ANNOUNCE.map(u => [ u ]))
+      announceList = announceList.concat(global.WEBTORRENT_ANNOUNCE.map(u => [u]))
     }
   }
 
@@ -337,7 +337,7 @@ function onFiles (files, opts, cb) {
     announceList = announceList.concat(module.exports.announceList)
   }
 
-  if (typeof opts.urlList === 'string') opts.urlList = [ opts.urlList ]
+  if (typeof opts.urlList === 'string') opts.urlList = [opts.urlList]
 
   const torrent = {
     info: {

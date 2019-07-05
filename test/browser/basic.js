@@ -9,7 +9,7 @@ const test = require('tape')
 const createTorrent = require('../../')
 
 function makeFileShim (buf, name) {
-  const file = new Blob([ buf ])
+  const file = new Blob([buf])
   file.fullPath = `/${name}`
   file.name = name
   return file
@@ -79,7 +79,7 @@ test('create multi file torrent', t => {
   t.plan(16)
 
   const startTime = Date.now()
-  createTorrent([ numbers1, numbers2, numbers3 ], {
+  createTorrent([numbers1, numbers2, numbers3], {
     // force piece length to 32KB so info-hash will
     // match what transmission generated, since we use
     // a different algo for picking piece length

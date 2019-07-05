@@ -17,7 +17,7 @@ test('create multi file torrent with array of mixed types', t => {
   stream.name = '10.txt'
 
   // Note: Order should be preserved
-  const input = [ number11Path, stream, numbersPath ]
+  const input = [number11Path, stream, numbersPath]
 
   const startTime = Date.now()
   createTorrent(input, {
