@@ -119,7 +119,7 @@ function _parseInput (input, opts, cb) {
     input.forEach(item => {
       const pathless = (Buffer.isBuffer(item) || isReadable(item)) && !item.path
       if (typeof item === 'string' || pathless) return
-      [].concat(item.path).shift() // web safety
+      item.path = [].concat(item.path).shift() // web safety
     })
   }
 
