@@ -90,18 +90,18 @@ function _parseInput (input, opts, cb) {
       item.unknownName = true
     }
 
-    item.path = path.split('/')
+    item.path = path = path.split('/')
 
     // Remove initial slash
-    if (!item.path[0]) {
-      item.path.shift()
+    if (!path[0]) {
+      path.shift()
     }
 
-    if (item.path.length < 2) { // No real prefix
+    if (path.length < 2) { // No real prefix
       commonPrefix = null
     } else if (i === 0 && input.length > 1) { // The first file has a prefix
-      commonPrefix = item.path[0]
-    } else if (item.path[0] !== commonPrefix) { // The prefix doesn't match
+      commonPrefix = path[0]
+    } else if (path[0] !== commonPrefix) { // The prefix doesn't match
       commonPrefix = null
     }
   })
@@ -111,7 +111,7 @@ function _parseInput (input, opts, cb) {
     if (typeof item === 'string') {
       return true
     }
-    const filename = item.path[item.path.length - 1]
+    const filename = [].concat(item.path).pop() // web safety
     return notHidden(filename) && junk.not(filename)
   })
 
@@ -119,7 +119,7 @@ function _parseInput (input, opts, cb) {
     input.forEach(item => {
       const pathless = (Buffer.isBuffer(item) || isReadable(item)) && !item.path
       if (typeof item === 'string' || pathless) return
-      item.path.shift()
+      [].concat(item.path).shift() // web safety
     })
   }
 
@@ -134,7 +134,7 @@ function _parseInput (input, opts, cb) {
         opts.name = corePath.basename(item)
         return true
       } else if (!item.unknownName) {
-        opts.name = item.path[item.path.length - 1]
+        opts.name = [].concat(item.path).pop() // web safety
         return true
       }
     })
