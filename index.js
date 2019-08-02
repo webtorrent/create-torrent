@@ -12,7 +12,7 @@ const parallel = require('run-parallel')
 const sha1 = require('simple-sha1')
 const stream = require('readable-stream')
 
-// TODO: When Node 10 support is dropped, replace this Array.prototype.flat
+// TODO: When Node 10 support is dropped, replace this with Array.prototype.flat
 function flat (arr1) {
   return arr1.reduce(
     (acc, val) => Array.isArray(val)
