@@ -3,7 +3,6 @@ const BlockStream = require('block-stream2')
 const calcPieceLength = require('piece-length')
 const corePath = require('path')
 const FileReadStream = require('filestream/read')
-const flatten = require('flatten')
 const fs = require('fs')
 const isFile = require('is-file')
 const junk = require('junk')
@@ -12,6 +11,16 @@ const once = require('once')
 const parallel = require('run-parallel')
 const sha1 = require('simple-sha1')
 const stream = require('readable-stream')
+
+// TODO: When Node 10 support is dropped, replace this Array.prototype.flat
+function flat (arr1) {
+  return arr1.reduce(
+    (acc, val) => Array.isArray(val)
+      ? acc.concat(flat(val))
+      : acc.concat(val),
+    []
+  )
+}
 
 const announceList = [
   ['udp://tracker.leechers-paradise.org:6969'],
@@ -192,7 +201,7 @@ function _parseInput (input, opts, cb) {
       cb(null, file)
     }), (err, files) => {
       if (err) return cb(err)
-      files = flatten(files)
+      files = flat(files)
       cb(null, files, isSingleFileTorrent)
     })
   }
@@ -202,7 +211,7 @@ function getFiles (path, keepRoot, cb) {
   traversePath(path, getFileInfo, (err, files) => {
     if (err) return cb(err)
 
-    if (Array.isArray(files)) files = flatten(files)
+    if (Array.isArray(files)) files = flat(files)
     else files = [files]
 
     path = corePath.normalize(path)
