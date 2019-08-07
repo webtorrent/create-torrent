@@ -45,7 +45,7 @@ const announceList = [
  * @param  {number=} opts.pieceLength
  * @param  {Array.<Array.<string>>=} opts.announceList
  * @param  {Array.<string>=} opts.urlList
- * @param  {function=} opts.progress
+ * @param  {function=} opts.onProgress
  * @param  {function} cb
  * @return {Buffer} buffer of .torrent file data
  */
@@ -266,7 +266,7 @@ function getPieceList (files, pieceLength, cb, opts) {
   cb = once(cb)
   const pieces = []
   let length = 0
-  const totalSize = opts.progress && files.reduce(sumLength, 0)
+  const totalSize = opts.onProgress && files.reduce(sumLength, 0)
 
   const streams = files.map(file => file.getStream)
 
@@ -296,7 +296,7 @@ function getPieceList (files, pieceLength, cb, opts) {
     })
     remainingHashes += 1
     pieceNum += 1
-    opts.progress && opts.progress(totalSize, length)
+    opts.onProgress && opts.onProgress(totalSize, length)
   }
 
   function onEnd () {
