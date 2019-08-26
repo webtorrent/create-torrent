@@ -26,10 +26,10 @@ npm install create-torrent
 The simplest way to use `create-torrent` is like this:
 
 ```js
-var createTorrent = require('create-torrent')
-var fs = require('fs')
+const createTorrent = require('create-torrent')
+const fs = require('fs')
 
-createTorrent('/path/to/folder', function (err, torrent) {
+createTorrent('/path/to/folder', (err, torrent) => {
   if (!err) {
     // `torrent` is a Buffer with the contents of the new .torrent file
     fs.writeFile('my.torrent', torrent)
@@ -104,7 +104,7 @@ the name is included in the object. For Buffer or Readable stream types, a `name
 can be set on the object, like this:
 
 ```js
-var buf = Buffer.from('Some file content')
+const buf = Buffer.from('Some file content')
 buf.name = 'Some file name'
 ```
 
