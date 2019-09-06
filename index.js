@@ -45,6 +45,7 @@ const announceList = [
  * @param  {number=} opts.pieceLength
  * @param  {Array.<Array.<string>>=} opts.announceList
  * @param  {Array.<string>=} opts.urlList
+ * @param  {Object} opts.info
  * @param  {function} cb
  * @return {Buffer} buffer of .torrent file data
  */
@@ -366,6 +367,8 @@ function onFiles (files, opts, cb) {
   if (opts.createdBy !== undefined) torrent['created by'] = opts.createdBy
 
   if (opts.private !== undefined) torrent.info.private = Number(opts.private)
+
+  if (opts.info !== undefined) Object.assign(torrent.info, opts.info)
 
   // "ssl-cert" key is for SSL torrents, see:
   //   - http://blog.libtorrent.org/2012/01/bittorrent-over-ssl/
