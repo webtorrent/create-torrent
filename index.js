@@ -381,7 +381,7 @@ function onFiles (files, opts, cb) {
   const pieceLength = opts.pieceLength || calcPieceLength(files.reduce(sumLength, 0))
   torrent.info['piece length'] = pieceLength
 
-  getPieceList(files, pieceLength, (err, pieces, torrentLength) => {
+  const onGetPieces = (err, pieces, torrentLength) => {
     if (err) return cb(err)
     torrent.info.pieces = pieces
 
@@ -396,7 +396,14 @@ function onFiles (files, opts, cb) {
     }
 
     cb(null, bencode.encode(torrent))
-  })
+  }
+
+  if (opts.pieces && opts.length) {
+    const pieces = Buffer.from(opts.pieces.join(''), 'hex')
+    onGetPieces(null, pieces, opts.length)
+  } else {
+    getPieceList(files, pieceLength, onGetPieces)
+  }
 }
 
 /**
