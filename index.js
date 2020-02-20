@@ -3,7 +3,8 @@ const BlockStream = require('block-stream2')
 const calcPieceLength = require('piece-length')
 const corePath = require('path')
 const FileReadStream = require('filestream/read')
-const fs = require('fs')
+// const fs = require('fs')
+const fs = {}
 const isFile = require('is-file')
 const junk = require('junk')
 const MultiStream = require('multistream')
@@ -158,7 +159,7 @@ function _parseInput (input, opts, cb) {
 
   let isSingleFileTorrent = (input.length === 1)
 
-  if (input.length === 1 && typeof input[0] === 'string') {
+  if (input.length === 1 && typeof input[0] === 'string' && !opts.isCordova) {
     if (typeof fs.stat !== 'function') {
       throw new Error('filesystem paths do not work in the browser')
     }
@@ -188,6 +189,13 @@ function _parseInput (input, opts, cb) {
       } else if (isReadable(item)) {
         file.getStream = getStreamStream(item, file)
         file.length = 0
+      } else if (typeof item === 'string' && opts.isCordova) {
+        cb(null, [{
+          getStream: getBlobStream(opts.file),
+          path: item,
+          length: opts.file.size
+        }])
+        return
       } else if (typeof item === 'string') {
         if (typeof fs.stat !== 'function') {
           throw new Error('filesystem paths do not work in the browser')
