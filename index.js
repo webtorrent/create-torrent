@@ -3,8 +3,7 @@ const BlockStream = require('block-stream2')
 const calcPieceLength = require('piece-length')
 const corePath = require('path')
 const FileReadStream = require('filestream/read')
-// const fs = require('fs')
-const fs = {}
+const fs = require('fs')
 const isFile = require('is-file')
 const junk = require('junk')
 const MultiStream = require('multistream')
@@ -47,6 +46,7 @@ const announceList = [
  * @param  {Array.<Array.<string>>=} opts.announceList
  * @param  {Array.<string>=} opts.urlList
  * @param  {Object} opts.info
+ * @param  {Function} opts.getPieceList
  * @param  {function} cb
  * @return {Buffer} buffer of .torrent file data
  */
@@ -409,6 +409,11 @@ function onFiles (files, opts, cb) {
   if (opts.pieces && opts.length) {
     const pieces = Buffer.from(opts.pieces.join(''), 'hex')
     onGetPieces(null, pieces, opts.length)
+  } else if (opts.getPieceList) {
+    opts.getPieceList(files, pieceLength, (err, pieces, length) => {
+      const piecesBuffer = Buffer.from(pieces, 'hex')
+      onGetPieces(err, piecesBuffer, length)
+    })
   } else {
     getPieceList(files, pieceLength, onGetPieces)
   }
