@@ -45,7 +45,7 @@ const announceList = [
  * @param  {number=} opts.pieceLength
  * @param  {Array.<Array.<string>>=} opts.announceList
  * @param  {Array.<string>=} opts.urlList
- * @param  {Object} opts.info
+ * @param  {Object=} opts.info
  * @param  {function} cb
  * @return {Buffer} buffer of .torrent file data
  */
@@ -471,7 +471,7 @@ function getFilePathStream (path) {
  * Convert a readable stream to a lazy readable stream. Adds instrumentation to track
  * the number of bytes in the stream and set `file.length`.
  *
- * @param  {Stream} stream
+ * @param  {Stream} readable
  * @param  {Object} file
  * @return {function}
  */
