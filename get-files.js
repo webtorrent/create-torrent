@@ -40,7 +40,7 @@ function getFiles (path, keepRoot, cb) {
     if (err) return cb(err)
 
     if (Array.isArray(files)) files = flatten(files)
-    else files = [ files ]
+    else files = [files]
 
     path = corePath.normalize(path)
     if (keepRoot) {
