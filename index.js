@@ -1,3 +1,4 @@
+/*! create-torrent. MIT License. WebTorrent LLC <https://webtorrent.io/opensource> */
 const bencode = require('bencode')
 const BlockStream = require('block-stream2')
 const calcPieceLength = require('piece-length')

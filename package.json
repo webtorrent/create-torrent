@@ -3,7 +3,7 @@
   "description": "Create .torrent files",
   "version": "4.4.2",
   "author": {
-    "name": "WebTorrent, LLC",
+    "name": "WebTorrent LLC",
     "email": "feross@webtorrent.io",
     "url": "https://webtorrent.io"
   },
@@ -67,5 +67,19 @@
       "Blob",
       "FileList"
     ]
-  }
+  },
+  "funding": [
+    {
+      "type": "github",
+      "url": "https://github.com/sponsors/feross"
+    },
+    {
+      "type": "patreon",
+      "url": "https://www.patreon.com/feross"
+    },
+    {
+      "type": "consulting",
+      "url": "https://feross.org/support"
+    }
+  ]
 }
