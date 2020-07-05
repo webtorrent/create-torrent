@@ -102,6 +102,11 @@ function _parseInput (input, opts, cb) {
 
     item.path = path.split('/')
 
+    if (!Array.isArray(item.path)) {
+      commonPrefix = null
+      return
+    }
+
     // Remove initial slash
     if (!item.path[0]) {
       item.path.shift()
