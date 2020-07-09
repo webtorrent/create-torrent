@@ -7,7 +7,7 @@ test('announce is added to torrent', t => {
   t.plan(4)
 
   createTorrent(fixtures.leaves.contentPath, {
-    announce: 'wss://example1.com',
+    announce: 'wss://example1.com'
   }, (err, torrent) => {
     t.error(err)
 
