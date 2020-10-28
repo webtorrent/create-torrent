@@ -147,6 +147,7 @@ function _parseInput (input, opts, cb) {
         opts.name = item.path[item.path.length - 1]
         return true
       }
+      return false
     })
   }
 
