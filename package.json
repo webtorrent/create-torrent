@@ -14,7 +14,8 @@
     "url": "https://github.com/webtorrent/create-torrent/issues"
   },
   "browser": {
-    "./get-files.js": false
+    "./get-files.js": false,
+    "is-file": false
   },
   "dependencies": {
     "bencode": "^2.0.1",
