@@ -33,7 +33,7 @@
   },
   "devDependencies": {
     "brfs": "^2.0.2",
-    "parse-torrent": "^8.0.0",
+    "parse-torrent": "^9.1.1",
     "standard": "*",
     "tape": "^5.1.1",
     "webtorrent-fixtures": "^1.7.3"
