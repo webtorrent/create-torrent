@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "bencode": "^2.0.1",
-    "block-stream2": "^2.0.0",
+    "block-stream2": "^2.1.0",
     "filestream": "^5.0.0",
     "is-file": "^1.0.0",
     "junk": "^3.1.0",
@@ -35,7 +35,7 @@
     "brfs": "^2.0.2",
     "parse-torrent": "^8.0.0",
     "standard": "*",
-    "tape": "^5.0.1",
+    "tape": "^5.1.1",
     "webtorrent-fixtures": "^1.7.3"
   },
   "engines": {
