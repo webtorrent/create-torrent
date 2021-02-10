@@ -9,8 +9,10 @@ const junk = require('junk')
 const MultiStream = require('multistream')
 const once = require('once')
 const parallel = require('run-parallel')
+const queueMicrotask = require('queue-microtask')
 const sha1 = require('simple-sha1')
 const stream = require('readable-stream')
+
 const getFiles = require('./get-files') // browser exclude
 
 // TODO: When Node 10 support is dropped, replace this with Array.prototype.flat
@@ -171,9 +173,7 @@ function _parseInput (input, opts, cb) {
       processInput()
     })
   } else {
-    process.nextTick(() => {
-      processInput()
-    })
+    queueMicrotask(processInput)
   }
 
   function processInput () {
