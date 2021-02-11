@@ -118,14 +118,16 @@ function _parseInput (input, opts, cb) {
     }
   })
 
-  // remove junk files
-  input = input.filter(item => {
-    if (typeof item === 'string') {
-      return true
-    }
-    const filename = item.path[item.path.length - 1]
-    return notHidden(filename) && junk.not(filename)
-  })
+  const filterJunkFiles = opts.filterJunkFiles === undefined ? true : opts.filterJunkFiles
+  if (filterJunkFiles) {
+    // Remove junk files
+    input = input.filter(item => {
+      if (typeof item === 'string') {
+        return true
+      }
+      return !isJunkPath(item.path)
+    })
+  }
 
   if (commonPrefix) {
     input.forEach(item => {
@@ -207,10 +209,6 @@ function _parseInput (input, opts, cb) {
       cb(null, files, isSingleFileTorrent)
     })
   }
-}
-
-function notHidden (file) {
-  return file[0] !== '.'
 }
 
 function getPieceList (files, pieceLength, cb) {
@@ -351,6 +349,18 @@ function onFiles (files, opts, cb) {
 }
 
 /**
+ * Determine if a a file is junk based on its path
+ * (defined as hidden OR recognized by the `junk` package)
+ *
+ * @param  {string} path
+ * @return {boolean}
+ */
+function isJunkPath (path) {
+  const filename = path[path.length - 1]
+  return filename[0] === '.' && junk.is(filename)
+}
+
+/**
  * Accumulator to sum file lengths
  * @param  {number} sum
  * @param  {Object} file
@@ -433,3 +443,4 @@ function getStreamStream (readable, file) {
 module.exports = createTorrent
 module.exports.parseInput = parseInput
 module.exports.announceList = announceList
+module.exports.isJunkPath = isJunkPath
