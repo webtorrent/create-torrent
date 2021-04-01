@@ -211,7 +211,7 @@ function _parseInput (input, opts, cb) {
   }
 }
 
-function getPieceList (files, pieceLength, cb) {
+function getPieceList (files, pieceLength, opts, cb) {
   cb = once(cb)
   const pieces = []
   let length = 0
@@ -240,6 +240,7 @@ function getPieceList (files, pieceLength, cb) {
     sha1(chunk, hash => {
       pieces[i] = hash
       remainingHashes -= 1
+      if (opts.onPieceHashed) opts.onPieceHashed(i)
       maybeDone()
     })
     remainingHashes += 1
@@ -330,7 +331,7 @@ function onFiles (files, opts, cb) {
   const pieceLength = opts.pieceLength || calcPieceLength(files.reduce(sumLength, 0))
   torrent.info['piece length'] = pieceLength
 
-  getPieceList(files, pieceLength, (err, pieces, torrentLength) => {
+  getPieceList(files, pieceLength, opts, (err, pieces, torrentLength) => {
     if (err) return cb(err)
     torrent.info.pieces = pieces
 
