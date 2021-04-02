@@ -70,7 +70,8 @@ Or, an **array of `string`, `File`, `Buffer`, or `stream.Readable` objects**.
   pieceLength: Number,      // force a custom piece length (number of bytes)
   announceList: [[String]], // custom trackers (array of arrays of strings) (see [bep12](http://www.bittorrent.org/beps/bep_0012.html))
   urlList: [String],        // web seed urls (see [bep19](http://www.bittorrent.org/beps/bep_0019.html))
-  info: Object              // add non-standard info dict entries, e.g. info.source, a convention for cross-seeding 
+  info: Object,             // add non-standard info dict entries, e.g. info.source, a convention for cross-seeding
+  onProgress: Function      // called with the number of bytes hashed and estimated total size after every piece
 }
 ```
 

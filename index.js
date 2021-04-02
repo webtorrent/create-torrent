@@ -48,6 +48,7 @@ const announceList = [
  * @param  {Array.<Array.<string>>=} opts.announceList
  * @param  {Array.<string>=} opts.urlList
  * @param  {Object=} opts.info
+ * @param  {Function} opts.onProgress
  * @param  {function} cb
  * @return {Buffer} buffer of .torrent file data
  */
@@ -211,10 +212,11 @@ function _parseInput (input, opts, cb) {
   }
 }
 
-function getPieceList (files, pieceLength, cb) {
+function getPieceList (files, pieceLength, estimatedTorrentLength, opts, cb) {
   cb = once(cb)
   const pieces = []
   let length = 0
+  let hashedLength = 0
 
   const streams = files.map(file => file.getStream)
 
@@ -240,6 +242,8 @@ function getPieceList (files, pieceLength, cb) {
     sha1(chunk, hash => {
       pieces[i] = hash
       remainingHashes -= 1
+      hashedLength += chunk.length
+      if (opts.onProgress) opts.onProgress(hashedLength, estimatedTorrentLength)
       maybeDone()
     })
     remainingHashes += 1
@@ -327,25 +331,32 @@ function onFiles (files, opts, cb) {
 
   if (opts.urlList !== undefined) torrent['url-list'] = opts.urlList
 
-  const pieceLength = opts.pieceLength || calcPieceLength(files.reduce(sumLength, 0))
+  const estimatedTorrentLength = files.reduce(sumLength, 0)
+  const pieceLength = opts.pieceLength || calcPieceLength(estimatedTorrentLength)
   torrent.info['piece length'] = pieceLength
 
-  getPieceList(files, pieceLength, (err, pieces, torrentLength) => {
-    if (err) return cb(err)
-    torrent.info.pieces = pieces
+  getPieceList(
+    files,
+    pieceLength,
+    estimatedTorrentLength,
+    opts,
+    (err, pieces, torrentLength) => {
+      if (err) return cb(err)
+      torrent.info.pieces = pieces
 
-    files.forEach(file => {
-      delete file.getStream
-    })
+      files.forEach(file => {
+        delete file.getStream
+      })
 
-    if (opts.singleFileTorrent) {
-      torrent.info.length = torrentLength
-    } else {
-      torrent.info.files = files
+      if (opts.singleFileTorrent) {
+        torrent.info.length = torrentLength
+      } else {
+        torrent.info.files = files
+      }
+
+      cb(null, bencode.encode(torrent))
     }
-
-    cb(null, bencode.encode(torrent))
-  })
+  )
 }
 
 /**
