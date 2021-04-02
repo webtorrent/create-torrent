@@ -243,7 +243,7 @@ function getPieceList (files, pieceLength, estimatedTorrentLength, opts, cb) {
       pieces[i] = hash
       remainingHashes -= 1
       hashedLength += chunk.length
-      opts.onProgress && opts.onProgress(hashedLength, estimatedTorrentLength)
+      if (opts.onProgress) opts.onProgress(hashedLength, estimatedTorrentLength)
       maybeDone()
     })
     remainingHashes += 1
