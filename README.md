@@ -71,7 +71,7 @@ Or, an **array of `string`, `File`, `Buffer`, or `stream.Readable` objects**.
   announceList: [[String]], // custom trackers (array of arrays of strings) (see [bep12](http://www.bittorrent.org/beps/bep_0012.html))
   urlList: [String],        // web seed urls (see [bep19](http://www.bittorrent.org/beps/bep_0019.html))
   info: Object,             // add non-standard info dict entries, e.g. info.source, a convention for cross-seeding
-  onPieceHashed: Function   // called with the piece index after each piece is hashed to track creation progress
+  onProgress: Function      // called with the number of bytes hashed and estimated total size after every piece
 }
 ```
 
