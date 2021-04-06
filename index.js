@@ -212,6 +212,8 @@ function _parseInput (input, opts, cb) {
   }
 }
 
+const MAX_OUTSTANDING_HASHES = 5
+
 function getPieceList (files, pieceLength, estimatedTorrentLength, opts, cb) {
   cb = once(cb)
   const pieces = []
@@ -242,11 +244,17 @@ function getPieceList (files, pieceLength, estimatedTorrentLength, opts, cb) {
     sha1(chunk, hash => {
       pieces[i] = hash
       remainingHashes -= 1
+      if (remainingHashes < MAX_OUTSTANDING_HASHES) {
+        blockstream.resume()
+      }
       hashedLength += chunk.length
       if (opts.onProgress) opts.onProgress(hashedLength, estimatedTorrentLength)
       maybeDone()
     })
     remainingHashes += 1
+    if (remainingHashes >= MAX_OUTSTANDING_HASHES) {
+      blockstream.pause()
+    }
     pieceNum += 1
   }
 
