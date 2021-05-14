@@ -9,8 +9,10 @@ const junk = require('junk')
 const MultiStream = require('multistream')
 const once = require('once')
 const parallel = require('run-parallel')
+const queueMicrotask = require('queue-microtask')
 const sha1 = require('simple-sha1')
 const stream = require('readable-stream')
+
 const getFiles = require('./get-files') // browser exclude
 
 // TODO: When Node 10 support is dropped, replace this with Array.prototype.flat
@@ -46,6 +48,7 @@ const ANNOUNCE_LIST = [
  * @param  {Array.<Array.<string>>=} opts.announceList
  * @param  {Array.<string>=} opts.urlList
  * @param  {Object=} opts.info
+ * @param  {Function} opts.onProgress
  * @param  {function} cb
  * @return {Buffer} buffer of .torrent file data
  */
@@ -116,14 +119,16 @@ function _parseInput (input, opts, cb) {
     }
   })
 
-  // remove junk files
-  input = input.filter(item => {
-    if (typeof item === 'string') {
-      return true
-    }
-    const filename = item.path[item.path.length - 1]
-    return notHidden(filename) && junk.not(filename)
-  })
+  const filterJunkFiles = opts.filterJunkFiles === undefined ? true : opts.filterJunkFiles
+  if (filterJunkFiles) {
+    // Remove junk files
+    input = input.filter(item => {
+      if (typeof item === 'string') {
+        return true
+      }
+      return !isJunkPath(item.path)
+    })
+  }
 
   if (commonPrefix) {
     input.forEach(item => {
@@ -147,6 +152,7 @@ function _parseInput (input, opts, cb) {
         opts.name = item.path[item.path.length - 1]
         return true
       }
+      return false
     })
   }
 
@@ -170,9 +176,7 @@ function _parseInput (input, opts, cb) {
       processInput()
     })
   } else {
-    process.nextTick(() => {
-      processInput()
-    })
+    queueMicrotask(processInput)
   }
 
   function processInput () {
@@ -208,14 +212,13 @@ function _parseInput (input, opts, cb) {
   }
 }
 
-function notHidden (file) {
-  return file[0] !== '.'
-}
+const MAX_OUTSTANDING_HASHES = 5
 
-function getPieceList (files, pieceLength, cb) {
+function getPieceList (files, pieceLength, estimatedTorrentLength, opts, cb) {
   cb = once(cb)
   const pieces = []
   let length = 0
+  let hashedLength = 0
 
   const streams = files.map(file => file.getStream)
 
@@ -241,9 +244,17 @@ function getPieceList (files, pieceLength, cb) {
     sha1(chunk, hash => {
       pieces[i] = hash
       remainingHashes -= 1
+      if (remainingHashes < MAX_OUTSTANDING_HASHES) {
+        blockstream.resume()
+      }
+      hashedLength += chunk.length
+      if (opts.onProgress) opts.onProgress(hashedLength, estimatedTorrentLength)
       maybeDone()
     })
     remainingHashes += 1
+    if (remainingHashes >= MAX_OUTSTANDING_HASHES) {
+      blockstream.pause()
+    }
     pieceNum += 1
   }
 
@@ -338,25 +349,44 @@ function onFiles (files, opts, cb) {
 
   if (opts.urlList !== undefined) torrent['url-list'] = opts.urlList
 
-  const pieceLength = opts.pieceLength || calcPieceLength(files.reduce(sumLength, 0))
+  const estimatedTorrentLength = files.reduce(sumLength, 0)
+  const pieceLength = opts.pieceLength || calcPieceLength(estimatedTorrentLength)
   torrent.info['piece length'] = pieceLength
 
-  getPieceList(files, pieceLength, (err, pieces, torrentLength) => {
-    if (err) return cb(err)
-    torrent.info.pieces = pieces
+  getPieceList(
+    files,
+    pieceLength,
+    estimatedTorrentLength,
+    opts,
+    (err, pieces, torrentLength) => {
+      if (err) return cb(err)
+      torrent.info.pieces = pieces
 
-    files.forEach(file => {
-      delete file.getStream
-    })
+      files.forEach(file => {
+        delete file.getStream
+      })
 
-    if (opts.singleFileTorrent) {
-      torrent.info.length = torrentLength
-    } else {
-      torrent.info.files = files
+      if (opts.singleFileTorrent) {
+        torrent.info.length = torrentLength
+      } else {
+        torrent.info.files = files
+      }
+
+      cb(null, bencode.encode(torrent))
     }
+  )
+}
 
-    cb(null, bencode.encode(torrent))
-  })
+/**
+ * Determine if a a file is junk based on its path
+ * (defined as hidden OR recognized by the `junk` package)
+ *
+ * @param  {string} path
+ * @return {boolean}
+ */
+function isJunkPath (path) {
+  const filename = path[path.length - 1]
+  return filename[0] === '.' && junk.is(filename)
 }
 
 /**
@@ -442,3 +472,4 @@ function getStreamStream (readable, file) {
 module.exports = createTorrent
 module.exports.parseInput = parseInput
 module.exports.announceList = ANNOUNCE_LIST
+module.exports.isJunkPath = isJunkPath
