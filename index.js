@@ -220,7 +220,7 @@ async function getPieceList (files, pieceLength, estimatedTorrentLength, opts, c
 
   // promisify
   const sha1Hash = async (chunk) => {
-    return new Promise(resolve => sha1(chunk, hash => resolve(hash)))
+    return new Promise(resolve => sha1(chunk, resolve))
   }
 
   try {
