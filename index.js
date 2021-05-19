@@ -1,13 +1,10 @@
 /*! create-torrent. MIT License. WebTorrent LLC <https://webtorrent.io/opensource> */
 const bencode = require('bencode')
-const BlockStream = require('block-stream2')
 const calcPieceLength = require('piece-length')
 const corePath = require('path')
 const FileReadStream = require('filestream/read')
 const isFile = require('is-file')
 const junk = require('junk')
-const MultiStream = require('multistream')
-const once = require('once')
 const parallel = require('run-parallel')
 const queueMicrotask = require('queue-microtask')
 const sha1 = require('simple-sha1')
@@ -212,74 +209,58 @@ function _parseInput (input, opts, cb) {
   }
 }
 
-const MAX_OUTSTANDING_HASHES = 5
-
-function getPieceList (files, pieceLength, estimatedTorrentLength, opts, cb) {
-  cb = once(cb)
-  const pieces = []
-  let length = 0
-  let hashedLength = 0
+async function getPieceList (files, pieceLength, estimatedTorrentLength, opts, cb) {
+  const hashes = []
+  let bytesHashed = 0
 
   const streams = files.map(file => file.getStream)
 
-  let remainingHashes = 0
-  let pieceNum = 0
-  let ended = false
+  // for storing data until there's a full chunk
+  let bytesQueue = Buffer.alloc(0)
 
-  const multistream = new MultiStream(streams)
-  const blockstream = new BlockStream(pieceLength, { zeroPadding: false })
+  // promisify
+  const sha1Hash = async (chunk) => {
+    return new Promise(resolve => sha1(chunk, hash => resolve(hash)))
+  }
 
-  multistream.on('error', onError)
-
-  multistream
-    .pipe(blockstream)
-    .on('data', onData)
-    .on('end', onEnd)
-    .on('error', onError)
-
-  function onData (chunk) {
-    length += chunk.length
-
-    const i = pieceNum
-    sha1(chunk, hash => {
-      pieces[i] = hash
-      remainingHashes -= 1
-      if (remainingHashes < MAX_OUTSTANDING_HASHES) {
-        blockstream.resume()
+  try {
+    for (let stream of streams) { // load data from streams in order
+      // can be lazy functions returning streams
+      if (typeof stream[Symbol.asyncIterator] !== 'function') {
+        stream = stream()
       }
-      hashedLength += chunk.length
-      if (opts.onProgress) opts.onProgress(hashedLength, estimatedTorrentLength)
-      maybeDone()
-    })
-    remainingHashes += 1
-    if (remainingHashes >= MAX_OUTSTANDING_HASHES) {
-      blockstream.pause()
+
+      for await (const buffer of stream) {
+        bytesQueue = Buffer.concat([bytesQueue, buffer])
+
+        while (bytesQueue.length >= pieceLength) {
+          // shift() one chunk from bytesQueue
+          const chunk = bytesQueue.slice(0, pieceLength)
+          bytesQueue = bytesQueue.slice(pieceLength)
+
+          const hash = await sha1Hash(chunk)
+          hashes.push(hash)
+
+          bytesHashed += chunk.length
+
+          if (opts.onProgress) opts.onProgress(bytesHashed, estimatedTorrentLength)
+        }
+      }
     }
-    pieceNum += 1
-  }
 
-  function onEnd () {
-    ended = true
-    maybeDone()
-  }
+    // hash the leftovers as a chunk shorter than pieceLength
+    if (bytesQueue.length > 0) {
+      const hash = await sha1Hash(bytesQueue)
+      hashes.push(hash)
 
-  function onError (err) {
-    cleanup()
+      bytesHashed += bytesQueue.length
+
+      if (opts.onProgress) opts.onProgress(bytesHashed, estimatedTorrentLength)
+    }
+
+    cb(null, Buffer.from(hashes.join(''), 'hex'), bytesHashed)
+  } catch (err) {
     cb(err)
-  }
-
-  function cleanup () {
-    multistream.removeListener('error', onError)
-    blockstream.removeListener('data', onData)
-    blockstream.removeListener('end', onEnd)
-    blockstream.removeListener('error', onError)
-  }
-
-  function maybeDone () {
-    if (ended && remainingHashes === 0) {
-      cleanup()
-      cb(null, Buffer.from(pieces.join(''), 'hex'), length)
-    }
   }
 }
 

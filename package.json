@@ -19,13 +19,10 @@
   },
   "dependencies": {
     "bencode": "^2.0.1",
-    "block-stream2": "^2.1.0",
     "filestream": "^5.0.0",
     "is-file": "^1.0.0",
     "junk": "^3.1.0",
     "minimist": "^1.2.5",
-    "multistream": "^4.0.1",
-    "once": "^1.4.0",
     "piece-length": "^2.0.1",
     "queue-microtask": "^1.2.2",
     "readable-stream": "^3.6.0",
