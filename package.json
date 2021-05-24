@@ -29,7 +29,7 @@
     "piece-length": "^2.0.1",
     "queue-microtask": "^1.2.2",
     "readable-stream": "^3.6.0",
-    "run-parallel": "^1.1.10",
+    "run-parallel": "^1.2.0",
     "simple-sha1": "^3.0.1"
   },
   "devDependencies": {
