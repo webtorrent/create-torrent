@@ -24,7 +24,7 @@
     "is-file": "^1.0.0",
     "junk": "^3.1.0",
     "minimist": "^1.2.5",
-    "multistream": "^4.0.1",
+    "multistream": "^4.1.0",
     "once": "^1.4.0",
     "piece-length": "^2.0.1",
     "queue-microtask": "^1.2.2",
