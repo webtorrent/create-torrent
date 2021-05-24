@@ -1,7 +1,7 @@
-# create-torrent [![travis][travis-image]][travis-url] [![npm][npm-image]][npm-url] [![downloads][downloads-image]][downloads-url] [![javascript style guide][standard-image]][standard-url]
+# create-torrent [![ci][ci-image]][ci-url] [![npm][npm-image]][npm-url] [![downloads][downloads-image]][downloads-url] [![javascript style guide][standard-image]][standard-url]
 
-[travis-image]: https://img.shields.io/travis/webtorrent/create-torrent/master.svg
-[travis-url]: https://travis-ci.org/webtorrent/create-torrent
+[ci-image]: https://github.com/webtorrent/create-torrent/actions/workflows/ci.yml/badge.svg
+[ci-url]: https://github.com/webtorrent/create-torrent/actions/workflows/ci.yml
 [npm-image]: https://img.shields.io/npm/v/create-torrent.svg
 [npm-url]: https://npmjs.org/package/create-torrent
 [downloads-image]: https://img.shields.io/npm/dm/create-torrent.svg
