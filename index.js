@@ -15,16 +15,6 @@ const stream = require('readable-stream')
 
 const getFiles = require('./get-files') // browser exclude
 
-// TODO: When Node 10 support is dropped, replace this with Array.prototype.flat
-function flat (arr1) {
-  return arr1.reduce(
-    (acc, val) => Array.isArray(val)
-      ? acc.concat(flat(val))
-      : acc.concat(val),
-    []
-  )
-}
-
 const announceList = [
   ['udp://tracker.leechers-paradise.org:6969'],
   ['udp://tracker.coppersurfer.tk:6969'],
@@ -206,7 +196,7 @@ function _parseInput (input, opts, cb) {
       cb(null, file)
     }), (err, files) => {
       if (err) return cb(err)
-      files = flat(files)
+      files = files.flat()
       cb(null, files, isSingleFileTorrent)
     })
   }
