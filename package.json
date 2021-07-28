@@ -22,7 +22,7 @@
     "block-stream2": "^2.1.0",
     "filestream": "^5.0.0",
     "is-file": "^1.0.0",
-    "junk": "^3.1.0",
+    "junk": "^4.0.0",
     "minimist": "^1.2.5",
     "multistream": "^4.1.0",
     "once": "^1.4.0",
