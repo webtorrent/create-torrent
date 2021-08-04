@@ -18,7 +18,7 @@
     "is-file": false
   },
   "dependencies": {
-    "bencode": "^2.0.1",
+    "bencode": "^2.0.2",
     "block-stream2": "^2.1.0",
     "filestream": "^5.0.0",
     "is-file": "^1.0.0",
