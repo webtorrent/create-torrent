@@ -42,7 +42,7 @@
     "webtorrent-fixtures": "1.7.5"
   },
   "engines": {
-    "node": ">=4"
+    "node": ">=12"
   },
   "keywords": [
     ".torrent",
