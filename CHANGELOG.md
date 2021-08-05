@@ -1,3 +1,15 @@
+# [5.0.0](https://github.com/webtorrent/create-torrent/compare/v4.7.2...v5.0.0) (2021-08-05)
+
+
+### Bug Fixes
+
+* Remove flat util fn ([#136](https://github.com/webtorrent/create-torrent/issues/136)) ([de7e8a9](https://github.com/webtorrent/create-torrent/commit/de7e8a9d69d367444d815b7c9aae3491e7a1392e))
+
+
+### BREAKING CHANGES
+
+* Node 12+ supported
+
 ## [4.7.2](https://github.com/webtorrent/create-torrent/compare/v4.7.1...v4.7.2) (2021-08-04)
 
 
