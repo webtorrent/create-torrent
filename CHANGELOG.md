@@ -1,3 +1,10 @@
+## [5.0.1](https://github.com/webtorrent/create-torrent/compare/v5.0.0...v5.0.1) (2021-08-06)
+
+
+### Bug Fixes
+
+* remove flat pollyfill in get-files ([2dbd091](https://github.com/webtorrent/create-torrent/commit/2dbd09164d6df6170edcd0afb2f1921f29d5536f))
+
 # [5.0.0](https://github.com/webtorrent/create-torrent/compare/v4.7.2...v5.0.0) (2021-08-05)
 
 
