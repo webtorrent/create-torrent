@@ -38,7 +38,7 @@ function getFiles (path, keepRoot, cb) {
   traversePath(path, getFileInfo, (err, files) => {
     if (err) return cb(err)
 
-    if (Array.isArray(files)) files = files.flat()
+    if (Array.isArray(files)) files = files.flat(64)
     else files = [files]
 
     path = corePath.normalize(path)
