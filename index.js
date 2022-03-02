@@ -206,7 +206,7 @@ function _parseInput (input, opts, cb) {
       cb(null, file)
     }), (err, files) => {
       if (err) return cb(err)
-      files = flat(files)
+      files = files.flat()
       cb(null, files, isSingleFileTorrent)
     })
   }
@@ -304,11 +304,11 @@ function onFiles (files, opts, cb) {
     })
   }
 
-  if (global.WEBTORRENT_ANNOUNCE) {
-    if (typeof global.WEBTORRENT_ANNOUNCE === 'string') {
-      announceList.push([global.WEBTORRENT_ANNOUNCE])
-    } else if (Array.isArray(global.WEBTORRENT_ANNOUNCE)) {
-      announceList = announceList.concat(global.WEBTORRENT_ANNOUNCE.map(u => [u]))
+  if (globalThis.WEBTORRENT_ANNOUNCE) {
+    if (typeof globalThis.WEBTORRENT_ANNOUNCE === 'string') {
+      announceList.push([globalThis.WEBTORRENT_ANNOUNCE])
+    } else if (Array.isArray(globalThis.WEBTORRENT_ANNOUNCE)) {
+      announceList = announceList.concat(globalThis.WEBTORRENT_ANNOUNCE.map(u => [u]))
     }
   }
 

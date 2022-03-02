@@ -1,11 +1,7 @@
 name: ci
-on:
-  push:
-    branches:
-    - master
-  pull_request:
-    branches:
-    - master
+
+on: [push, pull_request]
+
 jobs:
   test:
     name: Node ${{ matrix.node }} / ${{ matrix.os }}
@@ -16,7 +12,7 @@ jobs:
         os:
           - ubuntu-latest
         node:
-          - '14'
+          - '16'
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2

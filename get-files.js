@@ -4,16 +4,6 @@ const junk = require('junk')
 const once = require('once')
 const parallel = require('run-parallel')
 
-// TODO: When Node 10 support is dropped, replace this with Array.prototype.flat
-function flat (arr1) {
-  return arr1.reduce(
-    (acc, val) => Array.isArray(val)
-      ? acc.concat(flat(val))
-      : acc.concat(val),
-    []
-  )
-}
-
 function notHidden (file) {
   return file[0] !== '.'
 }
@@ -48,7 +38,7 @@ function getFiles (path, keepRoot, cb) {
   traversePath(path, getFileInfo, (err, files) => {
     if (err) return cb(err)
 
-    if (Array.isArray(files)) files = flat(files)
+    if (Array.isArray(files)) files = files.flat()
     else files = [files]
 
     path = corePath.normalize(path)
