@@ -208,7 +208,7 @@ async function getPieceList (files, pieceLength, estimatedTorrentLength, opts, c
   // for storing data until there's a full chunk
   let bytesQueue = Buffer.alloc(0)
 
-  // promisify
+  // promisify sha1
   const sha1Hash = async (chunk) => {
     return new Promise(resolve => sha1(chunk, resolve))
   }
