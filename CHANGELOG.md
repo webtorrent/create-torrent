@@ -1,3 +1,10 @@
+## [5.0.2](https://github.com/webtorrent/create-torrent/compare/v5.0.1...v5.0.2) (2022-03-10)
+
+
+### Bug Fixes
+
+* exception on folder depth > 1 ([#160](https://github.com/webtorrent/create-torrent/issues/160)) ([4afcea2](https://github.com/webtorrent/create-torrent/commit/4afcea2360284ce9d0762ed66507ae22b1b32b04))
+
 ## [5.0.1](https://github.com/webtorrent/create-torrent/compare/v5.0.0...v5.0.1) (2021-08-06)
 
 
