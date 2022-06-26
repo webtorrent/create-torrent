@@ -3,7 +3,7 @@ const bencode = require('bencode')
 const BlockStream = require('block-stream2')
 const calcPieceLength = require('piece-length')
 const corePath = require('path')
-const FileReadStream = require('filestream/read')
+const { BlobReadStream } = require('fast-blob-stream')
 const isFile = require('is-file')
 const junk = require('junk')
 const MultiStream = require('multistream')
@@ -412,7 +412,7 @@ function isReadable (obj) {
  * @return {function}
  */
 function getBlobStream (file) {
-  return () => new FileReadStream(file)
+  return () => new BlobReadStream(file)
 }
 
 /**

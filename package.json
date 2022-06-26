@@ -20,7 +20,7 @@
   "dependencies": {
     "bencode": "^2.0.2",
     "block-stream2": "^2.1.0",
-    "filestream": "^5.0.0",
+    "fast-blob-stream": "^1.0.2",
     "is-file": "^1.0.0",
     "junk": "^3.1.0",
     "minimist": "^1.2.5",
