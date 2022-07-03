@@ -1,3 +1,10 @@
+## [5.0.4](https://github.com/webtorrent/create-torrent/compare/v5.0.3...v5.0.4) (2022-07-03)
+
+
+### Bug Fixes
+
+* replace filestream with fast-blob-stream ([#171](https://github.com/webtorrent/create-torrent/issues/171)) ([d93a718](https://github.com/webtorrent/create-torrent/commit/d93a7181add5a8ac3fbd4b6bec92ad61f6b235cc))
+
 ## [5.0.3](https://github.com/webtorrent/create-torrent/compare/v5.0.2...v5.0.3) (2022-07-03)
 
 
