@@ -18,7 +18,7 @@
     "is-file": false
   },
   "dependencies": {
-    "bencode": "^2.0.2",
+    "bencode": "^2.0.3",
     "block-stream2": "^2.1.0",
     "filestream": "^5.0.0",
     "is-file": "^1.0.0",
@@ -35,7 +35,7 @@
   "devDependencies": {
     "@webtorrent/semantic-release-config": "1.0.7",
     "brfs": "2.0.2",
-    "parse-torrent": "9.1.4",
+    "parse-torrent": "9.1.5",
     "semantic-release": "19.0.3",
     "standard": "*",
     "tape": "5.5.2",
