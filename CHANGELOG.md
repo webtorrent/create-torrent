@@ -1,3 +1,10 @@
+## [5.0.3](https://github.com/webtorrent/create-torrent/compare/v5.0.2...v5.0.3) (2022-07-03)
+
+
+### Bug Fixes
+
+* **deps:** update webtorrent ([#163](https://github.com/webtorrent/create-torrent/issues/163)) ([7f1fb98](https://github.com/webtorrent/create-torrent/commit/7f1fb980feddc9005bd5983ae893f47ebc12ede8))
+
 ## [5.0.2](https://github.com/webtorrent/create-torrent/compare/v5.0.1...v5.0.2) (2022-03-10)
 
 
