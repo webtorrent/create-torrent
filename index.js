@@ -59,6 +59,8 @@ function parseInput (input, opts, cb) {
   _parseInput(input, opts, cb)
 }
 
+const pathSymbol = Symbol('itemPath')
+
 /**
  * Parse input file and return file information.
  */
@@ -93,18 +95,18 @@ function _parseInput (input, opts, cb) {
       item.unknownName = true
     }
 
-    item.path = path.split('/')
+    item[pathSymbol] = path.split('/')
 
     // Remove initial slash
-    if (!item.path[0]) {
-      item.path.shift()
+    if (!item[pathSymbol][0]) {
+      item[pathSymbol].shift()
     }
 
-    if (item.path.length < 2) { // No real prefix
+    if (item[pathSymbol].length < 2) { // No real prefix
       commonPrefix = null
     } else if (i === 0 && input.length > 1) { // The first file has a prefix
-      commonPrefix = item.path[0]
-    } else if (item.path[0] !== commonPrefix) { // The prefix doesn't match
+      commonPrefix = item[pathSymbol][0]
+    } else if (item[pathSymbol][0] !== commonPrefix) { // The prefix doesn't match
       commonPrefix = null
     }
   })
@@ -116,15 +118,15 @@ function _parseInput (input, opts, cb) {
       if (typeof item === 'string') {
         return true
       }
-      return !isJunkPath(item.path)
+      return !isJunkPath(item[pathSymbol])
     })
   }
 
   if (commonPrefix) {
     input.forEach(item => {
-      const pathless = (Buffer.isBuffer(item) || isReadable(item)) && !item.path
+      const pathless = (Buffer.isBuffer(item) || isReadable(item)) && !item[pathSymbol]
       if (typeof item === 'string' || pathless) return
-      item.path.shift()
+      item[pathSymbol].shift()
     })
   }
 
@@ -139,7 +141,7 @@ function _parseInput (input, opts, cb) {
         opts.name = corePath.basename(item)
         return true
       } else if (!item.unknownName) {
-        opts.name = item.path[item.path.length - 1]
+        opts.name = item[pathSymbol][item[pathSymbol].length - 1]
         return true
       }
       return false
@@ -192,7 +194,7 @@ function _parseInput (input, opts, cb) {
       } else {
         throw new Error('invalid input type')
       }
-      file.path = item.path
+      file.path = item[pathSymbol]
       cb(null, file)
     }), (err, files) => {
       if (err) return cb(err)

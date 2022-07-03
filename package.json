@@ -1,7 +1,7 @@
 {
   "name": "create-torrent",
   "description": "Create .torrent files",
-  "version": "5.0.2",
+  "version": "5.0.3",
   "author": {
     "name": "WebTorrent LLC",
     "email": "feross@webtorrent.io",
@@ -18,7 +18,7 @@
     "is-file": false
   },
   "dependencies": {
-    "bencode": "^2.0.2",
+    "bencode": "^2.0.3",
     "block-stream2": "^2.1.0",
     "fast-blob-stream": "^1.0.3",
     "is-file": "^1.0.0",
@@ -35,10 +35,10 @@
   "devDependencies": {
     "@webtorrent/semantic-release-config": "1.0.7",
     "brfs": "2.0.2",
-    "parse-torrent": "9.1.4",
-    "semantic-release": "19.0.2",
+    "parse-torrent": "9.1.5",
+    "semantic-release": "19.0.3",
     "standard": "*",
-    "tape": "5.5.2",
+    "tape": "5.5.3",
     "webtorrent-fixtures": "1.7.5"
   },
   "engines": {
