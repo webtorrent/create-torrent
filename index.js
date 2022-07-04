@@ -6,12 +6,12 @@ const corePath = require('path')
 const { BlobReadStream } = require('fast-blob-stream')
 const isFile = require('is-file')
 const junk = require('junk')
-const MultiStream = require('multistream')
+const joinIterator = require('join-async-iterator')
 const once = require('once')
 const parallel = require('run-parallel')
 const queueMicrotask = require('queue-microtask')
 const sha1 = require('simple-sha1')
-const { Transform, PassThrough } = require('streamx')
+const { Transform, PassThrough, Readable } = require('streamx')
 
 const getFiles = require('./get-files') // browser exclude
 
@@ -218,7 +218,7 @@ function getPieceList (files, pieceLength, estimatedTorrentLength, opts, cb) {
   let pieceNum = 0
   let ended = false
 
-  const multistream = new MultiStream(streams)
+  const multistream = Readable.from(joinIterator(streams))
   const blockstream = new BlockStream(pieceLength, { zeroPadding: false })
 
   multistream.on('error', onError)
