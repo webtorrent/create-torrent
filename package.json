@@ -28,7 +28,6 @@
     "once": "^1.4.0",
     "piece-length": "^2.0.1",
     "queue-microtask": "^1.2.3",
-    "readable-stream": "^3.6.0",
     "run-parallel": "^1.2.0",
     "simple-sha1": "^3.1.0",
     "streamx": "^2.12.4"
