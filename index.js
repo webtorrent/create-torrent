@@ -22,7 +22,11 @@ const announceList = [
   ['udp://explodie.org:6969'],
   ['udp://tracker.empire-js.us:1337'],
   ['wss://tracker.btorrent.xyz'],
-  ['wss://tracker.openwebtorrent.com']
+  ['wss://tracker.openwebtorrent.com'],
+  ['udp://tracker.openbittorrent.com:80'],
+  ['udp://tracker.internetwarriors.net:1337'],
+  ['udp://exodus.desync.com:6969'],
+  ['wss://tracker.fastcast.nz']
 ]
 
 /**
