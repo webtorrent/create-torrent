@@ -11,7 +11,7 @@ const once = require('once')
 const parallel = require('run-parallel')
 const queueMicrotask = require('queue-microtask')
 const sha1 = require('simple-sha1')
-const stream = require('readable-stream')
+const { Transform, PassThrough } = require('streamx')
 
 const getFiles = require('./get-files') // browser exclude
 
@@ -424,7 +424,7 @@ function getBlobStream (file) {
  */
 function getBufferStream (buffer) {
   return () => {
-    const s = new stream.PassThrough()
+    const s = new PassThrough()
     s.end(buffer)
     return s
   }
@@ -440,11 +440,11 @@ function getBufferStream (buffer) {
  */
 function getStreamStream (readable, file) {
   return () => {
-    const counter = new stream.Transform()
-    counter._transform = function (buf, enc, done) {
-      file.length += buf.length
-      this.push(buf)
-      done()
+    const counter = new Transform()
+    counter._transform = function (data, cb) {
+      file.length += data.length
+      this.push(data)
+      cb()
     }
     readable.pipe(counter)
     return counter
