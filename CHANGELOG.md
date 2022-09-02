@@ -1,3 +1,11 @@
+## [5.0.5](https://github.com/webtorrent/create-torrent/compare/v5.0.4...v5.0.5) (2022-09-02)
+
+
+### Bug Fixes
+
+* **deps:** update dependency fast-blob-stream to ^1.1.1 ([#175](https://github.com/webtorrent/create-torrent/issues/175)) ([d5cb6f3](https://github.com/webtorrent/create-torrent/commit/d5cb6f3cda1ef94f29583ad1a44280339d7fb15f))
+* migrate to streamx ([#173](https://github.com/webtorrent/create-torrent/issues/173)) ([40a0f50](https://github.com/webtorrent/create-torrent/commit/40a0f50ec4829a7d047b36f79c79ccf3885b511e))
+
 ## [5.0.4](https://github.com/webtorrent/create-torrent/compare/v5.0.3...v5.0.4) (2022-07-03)
 
 
