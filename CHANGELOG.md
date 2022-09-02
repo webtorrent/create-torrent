@@ -1,3 +1,10 @@
+## [5.0.6](https://github.com/webtorrent/create-torrent/compare/v5.0.5...v5.0.6) (2022-09-02)
+
+
+### Bug Fixes
+
+* drop multi-stream ([#174](https://github.com/webtorrent/create-torrent/issues/174)) ([284f260](https://github.com/webtorrent/create-torrent/commit/284f2601e26f35c910e33de7c666bf5010b8dae3))
+
 ## [5.0.5](https://github.com/webtorrent/create-torrent/compare/v5.0.4...v5.0.5) (2022-09-02)
 
 
