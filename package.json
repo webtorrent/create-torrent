@@ -30,7 +30,7 @@
     "queue-microtask": "^1.2.3",
     "run-parallel": "^1.2.0",
     "simple-sha1": "^3.1.0",
-    "streamx": "^2.12.4"
+    "streamx": "^2.12.5"
   },
   "devDependencies": {
     "@webtorrent/semantic-release-config": "1.0.7",
