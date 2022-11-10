@@ -13,7 +13,17 @@ require('fast-readable-async-iterator')
 
 const getFiles = require('./get-files') // browser exclude
 
-const announceList = [
+// TODO: When Node 10 support is dropped, replace this with Array.prototype.flat
+function flat (arr1) {
+  return arr1.reduce(
+    (acc, val) => Array.isArray(val)
+      ? acc.concat(flat(val))
+      : acc.concat(val),
+    []
+  )
+}
+
+const ANNOUNCE_LIST = [
   ['udp://tracker.leechers-paradise.org:6969'],
   ['udp://tracker.coppersurfer.tk:6969'],
   ['udp://tracker.opentrackr.org:1337'],
@@ -243,20 +253,29 @@ async function getPieceList (files, pieceLength, estimatedTorrentLength, opts, c
 }
 
 function onFiles (files, opts, cb) {
-  let announceList = opts.announceList
+  let announce = null
+  let announceList = []
 
-  if (!announceList) {
-    if (typeof opts.announce === 'string') announceList = [[opts.announce]]
-    else if (Array.isArray(opts.announce)) {
-      announceList = opts.announce.map(u => [u])
-    }
+  if (opts.announce) {
+    let trackerList = opts.announce
+    if (!Array.isArray(trackerList)) trackerList = [trackerList]
+
+    const [first, ...rest] = trackerList.filter(u => typeof u === 'string')
+    if (first) announce = first
+    announceList = announceList.concat([[first], ...rest.map(u => [u])])
   }
 
-  if (!announceList) announceList = []
+  if (opts.announceList && Array.isArray(opts.announceList)) {
+    opts.announceList.forEach(l => {
+      if (!Array.isArray(l)) return
+      const trackerList = l.filter(u => typeof u === 'string')
+      if (trackerList.length > 0) announceList.push(trackerList)
+    })
+  }
 
   if (globalThis.WEBTORRENT_ANNOUNCE) {
     if (typeof globalThis.WEBTORRENT_ANNOUNCE === 'string') {
-      announceList.push([[globalThis.WEBTORRENT_ANNOUNCE]])
+      announceList.push([globalThis.WEBTORRENT_ANNOUNCE])
     } else if (Array.isArray(globalThis.WEBTORRENT_ANNOUNCE)) {
       announceList = announceList.concat(globalThis.WEBTORRENT_ANNOUNCE.map(u => [u]))
     }
@@ -264,8 +283,10 @@ function onFiles (files, opts, cb) {
 
   // When no trackers specified, use some reasonable defaults
   if (opts.announce === undefined && opts.announceList === undefined) {
-    announceList = announceList.concat(module.exports.announceList)
+    announceList = announceList.concat(ANNOUNCE_LIST)
   }
+
+  if (!announce && announceList.length > 0) announce = announceList[0][0]
 
   if (typeof opts.urlList === 'string') opts.urlList = [opts.urlList]
 
@@ -277,10 +298,9 @@ function onFiles (files, opts, cb) {
     encoding: 'UTF-8'
   }
 
-  if (announceList.length !== 0) {
-    torrent.announce = announceList[0][0]
-    torrent['announce-list'] = announceList
-  }
+  if (announce) torrent.announce = announce
+
+  if (announceList.length !== 0) torrent['announce-list'] = announceList
 
   if (opts.comment !== undefined) torrent.comment = opts.comment
 
@@ -393,5 +413,5 @@ async function * getStreamStream (readable, file) {
 
 module.exports = createTorrent
 module.exports.parseInput = parseInput
-module.exports.announceList = announceList
+module.exports.announceList = ANNOUNCE_LIST
 module.exports.isJunkPath = isJunkPath
