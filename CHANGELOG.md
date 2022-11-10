@@ -1,3 +1,10 @@
+## [5.0.9](https://github.com/webtorrent/create-torrent/compare/v5.0.8...v5.0.9) (2022-11-10)
+
+
+### Bug Fixes
+
+* hash faster than callback ([#186](https://github.com/webtorrent/create-torrent/issues/186)) ([298f356](https://github.com/webtorrent/create-torrent/commit/298f356c9ba7832c22eee954025ab50bf29dc922))
+
 ## [5.0.8](https://github.com/webtorrent/create-torrent/compare/v5.0.7...v5.0.8) (2022-11-10)
 
 
