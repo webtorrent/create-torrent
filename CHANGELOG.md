@@ -1,3 +1,10 @@
+## [5.0.8](https://github.com/webtorrent/create-torrent/compare/v5.0.7...v5.0.8) (2022-11-10)
+
+
+### Bug Fixes
+
+* **deps:** update dependency minimist to ^1.2.7 ([#162](https://github.com/webtorrent/create-torrent/issues/162)) ([b81eb98](https://github.com/webtorrent/create-torrent/commit/b81eb98b3a0b0358c40cac387a3a324ae0b4616a))
+
 ## [5.0.7](https://github.com/webtorrent/create-torrent/compare/v5.0.6...v5.0.7) (2022-11-10)
 
 
