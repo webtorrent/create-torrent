@@ -19,18 +19,16 @@
   },
   "dependencies": {
     "bencode": "^2.0.3",
-    "block-stream2": "^2.1.0",
-    "fast-blob-stream": "^1.1.1",
+    "block-iterator": "^1.0.1",
+    "fast-readable-async-iterator": "^1.1.1",
     "is-file": "^1.0.0",
     "join-async-iterator": "^1.1.1",
     "junk": "^3.1.0",
     "minimist": "^1.2.5",
-    "once": "^1.4.0",
     "piece-length": "^2.0.1",
     "queue-microtask": "^1.2.3",
     "run-parallel": "^1.2.0",
-    "simple-sha1": "^3.1.0",
-    "streamx": "^2.12.4"
+    "simple-sha1": "^3.1.0"
   },
   "devDependencies": {
     "@webtorrent/semantic-release-config": "1.0.8",

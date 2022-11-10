@@ -1,17 +1,15 @@
 /*! create-torrent. MIT License. WebTorrent LLC <https://webtorrent.io/opensource> */
 const bencode = require('bencode')
-const BlockStream = require('block-stream2')
+const blockIterator = require('block-iterator')
 const calcPieceLength = require('piece-length')
 const corePath = require('path')
-const { BlobReadStream } = require('fast-blob-stream')
 const isFile = require('is-file')
 const junk = require('junk')
 const joinIterator = require('join-async-iterator')
-const once = require('once')
 const parallel = require('run-parallel')
 const queueMicrotask = require('queue-microtask')
 const sha1 = require('simple-sha1')
-const { Transform, PassThrough, Readable } = require('streamx')
+require('fast-readable-async-iterator')
 
 const getFiles = require('./get-files') // browser exclude
 
@@ -176,10 +174,10 @@ function _parseInput (input, opts, cb) {
       const file = {}
 
       if (isBlob(item)) {
-        file.getStream = getBlobStream(item)
+        file.getStream = item.stream()
         file.length = item.size
       } else if (Buffer.isBuffer(item)) {
-        file.getStream = getBufferStream(item)
+        file.getStream = [item] // wrap in iterable to write entire buffer at once instead of unwrapping all bytes
         file.length = item.length
       } else if (isReadable(item)) {
         file.getStream = getStreamStream(item, file)
@@ -206,72 +204,40 @@ function _parseInput (input, opts, cb) {
 
 const MAX_OUTSTANDING_HASHES = 5
 
-function getPieceList (files, pieceLength, estimatedTorrentLength, opts, cb) {
-  cb = once(cb)
+async function getPieceList (files, pieceLength, estimatedTorrentLength, opts, cb) {
   const pieces = []
   let length = 0
   let hashedLength = 0
 
   const streams = files.map(file => file.getStream)
 
+  const onProgress = opts.onProgress
+
   let remainingHashes = 0
   let pieceNum = 0
   let ended = false
 
-  const multistream = Readable.from(joinIterator(streams))
-  const blockstream = new BlockStream(pieceLength, { zeroPadding: false })
-
-  multistream.on('error', onError)
-
-  multistream
-    .pipe(blockstream)
-    .on('data', onData)
-    .on('end', onEnd)
-    .on('error', onError)
-
-  function onData (chunk) {
-    length += chunk.length
-
-    const i = pieceNum
-    sha1(chunk, hash => {
-      pieces[i] = hash
-      remainingHashes -= 1
-      if (remainingHashes < MAX_OUTSTANDING_HASHES) {
-        blockstream.resume()
-      }
-      hashedLength += chunk.length
-      if (opts.onProgress) opts.onProgress(hashedLength, estimatedTorrentLength)
-      maybeDone()
-    })
-    remainingHashes += 1
-    if (remainingHashes >= MAX_OUTSTANDING_HASHES) {
-      blockstream.pause()
+  const iterator = blockIterator(joinIterator(streams), pieceLength, { zeroPadding: false })
+  try {
+    for await (const chunk of iterator) {
+      await new Promise(resolve => {
+        length += chunk.length
+        const i = pieceNum
+        sha1(chunk, hash => {
+          pieces[i] = hash
+          --remainingHashes
+          hashedLength += chunk.length
+          if (onProgress) onProgress(hashedLength, estimatedTorrentLength)
+          resolve()
+          if (ended && remainingHashes === 0) cb(null, Buffer.from(pieces.join(''), 'hex'), length)
+        })
+        ++pieceNum
+        if (++remainingHashes < MAX_OUTSTANDING_HASHES) resolve()
+      })
     }
-    pieceNum += 1
-  }
-
-  function onEnd () {
     ended = true
-    maybeDone()
-  }
-
-  function onError (err) {
-    cleanup()
+  } catch (err) {
     cb(err)
-  }
-
-  function cleanup () {
-    multistream.removeListener('error', onError)
-    blockstream.removeListener('data', onData)
-    blockstream.removeListener('end', onEnd)
-    blockstream.removeListener('error', onError)
-  }
-
-  function maybeDone () {
-    if (ended && remainingHashes === 0) {
-      cleanup()
-      cb(null, Buffer.from(pieces.join(''), 'hex'), length)
-    }
   }
 }
 
@@ -409,45 +375,18 @@ function isReadable (obj) {
 }
 
 /**
- * Convert a `File` to a lazy readable stream.
- * @param  {File|Blob} file
- * @return {function}
- */
-function getBlobStream (file) {
-  return () => new BlobReadStream(file)
-}
-
-/**
- * Convert a `Buffer` to a lazy readable stream.
- * @param  {Buffer} buffer
- * @return {function}
- */
-function getBufferStream (buffer) {
-  return () => {
-    const s = new PassThrough()
-    s.end(buffer)
-    return s
-  }
-}
-
-/**
- * Convert a readable stream to a lazy readable stream. Adds instrumentation to track
+ * Convert a readable stream to a lazy async iterator. Adds instrumentation to track
  * the number of bytes in the stream and set `file.length`.
  *
+ * @generator
  * @param  {Stream} readable
  * @param  {Object} file
- * @return {function}
+ * @return {Uint8Array} stream data/chunk
  */
-function getStreamStream (readable, file) {
-  return () => {
-    const counter = new Transform()
-    counter._transform = function (data, cb) {
-      file.length += data.length
-      this.push(data)
-      cb()
-    }
-    readable.pipe(counter)
-    return counter
+async function * getStreamStream (readable, file) {
+  for await (const chunk of readable) {
+    file.length += chunk.length
+    yield chunk
   }
 }
 
