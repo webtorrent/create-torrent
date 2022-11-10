@@ -223,6 +223,8 @@ async function getPieceList (files, pieceLength, estimatedTorrentLength, opts, c
       await new Promise(resolve => {
         length += chunk.length
         const i = pieceNum
+        ++pieceNum
+        if (++remainingHashes < MAX_OUTSTANDING_HASHES) resolve()
         sha1(chunk, hash => {
           pieces[i] = hash
           --remainingHashes
@@ -231,10 +233,9 @@ async function getPieceList (files, pieceLength, estimatedTorrentLength, opts, c
           resolve()
           if (ended && remainingHashes === 0) cb(null, Buffer.from(pieces.join(''), 'hex'), length)
         })
-        ++pieceNum
-        if (++remainingHashes < MAX_OUTSTANDING_HASHES) resolve()
       })
     }
+    if (remainingHashes === 0) return cb(null, Buffer.from(pieces.join(''), 'hex'), length)
     ended = true
   } catch (err) {
     cb(err)
