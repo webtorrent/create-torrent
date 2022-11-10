@@ -1,3 +1,10 @@
+## [5.0.7](https://github.com/webtorrent/create-torrent/compare/v5.0.6...v5.0.7) (2022-11-10)
+
+
+### Bug Fixes
+
+* drop block-stream, drop streamx ([#185](https://github.com/webtorrent/create-torrent/issues/185)) ([4e0669c](https://github.com/webtorrent/create-torrent/commit/4e0669c3b2f92a4c0d115bcb6b01c26a21f9dbd6))
+
 ## [5.0.6](https://github.com/webtorrent/create-torrent/compare/v5.0.5...v5.0.6) (2022-09-02)
 
 
