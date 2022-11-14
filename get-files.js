@@ -1,8 +1,8 @@
-const corePath = require('path')
-const fs = require('fs')
-const junk = require('junk')
-const once = require('once')
-const parallel = require('run-parallel')
+import corePath from 'path'
+import fs from 'fs'
+import junk from 'junk'
+import once from 'once'
+import parallel from 'run-parallel'
 
 function notHidden (file) {
   return file[0] !== '.'
@@ -34,7 +34,7 @@ function getFilePathStream (path) {
   return () => fs.createReadStream(path)
 }
 
-function getFiles (path, keepRoot, cb) {
+export default function getFiles (path, keepRoot, cb) {
   traversePath(path, getFileInfo, (err, files) => {
     if (err) return cb(err)
 
@@ -67,5 +67,3 @@ function getFileInfo (path, cb) {
     cb(null, info)
   })
 }
-
-module.exports = getFiles

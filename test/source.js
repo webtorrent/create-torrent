@@ -1,10 +1,12 @@
-const { join } = require('path')
-const folderPath = require('webtorrent-fixtures').folder.contentPath
-const parseTorrent = require('parse-torrent')
-const sha1 = require('simple-sha1')
-const test = require('tape')
+import { join } from 'path'
+import fixtures from 'webtorrent-fixtures'
+import parseTorrent from 'parse-torrent'
+import sha1 from 'simple-sha1'
+import test from 'tape'
 
-const createTorrent = require('../')
+import createTorrent from '../index.js'
+
+const { contentPath: folderPath } = fixtures.folder
 
 test('verify info-hash without no source set (default)', t => {
   t.plan(12)
