@@ -1,7 +1,7 @@
 import createTorrent from '../index.js'
 import parseTorrent from 'parse-torrent'
 import path from 'path'
-import sha1 from 'simple-sha1'
+import { sha1 } from 'uint8-util'
 import test from 'tape'
 
 test('create nested torrent with array of buffers', t => {
@@ -42,6 +42,8 @@ test('create nested torrent with array of buffers', t => {
     t.deepEquals(parsedTorrent.pieces, [
       '5bf1fd927dfb8679496a2e6cf00cbe50c1c87145'
     ])
-    t.equals(sha1.sync(parsedTorrent.infoBuffer), '8fa3c08e640db9576156b21f31353402456a0208')
+    sha1(parsedTorrent.infoBuffer, hash => {
+      t.equals(hash, '8fa3c08e640db9576156b21f31353402456a0208')
+    })
   })
 })

@@ -1,7 +1,7 @@
 import fixtures from 'webtorrent-fixtures'
 import parseTorrent from 'parse-torrent'
 import path from 'path'
-import sha1 from 'simple-sha1'
+import { sha1 } from 'uint8-util'
 import test from 'tape'
 import createTorrent from '../index.js'
 
@@ -54,7 +54,9 @@ test('create single file torrent', t => {
       'c698de9b0dad92980906c026d8c1408fa08fe4ec'
     ])
 
-    t.equals(sha1.sync(parsedTorrent.infoBuffer), 'd2474e86c95b19b8bcfdb92bc12c9d44667cfa36')
+    sha1(parsedTorrent.infoBuffer, hash => {
+      t.equals(hash, 'd2474e86c95b19b8bcfdb92bc12c9d44667cfa36')
+    })
   })
 })
 
@@ -112,7 +114,9 @@ test('create multi file torrent', t => {
     t.deepEquals(parsedTorrent.pieces, [
       '1f74648e50a6a6708ec54ab327a163d5536b7ced'
     ])
-    t.equals(sha1.sync(parsedTorrent.infoBuffer), '80562f38656b385ea78959010e51a2cc9db41ea0')
+    sha1(parsedTorrent.infoBuffer, hash => {
+      t.equals(hash, '80562f38656b385ea78959010e51a2cc9db41ea0')
+    })
   })
 })
 
@@ -165,8 +169,9 @@ test('create multi file torrent with nested directories', t => {
     t.deepEquals(parsedTorrent.pieces, [
       '47972f2befaee58b6f3860cd39bd56cb33a488f0'
     ])
-
-    t.equals(sha1.sync(parsedTorrent.infoBuffer), '427887e9c03e123f9c8458b1947090edf1c75baa')
+    sha1(parsedTorrent.infoBuffer, hash => {
+      t.equals(hash, '427887e9c03e123f9c8458b1947090edf1c75baa')
+    })
   })
 })
 
@@ -225,6 +230,8 @@ test('create multi file torrent with array of paths', t => {
     t.deepEquals(parsedTorrent.pieces, [
       '1c4e1ba6da4d771ff82025d7cf76e8c368c6c3dd'
     ])
-    t.equals(sha1.sync(parsedTorrent.infoBuffer), 'df25a2959378892f6ddaf4a2d7e75174e09878bb')
+    sha1(parsedTorrent.infoBuffer, hash => {
+      t.equals(hash, 'df25a2959378892f6ddaf4a2d7e75174e09878bb')
+    })
   })
 })

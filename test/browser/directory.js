@@ -3,7 +3,7 @@
 import fs from 'fs'
 import parseTorrent from 'parse-torrent'
 import path from 'path'
-import sha1 from 'simple-sha1'
+import { sha1 } from 'uint8-util'
 import test from 'tape'
 import createTorrent from '../../index.js'
 
