@@ -26,8 +26,8 @@ npm install create-torrent
 The simplest way to use `create-torrent` is like this:
 
 ```js
-const createTorrent from'create-torrent')
-const fs from'fs')
+import createTorrent from 'create-torrent'
+import fs from 'fs'
 
 createTorrent('/path/to/folder', (err, torrent) => {
   if (!err) {
