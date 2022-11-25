@@ -1,3 +1,19 @@
+# [6.0.0](https://github.com/webtorrent/create-torrent/compare/v5.0.9...v6.0.0) (2022-11-25)
+
+
+### Features
+
+* esm ([#187](https://github.com/webtorrent/create-torrent/issues/187)) ([0a3cb58](https://github.com/webtorrent/create-torrent/commit/0a3cb5886ff4403e8b1c27ede6932a2b21b8ac36))
+
+
+### BREAKING CHANGES
+
+* ESM only
+
+* feat: esm
+
+* fix: regex artifacts
+
 ## [5.0.9](https://github.com/webtorrent/create-torrent/compare/v5.0.8...v5.0.9) (2022-11-10)
 
 
