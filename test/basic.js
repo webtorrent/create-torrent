@@ -1,7 +1,7 @@
-const parseTorrent = require('parse-torrent')
-const path = require('path')
-const test = require('tape')
-const createTorrent = require('../')
+import parseTorrent from 'parse-torrent'
+import path from 'path'
+import test from 'tape'
+import createTorrent from '../index.js'
 
 test('implicit torrent name and file name', t => {
   t.plan(5)

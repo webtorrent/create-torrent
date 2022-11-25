@@ -1,5 +1,5 @@
-const test = require('tape')
-const createTorrent = require('../')
+import test from 'tape'
+import createTorrent from '../index.js'
 
 test('error handling', t => {
   t.plan(5)

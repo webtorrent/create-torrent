@@ -1,9 +1,9 @@
-const fixtures = require('webtorrent-fixtures')
-const parseTorrent = require('parse-torrent')
-const path = require('path')
-const sha1 = require('simple-sha1')
-const test = require('tape')
-const createTorrent = require('../')
+import fixtures from 'webtorrent-fixtures'
+import parseTorrent from 'parse-torrent'
+import path from 'path'
+import sha1 from 'simple-sha1'
+import test from 'tape'
+import createTorrent from '../index.js'
 
 test('create single file torrent', t => {
   t.plan(11)

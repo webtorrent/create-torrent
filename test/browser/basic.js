@@ -1,12 +1,12 @@
 /* global Blob */
 
-const fixtures = require('webtorrent-fixtures')
-const fs = require('fs')
-const parseTorrent = require('parse-torrent')
-const path = require('path')
-const sha1 = require('simple-sha1')
-const test = require('tape')
-const createTorrent = require('../../')
+import fixtures from 'webtorrent-fixtures'
+import fs from 'fs'
+import parseTorrent from 'parse-torrent'
+import path from 'path'
+import sha1 from 'simple-sha1'
+import test from 'tape'
+import createTorrent from '../../index.js'
 
 function makeFileShim (buf, name) {
   const file = new Blob([buf])

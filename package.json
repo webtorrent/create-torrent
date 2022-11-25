@@ -7,6 +7,7 @@
     "email": "feross@webtorrent.io",
     "url": "https://webtorrent.io"
   },
+  "type": "module",
   "bin": {
     "create-torrent": "./bin/cmd.js"
   },
@@ -42,6 +43,9 @@
   "engines": {
     "node": ">=12"
   },
+  "exports": {
+    "import": "./index.js"
+  },
   "keywords": [
     ".torrent",
     "bittorrent",
@@ -56,7 +60,6 @@
     "webtorrent"
   ],
   "license": "MIT",
-  "main": "index.js",
   "repository": {
     "type": "git",
     "url": "git://github.com/webtorrent/create-torrent.git"

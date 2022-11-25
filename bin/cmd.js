@@ -1,7 +1,7 @@
 #!/usr/bin/env node
-const fs = require('fs')
-const minimist = require('minimist')
-const createTorrent = require('../')
+import fs from 'fs'
+import minimist from 'minimist'
+import createTorrent from '../index.js'
 
 const argv = minimist(process.argv.slice(2), {
   alias: {

@@ -1,6 +1,6 @@
-const parseTorrent = require('parse-torrent')
-const test = require('tape')
-const createTorrent = require('../')
+import parseTorrent from 'parse-torrent'
+import test from 'tape'
+import createTorrent from '../index.js'
 
 test('create ssl cert torrent', t => {
   t.plan(2)

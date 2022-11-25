@@ -1,8 +1,8 @@
-const createTorrent = require('../')
-const parseTorrent = require('parse-torrent')
-const path = require('path')
-const sha1 = require('simple-sha1')
-const test = require('tape')
+import createTorrent from '../index.js'
+import parseTorrent from 'parse-torrent'
+import path from 'path'
+import sha1 from 'simple-sha1'
+import test from 'tape'
 
 test('create nested torrent with array of buffers', t => {
   t.plan(14)

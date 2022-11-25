@@ -1,17 +1,17 @@
 /*! create-torrent. MIT License. WebTorrent LLC <https://webtorrent.io/opensource> */
-const bencode = require('bencode')
-const blockIterator = require('block-iterator')
-const calcPieceLength = require('piece-length')
-const corePath = require('path')
-const isFile = require('is-file')
-const junk = require('junk')
-const joinIterator = require('join-async-iterator')
-const parallel = require('run-parallel')
-const queueMicrotask = require('queue-microtask')
-const sha1 = require('simple-sha1')
-require('fast-readable-async-iterator')
+import bencode from 'bencode'
+import blockIterator from 'block-iterator'
+import calcPieceLength from 'piece-length'
+import corePath from 'path'
+import isFile from 'is-file'
+import junk from 'junk'
+import joinIterator from 'join-async-iterator'
+import parallel from 'run-parallel'
+import queueMicrotask from 'queue-microtask'
+import sha1 from 'simple-sha1'
+import 'fast-readable-async-iterator'
 
-const getFiles = require('./get-files') // browser exclude
+import getFiles from './get-files.js' // browser exclude
 
 const announceList = [
   ['udp://tracker.leechers-paradise.org:6969'],
@@ -243,28 +243,28 @@ async function getPieceList (files, pieceLength, estimatedTorrentLength, opts, c
 }
 
 function onFiles (files, opts, cb) {
-  let announceList = opts.announceList
+  let _announceList = opts.announceList
 
-  if (!announceList) {
-    if (typeof opts.announce === 'string') announceList = [[opts.announce]]
+  if (!_announceList) {
+    if (typeof opts.announce === 'string') _announceList = [[opts.announce]]
     else if (Array.isArray(opts.announce)) {
-      announceList = opts.announce.map(u => [u])
+      _announceList = opts.announce.map(u => [u])
     }
   }
 
-  if (!announceList) announceList = []
+  if (!_announceList) _announceList = []
 
   if (globalThis.WEBTORRENT_ANNOUNCE) {
     if (typeof globalThis.WEBTORRENT_ANNOUNCE === 'string') {
-      announceList.push([[globalThis.WEBTORRENT_ANNOUNCE]])
+      _announceList.push([[globalThis.WEBTORRENT_ANNOUNCE]])
     } else if (Array.isArray(globalThis.WEBTORRENT_ANNOUNCE)) {
-      announceList = announceList.concat(globalThis.WEBTORRENT_ANNOUNCE.map(u => [u]))
+      _announceList = _announceList.concat(globalThis.WEBTORRENT_ANNOUNCE.map(u => [u]))
     }
   }
 
   // When no trackers specified, use some reasonable defaults
   if (opts.announce === undefined && opts.announceList === undefined) {
-    announceList = announceList.concat(module.exports.announceList)
+    _announceList = _announceList.concat(announceList)
   }
 
   if (typeof opts.urlList === 'string') opts.urlList = [opts.urlList]
@@ -277,9 +277,9 @@ function onFiles (files, opts, cb) {
     encoding: 'UTF-8'
   }
 
-  if (announceList.length !== 0) {
-    torrent.announce = announceList[0][0]
-    torrent['announce-list'] = announceList
+  if (_announceList.length !== 0) {
+    torrent.announce = _announceList[0][0]
+    torrent['announce-list'] = _announceList
   }
 
   if (opts.comment !== undefined) torrent.comment = opts.comment
@@ -391,7 +391,5 @@ async function * getStreamStream (readable, file) {
   }
 }
 
-module.exports = createTorrent
-module.exports.parseInput = parseInput
-module.exports.announceList = announceList
-module.exports.isJunkPath = isJunkPath
+export default createTorrent
+export { parseInput, announceList, isJunkPath }
