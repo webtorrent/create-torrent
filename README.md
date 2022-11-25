@@ -26,7 +26,6 @@ npm install create-torrent
 The simplest way to use `create-torrent` is like this:
 
 ```js
-
 import createTorrent from 'create-torrent'
 import fs from 'fs'
 
