@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "bencode": "^2.0.3",
-    "block-iterator": "^1.0.1",
+    "block-iterator": "^1.1.1",
     "fast-readable-async-iterator": "^1.1.1",
     "is-file": "^1.0.0",
     "join-async-iterator": "^1.1.1",
