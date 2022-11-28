@@ -1,3 +1,10 @@
+## [6.0.1](https://github.com/webtorrent/create-torrent/compare/v6.0.0...v6.0.1) (2022-11-28)
+
+
+### Bug Fixes
+
+* **deps:** update dependency block-iterator to ^1.1.1 ([#188](https://github.com/webtorrent/create-torrent/issues/188)) ([a51b07c](https://github.com/webtorrent/create-torrent/commit/a51b07cc10b2bac96b985a0d5aee7bceae6505d4))
+
 # [6.0.0](https://github.com/webtorrent/create-torrent/compare/v5.0.9...v6.0.0) (2022-11-25)
 
 
