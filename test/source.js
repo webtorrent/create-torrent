@@ -37,7 +37,7 @@ test('verify info-hash without no source set (default)', t => {
 
     t.deepEquals(parsedTorrent.pieces, ['799c11e348d39f1704022b8354502e2f81f3c037'])
     sha1(parsedTorrent.infoBuffer, hash => {
-      t.equals(hash, 'b4dfce1f956f720c928535ded617d07696a819ef')
+      t.equals(hash, 'b4dfce1f956f720c928535ded617d07696a819ef', 'mktorrent hash with no source')
     })
   })
 })
@@ -74,7 +74,7 @@ test('verify info-hash an additional source attribute set on the info dict (a wa
 
     t.deepEquals(parsedTorrent.pieces, ['799c11e348d39f1704022b8354502e2f81f3c037'])
     sha1(parsedTorrent.infoBuffer, hash => {
-      t.equals(hash, 'a9499b56289356a3d5b8636387deb83709b8fa42')
+      t.equals(hash, 'a9499b56289356a3d5b8636387deb83709b8fa42', 'mktorrent run with -s SOURCE')
     })
   })
 })
