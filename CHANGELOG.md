@@ -1,3 +1,10 @@
+## [6.0.2](https://github.com/webtorrent/create-torrent/compare/v6.0.1...v6.0.2) (2022-12-03)
+
+
+### Bug Fixes
+
+* drop rusha ([#184](https://github.com/webtorrent/create-torrent/issues/184)) ([9fcc2e9](https://github.com/webtorrent/create-torrent/commit/9fcc2e97c99bcd5f23e857f855630a759802bcf6))
+
 ## [6.0.1](https://github.com/webtorrent/create-torrent/compare/v6.0.0...v6.0.1) (2022-11-28)
 
 
