@@ -8,7 +8,7 @@ import junk from 'junk'
 import joinIterator from 'join-async-iterator'
 import parallel from 'run-parallel'
 import queueMicrotask from 'queue-microtask'
-import sha1 from 'simple-sha1'
+import { sha1 } from 'uint8-util'
 import 'fast-readable-async-iterator'
 
 import getFiles from './get-files.js' // browser exclude

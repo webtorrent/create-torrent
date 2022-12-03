@@ -2,7 +2,7 @@ import fixtures from 'webtorrent-fixtures'
 import fs from 'fs'
 import parseTorrent from 'parse-torrent'
 import path from 'path'
-import sha1 from 'simple-sha1'
+import { sha1 } from 'uint8-util'
 import test from 'tape'
 import createTorrent from '../index.js'
 
@@ -65,6 +65,8 @@ test('create multi file torrent with array of mixed types', t => {
     t.deepEquals(parsedTorrent.pieces, [
       '9ad893bb9aeca601a0fab4ba85bd4a4c18b630e3'
     ])
-    t.equals(sha1.sync(parsedTorrent.infoBuffer), 'bad3f8ea0d1d8a55c18a039dd464f1078f83dba2')
+    sha1(parsedTorrent.infoBuffer, hash => {
+      t.equals(hash, 'bad3f8ea0d1d8a55c18a039dd464f1078f83dba2')
+    })
   })
 })
