@@ -2,7 +2,7 @@ import fixtures from 'webtorrent-fixtures'
 import fs from 'fs'
 import parseTorrent from 'parse-torrent'
 import path from 'path'
-import { sha1 } from 'uint8-util'
+import { hash } from 'uint8-util'
 import test from 'tape'
 import createTorrent from '../index.js'
 
@@ -57,7 +57,7 @@ test('create single file torrent from a stream', t => {
       '56dcc242d03293e9446cf5e457d8eb3d9588fd90',
       'c698de9b0dad92980906c026d8c1408fa08fe4ec'
     ])
-    sha1(parsedTorrent.infoBuffer, hash => {
+    hash(parsedTorrent.infoBuffer, 'hex').then(hash => {
       t.equals(hash, 'd2474e86c95b19b8bcfdb92bc12c9d44667cfa36')
     })
   })
@@ -112,7 +112,7 @@ test('create multi file torrent with streams', t => {
     t.deepEquals(parsedTorrent.pieces, [
       '1f74648e50a6a6708ec54ab327a163d5536b7ced'
     ])
-    sha1(parsedTorrent.infoBuffer, hash => {
+    hash(parsedTorrent.infoBuffer, 'hex').then(hash => {
       t.equals(hash, '80562f38656b385ea78959010e51a2cc9db41ea0')
     })
   })
