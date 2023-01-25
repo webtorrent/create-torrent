@@ -8,7 +8,7 @@ import junk from 'junk'
 import joinIterator from 'join-async-iterator'
 import parallel from 'run-parallel'
 import queueMicrotask from 'queue-microtask'
-import { sha1 } from 'uint8-util'
+import { hash } from 'uint8-util'
 import 'fast-readable-async-iterator'
 
 import getFiles from './get-files.js' // browser exclude
@@ -225,7 +225,7 @@ async function getPieceList (files, pieceLength, estimatedTorrentLength, opts, c
         const i = pieceNum
         ++pieceNum
         if (++remainingHashes < MAX_OUTSTANDING_HASHES) resolve()
-        sha1(chunk, hash => {
+        hash(chunk, 'hex').then(hash => {
           pieces[i] = hash
           --remainingHashes
           hashedLength += chunk.length

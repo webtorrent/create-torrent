@@ -1,7 +1,7 @@
 import { join } from 'path'
 import fixtures from 'webtorrent-fixtures'
 import parseTorrent from 'parse-torrent'
-import { sha1 } from 'uint8-util'
+import { hash } from 'uint8-util'
 import test from 'tape'
 
 import createTorrent from '../index.js'
@@ -36,7 +36,7 @@ test('verify info-hash without no source set (default)', t => {
     t.equal(parsedTorrent.pieceLength, 262144)
 
     t.deepEquals(parsedTorrent.pieces, ['799c11e348d39f1704022b8354502e2f81f3c037'])
-    sha1(parsedTorrent.infoBuffer, hash => {
+    hash(parsedTorrent.infoBuffer, 'hex').then(hash => {
       t.equals(hash, 'b4dfce1f956f720c928535ded617d07696a819ef', 'mktorrent hash with no source')
     })
   })
@@ -73,7 +73,7 @@ test('verify info-hash an additional source attribute set on the info dict (a wa
     t.equal(parsedTorrent.pieceLength, 262144)
 
     t.deepEquals(parsedTorrent.pieces, ['799c11e348d39f1704022b8354502e2f81f3c037'])
-    sha1(parsedTorrent.infoBuffer, hash => {
+    hash(parsedTorrent.infoBuffer, 'hex').then(hash => {
       t.equals(hash, 'a9499b56289356a3d5b8636387deb83709b8fa42', 'mktorrent run with -s SOURCE')
     })
   })
