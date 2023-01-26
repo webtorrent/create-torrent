@@ -13,10 +13,10 @@ test('create single file torrent from a stream', t => {
   stream.name = 'Leaves of Grass by Walt Whitman.epub'
 
   const startTime = Date.now()
-  createTorrent(stream, { pieceLength: 16384 }, (err, torrent) => {
+  createTorrent(stream, { pieceLength: 16384 }, async (err, torrent) => {
     t.error(err)
 
-    const parsedTorrent = parseTorrent(torrent)
+    const parsedTorrent = await parseTorrent(torrent)
 
     t.equals(parsedTorrent.name, 'Leaves of Grass by Walt Whitman.epub')
 
@@ -83,10 +83,10 @@ test('create multi file torrent with streams', t => {
 
     name: 'numbers'
 
-  }, (err, torrent) => {
+  }, async (err, torrent) => {
     t.error(err)
 
-    const parsedTorrent = parseTorrent(torrent)
+    const parsedTorrent = await parseTorrent(torrent)
 
     t.equals(parsedTorrent.name, 'numbers')
 
@@ -123,9 +123,9 @@ test('implicit name and pieceLength for stream', t => {
 
   const stream = fs.createReadStream(fixtures.leaves.contentPath)
 
-  createTorrent(stream, (err, torrent) => {
+  createTorrent(stream, async (err, torrent) => {
     t.error(err)
-    const parsedTorrent = parseTorrent(torrent)
+    const parsedTorrent = await parseTorrent(torrent)
 
     t.ok(parsedTorrent.name.includes('Unnamed Torrent'))
     t.equal(parsedTorrent.pieceLength, 16384)
