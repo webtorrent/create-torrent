@@ -30,10 +30,10 @@ test('create multi file torrent with array of mixed types', t => {
 
     private: false // also force `private: false` to match transmission
 
-  }, (err, torrent) => {
+  }, async (err, torrent) => {
     t.error(err)
 
-    const parsedTorrent = parseTorrent(torrent)
+    const parsedTorrent = await parseTorrent(torrent)
 
     t.equals(parsedTorrent.name, 'multi')
 
