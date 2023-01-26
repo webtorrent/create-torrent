@@ -15,10 +15,10 @@ test('verify info-hash without no source set (default)', t => {
     pieceLength: 262144, // matching mktorrent
     announce: 'http://private.tracker.org/',
     private: true
-  }, (err, torrent) => {
+  }, async (err, torrent) => {
     t.error(err)
 
-    const parsedTorrent = parseTorrent(torrent)
+    const parsedTorrent = await parseTorrent(torrent)
 
     t.equals(parsedTorrent.name, 'folder')
 
@@ -50,10 +50,10 @@ test('verify info-hash an additional source attribute set on the info dict (a wa
     announce: 'http://private.tracker.org/',
     private: true,
     info: { source: 'SOURCE' } // Set custom 'info source' attribute, this should result in a different info-hash
-  }, (err, torrent) => {
+  }, async (err, torrent) => {
     t.error(err)
 
-    const parsedTorrent = parseTorrent(torrent)
+    const parsedTorrent = await parseTorrent(torrent)
 
     t.equals(parsedTorrent.name, 'folder')
 

@@ -10,9 +10,9 @@ test('create ssl cert torrent', t => {
   createTorrent(Buffer.from('abc'), {
     name: 'abc.txt',
     sslCert
-  }, (err, torrent) => {
+  }, async (err, torrent) => {
     t.error(err)
-    const parsedTorrent = parseTorrent(torrent)
+    const parsedTorrent = await parseTorrent(torrent)
     t.deepEqual(parsedTorrent.info['ssl-cert'], sslCert)
   })
 })

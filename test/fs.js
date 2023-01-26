@@ -9,10 +9,10 @@ test('create single file torrent', t => {
   t.plan(11)
 
   const startTime = Date.now()
-  createTorrent(fixtures.leaves.contentPath, (err, torrent) => {
+  createTorrent(fixtures.leaves.contentPath, async (err, torrent) => {
     t.error(err)
 
-    const parsedTorrent = parseTorrent(torrent)
+    const parsedTorrent = await parseTorrent(torrent)
 
     t.equals(parsedTorrent.name, 'Leaves of Grass by Walt Whitman.epub')
 
@@ -63,10 +63,10 @@ test('create single file torrent', t => {
 test('create single file torrent from buffer', t => {
   t.plan(1)
 
-  createTorrent(Buffer.from('blah'), { name: 'blah.txt' }, (err, torrent) => {
+  createTorrent(Buffer.from('blah'), { name: 'blah.txt' }, async (err, torrent) => {
     t.error(err)
     try {
-      parseTorrent(torrent)
+      await parseTorrent(torrent)
     } catch (err) {
       t.fail(`failed to parse created torrent: ${err.message}`)
     }
@@ -85,10 +85,10 @@ test('create multi file torrent', t => {
 
     private: false // also force `private: false` to match transmission
 
-  }, (err, torrent) => {
+  }, async (err, torrent) => {
     t.error(err)
 
-    const parsedTorrent = parseTorrent(torrent)
+    const parsedTorrent = await parseTorrent(torrent)
 
     t.equals(parsedTorrent.name, 'numbers')
 
@@ -132,10 +132,10 @@ test('create multi file torrent with nested directories', t => {
 
     private: false // also force `private: false` to match transmission
 
-  }, (err, torrent) => {
+  }, async (err, torrent) => {
     t.error(err)
 
-    const parsedTorrent = parseTorrent(torrent)
+    const parsedTorrent = await parseTorrent(torrent)
 
     t.equals(parsedTorrent.name, 'lots-of-numbers')
 
@@ -195,10 +195,10 @@ test('create multi file torrent with array of paths', t => {
 
     private: false // also force `private: false` to match transmission
 
-  }, (err, torrent) => {
+  }, async (err, torrent) => {
     t.error(err)
 
-    const parsedTorrent = parseTorrent(torrent)
+    const parsedTorrent = await parseTorrent(torrent)
 
     t.equals(parsedTorrent.name, 'multi')
 

@@ -16,10 +16,10 @@ test('create nested torrent with array of buffers', t => {
   const startTime = Date.now()
   createTorrent([buf1, buf2], {
     name: 'multi'
-  }, (err, torrent) => {
+  }, async (err, torrent) => {
     t.error(err)
 
-    const parsedTorrent = parseTorrent(torrent)
+    const parsedTorrent = await parseTorrent(torrent)
 
     t.equals(parsedTorrent.name, 'multi')
 
