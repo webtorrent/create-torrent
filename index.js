@@ -8,7 +8,7 @@ import junk from 'junk'
 import joinIterator from 'join-async-iterator'
 import parallel from 'run-parallel'
 import queueMicrotask from 'queue-microtask'
-import { hash } from 'uint8-util'
+import { hash, hex2arr } from 'uint8-util'
 import 'fast-readable-async-iterator'
 
 import getFiles from './get-files.js' // browser exclude
@@ -122,7 +122,7 @@ function _parseInput (input, opts, cb) {
 
   if (commonPrefix) {
     input.forEach(item => {
-      const pathless = (Buffer.isBuffer(item) || isReadable(item)) && !item[pathSymbol]
+      const pathless = (ArrayBuffer.isView(item) || isReadable(item)) && !item[pathSymbol]
       if (typeof item === 'string' || pathless) return
       item[pathSymbol].shift()
     })
@@ -176,7 +176,7 @@ function _parseInput (input, opts, cb) {
       if (isBlob(item)) {
         file.getStream = item.stream()
         file.length = item.size
-      } else if (Buffer.isBuffer(item)) {
+      } else if (ArrayBuffer.isView(item)) {
         file.getStream = [item] // wrap in iterable to write entire buffer at once instead of unwrapping all bytes
         file.length = item.length
       } else if (isReadable(item)) {
@@ -231,11 +231,11 @@ async function getPieceList (files, pieceLength, estimatedTorrentLength, opts, c
           hashedLength += chunk.length
           if (onProgress) onProgress(hashedLength, estimatedTorrentLength)
           resolve()
-          if (ended && remainingHashes === 0) cb(null, Buffer.from(pieces.join(''), 'hex'), length)
+          if (ended && remainingHashes === 0) cb(null, hex2arr(pieces.join('')), length)
         })
       })
     }
-    if (remainingHashes === 0) return cb(null, Buffer.from(pieces.join(''), 'hex'), length)
+    if (remainingHashes === 0) return cb(null, hex2arr(pieces.join('')), length)
     ended = true
   } catch (err) {
     cb(err)
