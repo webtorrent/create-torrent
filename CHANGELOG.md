@@ -1,3 +1,10 @@
+## [6.0.6](https://github.com/webtorrent/create-torrent/compare/v6.0.5...v6.0.6) (2023-01-26)
+
+
+### Performance Improvements
+
+* drop buffer ([#201](https://github.com/webtorrent/create-torrent/issues/201)) ([2e030c7](https://github.com/webtorrent/create-torrent/commit/2e030c7358d17fd679d427f39b55152a2c7f826f))
+
 ## [6.0.5](https://github.com/webtorrent/create-torrent/compare/v6.0.4...v6.0.5) (2023-01-26)
 
 
