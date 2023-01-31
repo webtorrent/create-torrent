@@ -1,7 +1,7 @@
 {
   "name": "create-torrent",
   "description": "Create .torrent files",
-  "version": "6.0.6",
+  "version": "6.0.7",
   "author": {
     "name": "WebTorrent LLC",
     "email": "feross@webtorrent.io",

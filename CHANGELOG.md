@@ -1,3 +1,10 @@
+## [6.0.7](https://github.com/webtorrent/create-torrent/compare/v6.0.6...v6.0.7) (2023-01-31)
+
+
+### Bug Fixes
+
+* **deps:** update webtorrent ([db3e86f](https://github.com/webtorrent/create-torrent/commit/db3e86f29fe6cbc2ce18c3d7e14e974c35a2826c))
+
 ## [6.0.6](https://github.com/webtorrent/create-torrent/compare/v6.0.5...v6.0.6) (2023-01-26)
 
 
