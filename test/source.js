@@ -61,7 +61,7 @@ test('verify info-hash an additional source attribute set on the info dict (a wa
 
     // Source is now being read as a Buffer,
     // if 'parse-torrent' is updated this test will still pass
-    t.equal(parsedTorrent.info.source.toString(), 'SOURCE', 'info.source=\'SOURCE\'')
+    t.equal(Buffer.from(parsedTorrent.info.source).toString(), 'SOURCE', 'info.source=\'SOURCE\'')
 
     t.deepEqual(parsedTorrent.announce, ['http://private.tracker.org/'], 'single private announce url')
 
