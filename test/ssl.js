@@ -5,7 +5,7 @@ import createTorrent from '../index.js'
 test('create ssl cert torrent', t => {
   t.plan(2)
 
-  const sslCert = Buffer.from('content cert X.509')
+  const sslCert = new Uint8Array(Buffer.from('content cert X.509'))
 
   createTorrent(Buffer.from('abc'), {
     name: 'abc.txt',
