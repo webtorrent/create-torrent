@@ -19,7 +19,7 @@
     "is-file": false
   },
   "dependencies": {
-    "bencode": "^3.0.2",
+    "bencode": "^3.0.3",
     "block-iterator": "^1.1.1",
     "fast-readable-async-iterator": "^1.1.1",
     "is-file": "^1.0.0",
@@ -34,11 +34,11 @@
   "devDependencies": {
     "@webtorrent/semantic-release-config": "1.0.8",
     "brfs": "2.0.2",
-    "parse-torrent": "11.0.5",
+    "parse-torrent": "11.0.6",
     "semantic-release": "20.1.0",
     "standard": "*",
     "tape": "5.6.3",
-    "webtorrent-fixtures": "2.0.0"
+    "webtorrent-fixtures": "2.0.2"
   },
   "engines": {
     "node": ">=12"
