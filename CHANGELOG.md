@@ -1,3 +1,10 @@
+## [6.0.10](https://github.com/webtorrent/create-torrent/compare/v6.0.9...v6.0.10) (2023-02-22)
+
+
+### Bug Fixes
+
+* add once dependency ([#214](https://github.com/webtorrent/create-torrent/issues/214)) ([75822e9](https://github.com/webtorrent/create-torrent/commit/75822e9a94a0977acca4699b4ff71545d959e26f))
+
 ## [6.0.9](https://github.com/webtorrent/create-torrent/compare/v6.0.8...v6.0.9) (2023-01-31)
 
 
