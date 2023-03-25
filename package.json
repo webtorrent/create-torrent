@@ -44,9 +44,7 @@
   "engines": {
     "node": ">=12"
   },
-  "exports": {
-    "import": "./index.js"
-  },
+  "exports": "./index.js",
   "keywords": [
     ".torrent",
     "bittorrent",
