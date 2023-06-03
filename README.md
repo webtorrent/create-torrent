@@ -84,7 +84,7 @@ If `announceList` is omitted, the following trackers will be included automatica
 - udp://exodus.desync.com:6969
 - wss://tracker.btorrent.xyz
 - wss://tracker.openwebtorrent.com
-- wss://tracker.fastcast.nz
+- wss://tracker.webtorrent.dev
 
 Trackers that start with `wss://` are for WebRTC peers. See
 [WebTorrent](https://webtorrent.io) to learn more.
