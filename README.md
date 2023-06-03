@@ -77,14 +77,14 @@ Or, an **array of `string`, `File`, `Buffer`, or `stream.Readable` objects**.
 
 If `announceList` is omitted, the following trackers will be included automatically:
 
-- udp://tracker.openbittorrent.com:80
-- udp://tracker.internetwarriors.net:1337
 - udp://tracker.leechers-paradise.org:6969
 - udp://tracker.coppersurfer.tk:6969
-- udp://exodus.desync.com:6969
+- udp://tracker.opentrackr.org:1337
+- udp://explodie.org:6969
+- udp://tracker.empire-js.us:1337
 - wss://tracker.btorrent.xyz
 - wss://tracker.openwebtorrent.com
-- wss://tracker.fastcast.nz
+- wss://tracker.webtorrent.dev
 
 Trackers that start with `wss://` are for WebRTC peers. See
 [WebTorrent](https://webtorrent.io) to learn more.
