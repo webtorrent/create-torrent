@@ -4,7 +4,7 @@ import blockIterator from 'block-iterator'
 import calcPieceLength from 'piece-length'
 import corePath from 'path'
 import isFile from 'is-file'
-import junk from 'junk'
+import { isJunk } from 'junk'
 import joinIterator from 'join-async-iterator'
 import parallel from 'run-parallel'
 import queueMicrotask from 'queue-microtask'
@@ -336,7 +336,7 @@ function onFiles (files, opts, cb) {
  */
 function isJunkPath (path) {
   const filename = path[path.length - 1]
-  return filename[0] === '.' && junk.is(filename)
+  return filename[0] === '.' && isJunk(filename)
 }
 
 /**
