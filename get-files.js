@@ -1,6 +1,6 @@
 import corePath from 'path'
 import fs from 'fs'
-import junk from 'junk'
+import { isNotJunk } from 'junk'
 import once from 'once'
 import parallel from 'run-parallel'
 
@@ -14,7 +14,7 @@ function traversePath (path, fn, cb) {
     if (stats.isDirectory()) {
       fs.readdir(path, (err, entries) => {
         if (err) return cb(err)
-        parallel(entries.filter(notHidden).filter(junk.not).map(entry => cb => {
+        parallel(entries.filter(notHidden).filter(isNotJunk).map(entry => cb => {
           traversePath(corePath.join(path, entry), fn, cb)
         }), cb)
       })
