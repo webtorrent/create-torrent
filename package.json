@@ -33,7 +33,7 @@
     "uint8-util": "^2.1.9"
   },
   "devDependencies": {
-    "@webtorrent/semantic-release-config": "1.0.9",
+    "@webtorrent/semantic-release-config": "1.0.10",
     "brfs": "2.0.2",
     "parse-torrent": "11.0.12",
     "semantic-release": "21.0.7",
