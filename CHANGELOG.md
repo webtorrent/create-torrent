@@ -1,3 +1,10 @@
+## [6.0.13](https://github.com/webtorrent/create-torrent/compare/v6.0.12...v6.0.13) (2023-07-31)
+
+
+### Bug Fixes
+
+* **deps:** update dependency bencode to ^3.1.1 ([b7b1bab](https://github.com/webtorrent/create-torrent/commit/b7b1bab47b0b550a5c320ac2f2374bb85f215aee))
+
 ## [6.0.12](https://github.com/webtorrent/create-torrent/compare/v6.0.11...v6.0.12) (2023-07-23)
 
 
