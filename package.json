@@ -30,7 +30,7 @@
     "piece-length": "^2.0.1",
     "queue-microtask": "^1.2.3",
     "run-parallel": "^1.2.0",
-    "uint8-util": "^2.1.9"
+    "uint8-util": "^2.2.2"
   },
   "devDependencies": {
     "@webtorrent/semantic-release-config": "1.0.10",
