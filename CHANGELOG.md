@@ -1,3 +1,10 @@
+## [6.0.16](https://github.com/webtorrent/create-torrent/compare/v6.0.15...v6.0.16) (2023-12-12)
+
+
+### Bug Fixes
+
+* **deps:** update dependency fast-readable-async-iterator to v2 ([#251](https://github.com/webtorrent/create-torrent/issues/251)) ([a566cfb](https://github.com/webtorrent/create-torrent/commit/a566cfb8cf3222d5204ec033c9dbf581aa0e96e4))
+
 ## [6.0.15](https://github.com/webtorrent/create-torrent/compare/v6.0.14...v6.0.15) (2023-08-11)
 
 
