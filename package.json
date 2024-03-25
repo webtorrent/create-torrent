@@ -36,7 +36,7 @@
     "@webtorrent/semantic-release-config": "1.0.10",
     "brfs": "2.0.2",
     "parse-torrent": "11.0.16",
-    "semantic-release": "21.1.2",
+    "semantic-release": "23.0.6",
     "standard": "*",
     "tape": "5.7.5",
     "webtorrent-fixtures": "2.0.2"
