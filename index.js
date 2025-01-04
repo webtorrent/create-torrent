@@ -34,6 +34,7 @@ const announceList = [
  * @param  {string=} opts.createdBy
  * @param  {boolean|number=} opts.private
  * @param  {number=} opts.pieceLength
+ * @param  {number=} opts.maxPieceLength
  * @param  {Array.<Array.<string>>=} opts.announceList
  * @param  {Array.<string>=} opts.urlList
  * @param  {Object=} opts.info
@@ -149,6 +150,10 @@ function _parseInput (input, opts, cb) {
 
   if (!opts.name) {
     opts.name = `Unnamed Torrent ${Date.now()}`
+  }
+
+  if (!opts.maxPieceLength) {
+    opts.maxPieceLength = 4 * 1024 * 1024
   }
 
   const numPaths = input.reduce((sum, item) => sum + Number(typeof item === 'string'), 0)
@@ -300,7 +305,7 @@ function onFiles (files, opts, cb) {
   if (opts.urlList !== undefined) torrent['url-list'] = opts.urlList
 
   const estimatedTorrentLength = files.reduce(sumLength, 0)
-  const pieceLength = opts.pieceLength || calcPieceLength(estimatedTorrentLength)
+  const pieceLength = opts.pieceLength || Math.min(calcPieceLength(estimatedTorrentLength), opts.maxPieceLength)
   torrent.info['piece length'] = pieceLength
 
   getPieceList(
