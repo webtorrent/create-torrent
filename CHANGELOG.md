@@ -1,3 +1,10 @@
+# [6.1.0](https://github.com/webtorrent/create-torrent/compare/v6.0.18...v6.1.0) (2025-01-04)
+
+
+### Features
+
+* add maxPieceLength option ([#267](https://github.com/webtorrent/create-torrent/issues/267)) ([1264106](https://github.com/webtorrent/create-torrent/commit/1264106b627fad90faedddb4daec27feb52c138d)), closes [#266](https://github.com/webtorrent/create-torrent/issues/266)
+
 ## [6.0.18](https://github.com/webtorrent/create-torrent/compare/v6.0.17...v6.0.18) (2024-07-08)
 
 
