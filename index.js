@@ -153,7 +153,7 @@ function _parseInput (input, opts, cb) {
   }
 
   if (!opts.maxPieceLength) {
-    opts.maxPieceLength = Infinity
+    opts.maxPieceLength = 4 * 1024 * 1024
   }
 
   const numPaths = input.reduce((sum, item) => sum + Number(typeof item === 'string'), 0)

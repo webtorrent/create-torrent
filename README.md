@@ -68,7 +68,7 @@ Or, an **array of `string`, `File`, `Buffer`, or `stream.Readable` objects**.
   filterJunkFiles: Boolean, // remove hidden and other junk files? (default = true)
   private: Boolean,         // is this a private .torrent? (default = false)
   pieceLength: Number,      // force a custom piece length (number of bytes)
-  maxPieceLength: Number,   // force a maximum piece length for auto piece length selection, does not affect pieceLength option (default = Infinity)
+  maxPieceLength: Number,   // force a maximum piece length for auto piece length selection, does not affect pieceLength option (default = 4 MiB)
   announceList: [[String]], // custom trackers (array of arrays of strings) (see [bep12](http://www.bittorrent.org/beps/bep_0012.html))
   urlList: [String],        // web seed urls (see [bep19](http://www.bittorrent.org/beps/bep_0019.html))
   info: Object,             // add non-standard info dict entries, e.g. info.source, a convention for cross-seeding
