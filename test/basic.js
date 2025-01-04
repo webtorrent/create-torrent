@@ -205,3 +205,57 @@ test('implicit torrent name from file names with slashes in them', t => {
     t.equal(parsedTorrent.files[1].path, path.join('My Cool Folder', 'My Cool File 2'))
   })
 })
+
+test('verify torrent length with maxPieceLength set', t => {
+  t.plan(8)
+
+  const buf1 = Buffer.from('buf1')
+  buf1.name = 'My Cool Folder/My Cool File 1'
+
+  const buf2 = Buffer.from('buf2')
+  buf2.name = 'My Cool Folder/My Cool File 2'
+
+  createTorrent([buf1, buf2], { maxPieceLength: 10 }, async (err, torrent) => {
+    t.error(err)
+    const parsedTorrent = await parseTorrent(torrent)
+
+    t.equal(parsedTorrent.name, 'My Cool Folder')
+
+    t.equal(parsedTorrent.files.length, 2)
+
+    t.equal(parsedTorrent.files[0].name, 'My Cool File 1')
+    t.equal(parsedTorrent.files[0].path, path.join('My Cool Folder', 'My Cool File 1'))
+
+    t.equal(parsedTorrent.files[1].name, 'My Cool File 2')
+    t.equal(parsedTorrent.files[1].path, path.join('My Cool Folder', 'My Cool File 2'))
+
+    t.equal(parsedTorrent.pieceLength, 10)
+  })
+})
+
+test('verify maxPieceLength is ignored when pieceLength is manually set', t => {
+  t.plan(8)
+
+  const buf1 = Buffer.from('buf1')
+  buf1.name = 'My Cool Folder/My Cool File 1'
+
+  const buf2 = Buffer.from('buf2')
+  buf2.name = 'My Cool Folder/My Cool File 2'
+
+  createTorrent([buf1, buf2], { pieceLength: 1024, maxPieceLength: 10 }, async (err, torrent) => {
+    t.error(err)
+    const parsedTorrent = await parseTorrent(torrent)
+
+    t.equal(parsedTorrent.name, 'My Cool Folder')
+
+    t.equal(parsedTorrent.files.length, 2)
+
+    t.equal(parsedTorrent.files[0].name, 'My Cool File 1')
+    t.equal(parsedTorrent.files[0].path, path.join('My Cool Folder', 'My Cool File 1'))
+
+    t.equal(parsedTorrent.files[1].name, 'My Cool File 2')
+    t.equal(parsedTorrent.files[1].path, path.join('My Cool Folder', 'My Cool File 2'))
+
+    t.equal(parsedTorrent.pieceLength, 1024)
+  })
+})
