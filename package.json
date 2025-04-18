@@ -16,7 +16,8 @@
   },
   "browser": {
     "./get-files.js": false,
-    "is-file": false
+    "is-file": false,
+    "path": "path-esm"
   },
   "dependencies": {
     "bencode": "^4.0.0",
@@ -27,6 +28,7 @@
     "junk": "^4.0.1",
     "minimist": "^1.2.8",
     "once": "^1.4.0",
+    "path-esm": "^1.0.0",
     "piece-length": "^2.0.1",
     "queue-microtask": "^1.2.3",
     "run-parallel": "^1.2.0",
