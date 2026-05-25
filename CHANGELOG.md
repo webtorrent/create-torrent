@@ -1,3 +1,12 @@
+## [6.1.1](https://github.com/webtorrent/create-torrent/compare/v6.1.0...v6.1.1) (2026-05-25)
+
+
+### Bug Fixes
+
+* **deps:** update dependency block-iterator to ^1.1.2 ([#281](https://github.com/webtorrent/create-torrent/issues/281)) ([042fc83](https://github.com/webtorrent/create-torrent/commit/042fc8396ef735ee2c632737018cb6d5eabaccb5))
+* **deps:** update dependency uint8-util to ^2.2.6 ([#282](https://github.com/webtorrent/create-torrent/issues/282)) ([dc91d11](https://github.com/webtorrent/create-torrent/commit/dc91d116a9de88209d02bd43d14c2f4f958fba80))
+* **release:** Update release workflow with additional permissions ([c58fb97](https://github.com/webtorrent/create-torrent/commit/c58fb97470193fa7a8d4e6c0cdac0c4ddf7e1b95))
+
 # [6.1.0](https://github.com/webtorrent/create-torrent/compare/v6.0.18...v6.1.0) (2025-01-04)
 
 
