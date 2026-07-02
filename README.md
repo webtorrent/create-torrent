@@ -86,6 +86,7 @@ If `announceList` is omitted, the following trackers will be included automatica
 - wss://tracker.btorrent.xyz
 - wss://tracker.openwebtorrent.com
 - wss://tracker.webtorrent.dev
+- wss://open.ftorrent.com
 
 Trackers that start with `wss://` are for WebRTC peers. See
 [WebTorrent](https://webtorrent.io) to learn more.

@@ -21,7 +21,8 @@ const announceList = [
   ['udp://tracker.empire-js.us:1337'],
   ['wss://tracker.btorrent.xyz'],
   ['wss://tracker.openwebtorrent.com'],
-  ['wss://tracker.webtorrent.dev']
+  ['wss://tracker.webtorrent.dev'],
+  ['wss://open.ftorrent.com']
 ]
 
 /**
