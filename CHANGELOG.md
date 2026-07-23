@@ -1,3 +1,10 @@
+## [6.1.3](https://github.com/webtorrent/create-torrent/compare/v6.1.2...v6.1.3) (2026-07-23)
+
+
+### Bug Fixes
+
+* **deps:** update dependency uint8-util to ^2.3.2 ([#301](https://github.com/webtorrent/create-torrent/issues/301)) ([858cc68](https://github.com/webtorrent/create-torrent/commit/858cc680d3c112b7e16d75725c74c6e671593bd3))
+
 ## [6.1.2](https://github.com/webtorrent/create-torrent/compare/v6.1.1...v6.1.2) (2026-05-25)
 
 
