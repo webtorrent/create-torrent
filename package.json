@@ -35,7 +35,7 @@
   "devDependencies": {
     "@webtorrent/semantic-release-config": "1.0.11",
     "brfs": "2.0.2",
-    "parse-torrent": "11.0.22",
+    "parse-torrent": "11.0.23",
     "semantic-release": "25.0.8",
     "standard": "*",
     "tape": "5.10.2",
