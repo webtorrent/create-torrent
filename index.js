@@ -134,6 +134,29 @@ function _parseInput (input, opts, cb) {
     opts.name = commonPrefix
   }
 
+  // When seeding an array of multiple file-path strings with no explicit name,
+  // derive the torrent name from the common parent directory of the paths. The
+  // `commonPrefix` logic above only applies to File/Blob objects, so an array
+  // of path strings would otherwise fall through to the first file's basename
+  // below, nesting every file under it (e.g. `index.html/index.html`).
+  // See webtorrent/webtorrent#983.
+  if (!opts.name) {
+    const stringPaths = input.filter(item => typeof item === 'string')
+    if (stringPaths.length > 1 && stringPaths.length === input.length) {
+      let commonDir = corePath.dirname(corePath.resolve(stringPaths[0]))
+      for (const filePath of stringPaths.slice(1)) {
+        const fileDir = corePath.dirname(corePath.resolve(filePath))
+        while (commonDir !== corePath.dirname(commonDir)) {
+          const relativePath = corePath.relative(commonDir, fileDir)
+          if (relativePath !== '..' && !relativePath.startsWith(`..${corePath.sep}`) && !corePath.isAbsolute(relativePath)) break
+          commonDir = corePath.dirname(commonDir)
+        }
+      }
+      const name = corePath.basename(commonDir)
+      if (name) opts.name = name
+    }
+  }
+
   if (!opts.name) {
     // use first user-set file name
     input.some(item => {
