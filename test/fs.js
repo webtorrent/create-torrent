@@ -235,3 +235,25 @@ test('create multi file torrent with array of paths', t => {
     })
   })
 })
+
+test('create multi file torrent from array of paths without a name uses the common parent directory', t => {
+  t.plan(5)
+
+  const oneTxt = path.join(fixtures.numbers.contentPath, '1.txt')
+  const twoTxt = path.join(fixtures.numbers.contentPath, '2.txt')
+
+  createTorrent([oneTxt, twoTxt], async (err, torrent) => {
+    t.error(err)
+
+    const parsedTorrent = await parseTorrent(torrent)
+
+    // The name is derived from the files' common parent directory ("numbers"),
+    // not the first file's basename ("1.txt"), which would otherwise nest every
+    // file under it (e.g. `1.txt/1.txt`). See webtorrent/webtorrent#983.
+    t.equals(parsedTorrent.name, 'numbers')
+
+    t.equals(parsedTorrent.files.length, 2)
+    t.deepEquals(path.normalize(parsedTorrent.files[0].path), path.normalize('numbers/1.txt'))
+    t.deepEquals(path.normalize(parsedTorrent.files[1].path), path.normalize('numbers/2.txt'))
+  })
+})
