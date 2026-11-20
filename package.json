@@ -16,6 +16,7 @@
   },
   "browser": {
     "./get-files.js": false,
+    "./hash-files.js": false,
     "is-file": false
   },
   "dependencies": {

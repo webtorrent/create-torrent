@@ -12,6 +12,7 @@ import { hash, hex2arr } from 'uint8-util'
 import 'fast-readable-async-iterator'
 
 import getFiles from './get-files.js' // browser exclude
+import hashFiles from './hash-files.js' // browser exclude
 
 const announceList = [
   ['udp://tracker.leechers-paradise.org:6969'],
@@ -211,6 +212,17 @@ function _parseInput (input, opts, cb) {
 const MAX_OUTSTANDING_HASHES = 5
 
 async function getPieceList (files, pieceLength, estimatedTorrentLength, opts, cb) {
+  // Fast path in node when every file is read from the filesystem
+  if (typeof hashFiles === 'function' && files.every(file => typeof file.filePath === 'string')) {
+    let pieces
+    try {
+      pieces = await hashFiles(files, pieceLength, opts.onProgress)
+    } catch (err) {
+      return cb(err)
+    }
+    return cb(null, pieces, estimatedTorrentLength)
+  }
+
   const pieces = []
   let length = 0
   let hashedLength = 0
@@ -319,6 +331,7 @@ function onFiles (files, opts, cb) {
 
       files.forEach(file => {
         delete file.getStream
+        delete file.filePath
       })
 
       if (opts.singleFileTorrent) {
