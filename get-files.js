@@ -48,6 +48,7 @@ export default function getFiles (path, keepRoot, cb) {
     if (path[path.length - 1] !== corePath.sep) path += corePath.sep
 
     files.forEach(file => {
+      file.filePath = file.path
       file.getStream = getFilePathStream(file.path)
       file.path = file.path.replace(path, '').split(corePath.sep)
     })
